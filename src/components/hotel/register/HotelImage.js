@@ -22,20 +22,21 @@ import {
   hotelPricePerNightState,
   hotelImagesState,
 } from '@/util/hotelState'
+import { toast } from 'react-toastify'
 
 export default function HotelImage() {
   const [images, setImages] = useRecoilState(hotelImagesState)
   const [hotelType] = useRecoilState(hotelTypeState)
-  const [hotelAddress] = useRecoilState(hotelAddressState)
-  const [hotelDetailAddress] = useRecoilState(hotelDetailAddressState)
-  const [numberOfBedrooms] = useRecoilState(numberOfBedroomsState)
-  const [numberOfBeds] = useRecoilState(numberOfBedsState)
-  const [numberOfBathrooms] = useRecoilState(numberOfBathroomsState)
-  const [maximumGuests] = useRecoilState(maximumGuestsState)
-  const [hotelAmenities] = useRecoilState(hotelAmenitiesState)
-  const [hotelName] = useRecoilState(hotelNameState)
-  const [hotelDescription] = useRecoilState(hotelDescriptionState)
-  const [hotelPricePerNight] = useRecoilState(hotelPricePerNightState)
+  const [address] = useRecoilState(hotelAddressState)
+  const [addressDetail] = useRecoilState(hotelDetailAddressState)
+  const [roomCnt] = useRecoilState(numberOfBedroomsState)
+  const [bedCnt] = useRecoilState(numberOfBedsState)
+  const [bathroomCnt] = useRecoilState(numberOfBathroomsState)
+  const [maxPeople] = useRecoilState(maximumGuestsState)
+  const [facility] = useRecoilState(hotelAmenitiesState)
+  const [nickname] = useRecoilState(hotelNameState)
+  const [description] = useRecoilState(hotelDescriptionState)
+  const [price] = useRecoilState(hotelPricePerNightState)
 
   const resetHotelImages = useResetRecoilState(hotelImagesState)
   const resetHotelType = useResetRecoilState(hotelTypeState)
@@ -75,21 +76,28 @@ export default function HotelImage() {
     sessionStorage.removeItem('sessionStorage')
   }
 
-  const handleComplete = () => {
+  const handleComplete = (e) => {
+    e.preventDefault()
+
+    if (images.length < 5) {
+      toast.error('숙소 사진을 5장 이상 등록해주세요.')
+      return
+    }
+
     const formData = new FormData()
 
     const hotelInfo = {
       hotelType: hotelType,
-      hotelAddress: hotelAddress,
-      hotelDetailAddress: hotelDetailAddress,
-      numberOfBedrooms: numberOfBedrooms,
-      numberOfBeds: numberOfBeds,
-      numberOfBathrooms: numberOfBathrooms,
-      maximumGuests: maximumGuests,
-      hotelAmenities: hotelAmenities,
-      hotelName: hotelName,
-      hotelDescription: hotelDescription,
-      hotelPricePerNight: hotelPricePerNight,
+      address: address,
+      addressDetail: addressDetail,
+      roomCnt: roomCnt,
+      bedCnt: bedCnt,
+      bathroomCnt: bathroomCnt,
+      maxPeople: maxPeople,
+      facility: facility,
+      nickname: nickname,
+      description: description,
+      price: price,
     }
 
     formData.append(

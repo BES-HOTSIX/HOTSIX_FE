@@ -6,6 +6,7 @@ import { FaArrowRight, FaArrowLeft } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
 import { hotelPricePerNightState } from '@/util/hotelState'
+import { toast } from 'react-toastify'
 
 export default function HotelPrice() {
   const [price, setPrice] = useState('')
@@ -26,11 +27,17 @@ export default function HotelPrice() {
     setPrice(formattedValue)
   }
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    e.preventDefault()
+    if (!numberPrice) {
+      toast.error('숙박비를 입력해주세요.')
+      return
+    }
     router.push('/hotel/register/image')
   }
 
-  const handlePrevious = () => {
+  const handlePrevious = (e) => {
+    e.preventDefault()
     router.push('/hotel/register/nickname')
   }
 

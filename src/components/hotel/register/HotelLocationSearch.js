@@ -6,6 +6,7 @@ import { Button } from '@nextui-org/react'
 import { FaArrowRight, FaArrowLeft } from 'react-icons/fa'
 import { useRecoilState } from 'recoil'
 import { hotelAddressState } from '@/util/hotelState'
+import { toast } from 'react-toastify'
 
 export default function HotelLocationSearch() {
   const router = useRouter()
@@ -59,6 +60,10 @@ export default function HotelLocationSearch() {
 
   const handleNext = (e) => {
     e.preventDefault()
+    if (!hotelAddress) {
+      toast.error('주소를 검색해주세요.')
+      return
+    }
     router.push('/hotel/register/location/map')
   }
 

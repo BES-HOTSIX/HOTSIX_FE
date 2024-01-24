@@ -2,13 +2,10 @@ import dateConverter from '@/util/dateConverter'
 import Image from 'next/image'
 import { CiImageOff } from 'react-icons/ci'
 import NewBadge from '../ui/NewBadge'
+import { formatPrice } from '@/constants/hotel'
 
 export default function HotelListItem({ hotel }) {
   const thumbnailImage = hotel.imagesResponse.imageUrl[0]
-
-  function formatPrice(price) {
-    return price.toLocaleString('ko-KR')
-  }
 
   return (
     <li

@@ -1,5 +1,5 @@
 import React from 'react'
-import HotelType from '@/components/hotel/HotelType'
+import HotelType from '@/components/hotel/register/HotelType'
 
 export const metadata = {
   title: 'Register',

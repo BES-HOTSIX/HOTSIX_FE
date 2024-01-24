@@ -6,6 +6,7 @@ import { FaArrowRight, FaArrowLeft } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
 import { hotelNameState, hotelDescriptionState } from '@/util/hotelState'
+import { toast } from 'react-toastify'
 
 export default function HotelNickname() {
   const [nickname, setNickname] = useRecoilState(hotelNameState)
@@ -17,11 +18,24 @@ export default function HotelNickname() {
     setIsVisible(true)
   }, [])
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    e.preventDefault()
+
+    if (!nickname) {
+      toast.error('숙소 이름을 입력해주세요.')
+      return
+    }
+
+    if (!description) {
+      toast.error('숙소 설명을 입력해주세요.')
+      return
+    }
+
     router.push('/hotel/register/price')
   }
 
-  const handlePrevious = () => {
+  const handlePrevious = (e) => {
+    e.preventDefault()
     router.push('/hotel/register/amenities')
   }
 

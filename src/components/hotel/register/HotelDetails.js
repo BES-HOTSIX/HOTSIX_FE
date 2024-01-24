@@ -24,6 +24,7 @@ export default function HotelDetails() {
   const router = useRouter()
 
   useEffect(() => {
+    console.log(bedCount)
     setIsVisible(true)
   }, [])
 

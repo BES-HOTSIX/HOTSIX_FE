@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import Navbar from "@/components/NavBar";
 import { Providers } from "@/app/providers";
 import Script from "next/script";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata = {
   title: {

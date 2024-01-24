@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
 import { hotelDetailAddressState } from '@/util/hotelState'
 import { hotelAddressState } from '@/util/hotelState'
+import { toast } from 'react-toastify'
 
 export default function HotelLocationMap() {
   const mapRef = useRef(null) // 지도를 표시할 DOM 요소에 대한 참조
@@ -24,11 +25,17 @@ export default function HotelLocationMap() {
     setDetailAddress(e.target.value)
   }
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    e.preventDefault()
+    if (!detailAddress) {
+      toast.error('상세 주소를 입력해주세요.')
+      return
+    }
     router.push('/hotel/register/detail')
   }
 
-  const handlePrevious = () => {
+  const handlePrevious = (e) => {
+    e.preventDefault()
     router.push('/hotel/register/location')
   }
 
