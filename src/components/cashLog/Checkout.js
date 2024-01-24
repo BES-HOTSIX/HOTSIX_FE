@@ -69,7 +69,7 @@ export function CheckoutPage() {
                     window.location.search,
                 });
               } catch (error) {
-                // TODO: 에러 처리
+                // TODO: 에러  처리
               }
             }}
           >
