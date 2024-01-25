@@ -11,7 +11,10 @@ import 'react-toastify/dist/ReactToastify.css'
 
 /** 호텔 등록 */
 const fetchRegisterHotel = async (formData) => {
-  return await fileApiAxios.post('/api/v1/hotels', formData)
+  return await fileApiAxios.post('/api/v1/hotels', formData, {
+    ...axios.defaults,
+    useAuth: true,
+  })
 }
 
 export const useRegisterHotel = () => {
