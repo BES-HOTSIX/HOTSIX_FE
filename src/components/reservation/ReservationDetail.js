@@ -4,6 +4,7 @@ import React from 'react'
 import { useReservationDetail } from '@/hooks/useReservation'
 import { Button } from '@nextui-org/react'
 import { useRouter } from 'next/navigation';
+import ReservationCancelDetail from '@/components/reservation/ReservationCancelDetail'
 
 export default function ReservationDetail({ id }) {
 	const { reservation, isLoading, isError, error } = useReservationDetail(id)
@@ -27,7 +28,12 @@ export default function ReservationDetail({ id }) {
 	}
 
 	const reservationData = reservation.objData
-	
+
+	// cancelDate가 null이 아닌 경우 ReservationCancelDetail 컴포넌트를 렌더링
+	if (reservationData.cancelDate !== null) {
+		return <ReservationCancelDetail id={id} />;
+	}
+
 	// createdAt 날짜 형식을 'nnnn.nn.nn' 형태로 포맷
 	const formattedCreatedAt = new Date(reservationData.createdAt).toLocaleDateString('ko-KR', {
 		year: 'numeric',

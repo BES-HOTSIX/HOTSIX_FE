@@ -15,7 +15,7 @@ export default function ReservationCancelDetail({ id }) {
 	}
 
 	const reservationData = reservation.objData
-	
+
 	// createdAt 날짜 형식을 'nnnn.nn.nn' 형태로 포맷
 	const formattedCancelDate = new Date(reservationData.cancelDate).toLocaleDateString('ko-KR', {
 		year: 'numeric',
