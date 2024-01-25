@@ -1,10 +1,10 @@
 'use client'
 
 import React from 'react'
-import { useReservationCancelDetail } from '@/hooks/useReservation'
+import { useReservationDetail } from '@/hooks/useReservation'
 
 export default function ReservationCancelDetail({ id }) {
-	const { reservation, isLoading, isError, error } = useReservationCancelDetail(id)
+	const { reservation, isLoading, isError, error } = useReservationDetail(id)
 
 	if (isLoading) {
 		return <div>loading</div>
