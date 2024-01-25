@@ -1,22 +1,10 @@
 'use client'
 
 import React from 'react'
-import { useReservationDetail } from '@/hooks/useReservation'
-import { Button } from '@nextui-org/react'
-import { useRouter } from 'next/navigation';
+import { useReservationCancelDetail } from '@/hooks/useReservation'
 
-export default function ReservationDetail({ id }) {
-	const { reservation, isLoading, isError, error } = useReservationDetail(id)
-
-	const router = useRouter();
-
-	const handleCancelClick = () => {
-		const confirmCancel = window.confirm("예약을 취소하시겠습니까?");
-
-		if (confirmCancel) {
-			router.push('/your-destination-path');
-		}
-	};
+export default function ReservationCancelDetail({ id }) {
+	const { reservation, isLoading, isError, error } = useReservationCancelDetail(id)
 
 	if (isLoading) {
 		return <div>loading</div>
@@ -29,7 +17,7 @@ export default function ReservationDetail({ id }) {
 	const reservationData = reservation.objData
 	
 	// createdAt 날짜 형식을 'nnnn.nn.nn' 형태로 포맷
-	const formattedCreatedAt = new Date(reservationData.createdAt).toLocaleDateString('ko-KR', {
+	const formattedCancelDate = new Date(reservationData.cancelDate).toLocaleDateString('ko-KR', {
 		year: 'numeric',
 		month: '2-digit',
 		day: '2-digit'
@@ -47,10 +35,6 @@ export default function ReservationDetail({ id }) {
 		day: '2-digit'
 	}).replace(/\./g, '').split(' ').join('.');
 
-	// 현재 날짜와 체크인 날짜 비교해서 체크인 날짜가 오늘 날짜보다 하루 이상 남았는지 확인
-	const today = new Date();
-	const isCancellationAllowed = new Date(reservationData.checkInDate).getTime() - today.getTime() > 24 * 60 * 60 * 1000;
-
 	const staticImageUrl = '/tosspay.png';
 
 	return (
@@ -59,7 +43,7 @@ export default function ReservationDetail({ id }) {
 				<div style={styles.reservationSection}>
 					<div style={styles.header}>
 						<h1 style={styles.title}>예약 상세</h1>
-						<span style={styles.date}>{formattedCreatedAt} 결제</span>
+						<span style={styles.date}>{formattedCancelDate} 취소</span>
 					</div>
 					<div style={styles.hotelInfo}>
 						<img
@@ -85,7 +69,7 @@ export default function ReservationDetail({ id }) {
 				</div>
 				<div style={styles.divider}></div>
 				<div style={styles.paymentSection}>
-					<span style={styles.paymentTitle}>결제 정보</span>
+					<span style={styles.paymentTitle}>취소 정보</span>
 					<div style={styles.paymentMethod}>
 						<span style={styles.paymentMethodTitle}>결제 수단</span>
 						<img
@@ -100,11 +84,12 @@ export default function ReservationDetail({ id }) {
 							<span>{`${reservationData.paidPrice}원`}</span>
 						</div>
 					</div>
-					{isCancellationAllowed && (
-						<div style={styles.actions}>
-							<Button style={styles.button} onClick={handleCancelClick}>예약 취소</Button>
+					<div style={styles.paymentInfo}>
+						<div style={styles.detailsRow}>
+							<span>환불 금액</span>
+							<span>{`${reservationData.paidPrice}원`}</span>
 						</div>
-					)}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -209,16 +194,5 @@ const styles = {
 	},
 	paymentInfo: {
 		marginBottom: '20px',
-	},
-	actions: {
-		display: 'flex',
-		justifyContent: 'flex-end',
-	},
-	button: {
-		padding: '10px 15px',
-		backgroundColor: '#EF4444',
-		color: 'white',
-		borderRadius: '5px',
-		cursor: 'pointer',
-	},
+	}
 }
