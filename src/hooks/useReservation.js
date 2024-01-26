@@ -5,10 +5,15 @@ import axios from "@/config/axios-config";
 const fetchReservationDetail = async (reserveId) => {
   const res = await axios.get(`api/v1/reserve/detail/${reserveId}`);
 
+<<<<<<< HEAD
   console.log("fetchReservationDetail");
 
   return res.data;
 };
+=======
+	return res.data
+}
+>>>>>>> 104404cb4ece9e2bca1438e16abaf847f81743cb
 
 export const useReservationDetail = (reserveId) => {
   const {

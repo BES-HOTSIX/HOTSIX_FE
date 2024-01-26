@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "@/config/axios-config";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 /**  상세 정보 */
 const fetchCashLogForPay = async (cashLogId) => {
@@ -39,6 +41,8 @@ const fetchReservationForPay = async (reserveId) => {
 };
 
 export const useReservationForPay = (reserveId) => {
+  console.log("????");
+
   const {
     data: reservation,
     isLoading,
@@ -50,7 +54,7 @@ export const useReservationForPay = (reserveId) => {
     queryFn: () => fetchReservationForPay(reserveId),
   });
 
-  console.log("Payment reserverId = " + reserveId);
+  console.log("Payment reserverId =??? " + reserveId);
 
   return { reservation, isLoading, isFetching, isError, error };
 };
@@ -61,7 +65,9 @@ const fetchReserveForCashPayment = async (reserveId) => {
 };
 
 export const useReserveForCashPayment = () => {
+  console.log("detected event");
   const queryClient = useQueryClient();
+  const [cashLogConfirm, setCashLogConfirm] = useState(null);
   const {
     mutate: submitReservation,
     isPending,
@@ -82,7 +88,9 @@ export const useReserveForCashPayment = () => {
 
       toast.success("포인트 결제가 완료되었습니다!");
 
-      queryClient.invalidateQueries({ queryKey: ["cashLog"] });
+      setCashLogConfirm(res);
+
+      queryClient.invalidateQueries({ queryKey: ["reserve"] });
     },
     onError: (err) => {
       console.log("포인트 결제 실패");
@@ -94,30 +102,7 @@ export const useReserveForCashPayment = () => {
     },
   });
 
-  return { submitReservation, isPending, isError, error };
-};
+  console.log("cashLogConfirm = " + cashLogConfirm);
 
-const fetchCashLogConfirm = async (cashLogId) => {
-  const res = await axios.get(`api/v1/cashLog/${cashLogId}/confirm`);
-
-  console.log("fetchCashLogConfirm");
-
-  return res.data;
-};
-
-export const useCashLogConfirm = (cashLogId) => {
-  const {
-    data: cashLog,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["cashLogConfirm", cashLogId],
-    queryFn: () => fetchCashLogConfirm(cashLogId),
-  });
-
-  console.log("test cashLogId = " + cashLogId);
-
-  return { cashLog, isLoading, isFetching, isError, error };
+  return { submitReservation, cashLogConfirm, isPending, isError, error };
 };

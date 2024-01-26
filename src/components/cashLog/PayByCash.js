@@ -10,15 +10,25 @@ import React from "react";
 import { CiImageOff } from "react-icons/ci";
 
 export default function PayByCash({ reserveId }) {
+  const condition = false;
+
   const router = useRouter();
 
   const {
     submitReservation,
+    cashLogConfirm,
     isPending: submitIsPending,
     isError: submitIsError,
     error: submitError,
   } = useReserveForCashPayment();
 
+  const goPayByCash = () => {
+    submitReservation(reserveId);
+
+    // router.push(`/hotel`);
+  };
+
+  console.log("revv");
   const { reservation, isLoading, isError, error } =
     useReservationForPay(reserveId);
 
@@ -34,13 +44,7 @@ export default function PayByCash({ reserveId }) {
     router.back();
   };
 
-  const payByCash = (e) => {
-    e.preventDefault();
-
-    submitReservation(reserveId);
-
-    // router.push(`/cashLog/${cashLogId}/confirm`);
-  };
+  console.log("revvvvv");
 
   const reservationData = reservation.objData;
 
@@ -178,7 +182,7 @@ export default function PayByCash({ reserveId }) {
           <Button onClick={goBack} className="mr-20" color="default">
             뒤로가기
           </Button>
-          <Button onClick={payByCash} color="primary">
+          <Button type="button" onClick={goPayByCash} color="primary">
             결제하기
           </Button>
         </div>
