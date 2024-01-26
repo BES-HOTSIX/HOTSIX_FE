@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect } from 'react'
 import CategoryMenu from './ui/navbar-menu/CategoryMenu'
 import HotelIcon from './ui/icon/HotelIcon'
 import Dropdown from './ui/navbar-menu/Dropdown'
@@ -18,27 +17,13 @@ export default function Navbar() {
       .delete('/user/logout', { ...axios.defaults, useAuth: true })
       .then((res) => {
         console.log(res)
-        sessionStorage.removeItem('MEMBER_ID')
-        sessionStorage.removeItem('ACCESS_TOKEN_KEY')
+        sessionStorage.clear()
         window.location.href = '/'
       })
       .catch((err) => {
         console.log(err)
       })
   }
-
-  if (isLoading)
-    return (
-      <div className='navbar flex bg-transparent'>
-        <div className='flex flex-1 gap-2'>
-          <Link
-            href='/'
-            className='font-semibold text-2xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'>
-            HOTSIX
-          </Link>
-        </div>
-      </div>
-    )
 
   return (
     <div className='navbar flex bg-transparent'>

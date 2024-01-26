@@ -1,17 +1,14 @@
 import * as Sentry from '@sentry/react'
 import axios, { AxiosError } from 'axios'
 import axiosInstance from '@/config/axios-config'
-import { reissueAccessToken } from '@/util/token'
+import { reissueAccessToken } from '@/api/reissueAccessToken'
 import { HTTP_STATUS_CODE, ERROR_CODE } from '@/constants/constants'
-import { HTTPError } from '@/util/HTTPError'
+import { HTTPError } from '@/api/HTTPError'
 
 export const checkAndSetToken = (config) => {
-  console.log(config)
   if (!config.useAuth || config.headers.Authorization) return config
 
   const accessToken = sessionStorage.getItem('ACCESS_TOKEN_KEY')
-
-  console.log(accessToken)
 
   if (!accessToken) {
     console.log('토큰이 없습니다')
