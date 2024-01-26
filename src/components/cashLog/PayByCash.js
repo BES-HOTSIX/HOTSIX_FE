@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { CiImageOff } from "react-icons/ci";
 
-export default function PayByCash({ id }) {
+export default function PayByCash({ reserveId }) {
   const router = useRouter();
 
   const {
@@ -19,7 +19,8 @@ export default function PayByCash({ id }) {
     error: submitError,
   } = useReserveForCashPayment();
 
-  const { reservation, isLoading, isError, error } = useReservationForPay(id);
+  const { reservation, isLoading, isError, error } =
+    useReservationForPay(reserveId);
 
   if (isLoading) {
     return <div>loading</div>;
@@ -36,9 +37,9 @@ export default function PayByCash({ id }) {
   const payByCash = (e) => {
     e.preventDefault();
 
-    submitReservation(id);
+    submitReservation(reserveId);
 
-    // router.push("/cashLog/");
+    // router.push(`/cashLog/${cashLogId}/confirm`);
   };
 
   const reservationData = reservation.objData;

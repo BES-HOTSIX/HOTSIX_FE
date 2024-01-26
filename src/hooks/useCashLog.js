@@ -29,6 +29,32 @@ export const useCashForPay = (cashLogId) => {
   return { cashLog, isLoading, isFetching, isError, error };
 };
 
+/**  결제하기 창 */
+const fetchReservationForPay = async (reserveId) => {
+  const res = await axios.get(`api/v1/cashLog/payByCash/${reserveId}`);
+
+  console.log("fetchReservationForPay");
+
+  return res.data;
+};
+
+export const useReservationForPay = (reserveId) => {
+  const {
+    data: reservation,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["reservationForPay", reserveId],
+    queryFn: () => fetchReservationForPay(reserveId),
+  });
+
+  console.log("Payment reserverId = " + reserveId);
+
+  return { reservation, isLoading, isFetching, isError, error };
+};
+
 // 포인트 결제를 위한 POST 요청
 const fetchReserveForCashPayment = async (reserveId) => {
   return await axios.post(`/api/v1/cashLog/payByCash/${reserveId}`);
@@ -71,28 +97,27 @@ export const useReserveForCashPayment = () => {
   return { submitReservation, isPending, isError, error };
 };
 
-/**  결제하기 창 */
-const fetchReservationForPay = async (reserveId) => {
-  const res = await axios.get(`api/v1/cashLog/payByCash/${reserveId}`);
+const fetchCashLogConfirm = async (cashLogId) => {
+  const res = await axios.get(`api/v1/cashLog/${cashLogId}/confirm`);
 
-  console.log("fetchReservationForPay");
+  console.log("fetchCashLogConfirm");
 
   return res.data;
 };
 
-export const useReservationForPay = (reserveId) => {
+export const useCashLogConfirm = (cashLogId) => {
   const {
-    data: reservation,
+    data: cashLog,
     isLoading,
     isFetching,
     isError,
     error,
   } = useQuery({
-    queryKey: ["reservationForPay", reserveId],
-    queryFn: () => fetchReservationForPay(reserveId),
+    queryKey: ["cashLogConfirm", cashLogId],
+    queryFn: () => fetchCashLogConfirm(cashLogId),
   });
 
-  console.log("test reserverId = " + reserveId);
+  console.log("test cashLogId = " + cashLogId);
 
-  return { reservation, isLoading, isFetching, isError, error };
+  return { cashLog, isLoading, isFetching, isError, error };
 };

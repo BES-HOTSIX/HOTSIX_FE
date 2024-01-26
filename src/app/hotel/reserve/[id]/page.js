@@ -1,4 +1,4 @@
-import HotelReservation from '@/components/hotel/HotelReservation'
+import HotelReservation from '@/components/reservation/HotelReservation'
 import React from 'react'
 
 export default function page({ params: { id } }) {

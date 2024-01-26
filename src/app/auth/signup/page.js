@@ -1,5 +1,6 @@
 import React from 'react'
+import SignUpForm from '@/components/auth/SignUpForm'
 
 export default function page() {
-  return <div className='flex justify-center'>회원가입 페이지</div>
+  return <SignUpForm />
 }
