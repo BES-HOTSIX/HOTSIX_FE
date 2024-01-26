@@ -5,7 +5,7 @@ import { Input, Textarea, Button } from '@nextui-org/react'
 import { FaArrowRight, FaArrowLeft } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
-import { hotelNameState, hotelDescriptionState } from '@/util/hotelState'
+import { hotelNameState, hotelDescriptionState } from '@/store/hotelState'
 import { toast } from 'react-toastify'
 
 export default function HotelNickname() {

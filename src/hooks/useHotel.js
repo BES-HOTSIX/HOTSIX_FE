@@ -11,7 +11,10 @@ import 'react-toastify/dist/ReactToastify.css'
 
 /** 호텔 등록 */
 const fetchRegisterHotel = async (formData) => {
-  return await fileApiAxios.post('/api/v1/hotels', formData)
+  return await fileApiAxios.post('/api/v1/hotels', formData, {
+    ...axios.defaults,
+    useAuth: true,
+  })
 }
 
 export const useRegisterHotel = () => {
@@ -107,7 +110,10 @@ export const useHotelDetail = (hotelId) => {
 
 /** 호텔 정보 수정 */
 const fetchHotelModify = async (hotelId, formData) => {
-  const res = await fileApiAxios.put(`/api/v1/hotels/${hotelId}`, formData)
+  const res = await fileApiAxios.put(`/api/v1/hotels/${hotelId}`, formData, {
+    ...axios.defaults,
+    useAuth: true,
+  })
 
   return res.data
 }
@@ -151,7 +157,10 @@ export const useModifyHotel = () => {
 
 /** 호텔 삭제 */
 const fetchHotelDelete = async (hotelId) => {
-  const res = await axios.delete(`/api/v1/hotels/${hotelId}`)
+  const res = await axios.delete(`/api/v1/hotels/${hotelId}`, {
+    ...axios.defaults,
+    useAuth: true,
+  })
 
   return res.data
 }

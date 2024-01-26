@@ -7,8 +7,8 @@ import { MdLocationOn } from 'react-icons/md'
 import { FaArrowRight, FaArrowLeft } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
-import { hotelDetailAddressState } from '@/util/hotelState'
-import { hotelAddressState } from '@/util/hotelState'
+import { hotelDetailAddressState } from '@/store/hotelState'
+import { hotelAddressState } from '@/store/hotelState'
 import { toast } from 'react-toastify'
 
 export default function HotelLocationMap() {

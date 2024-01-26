@@ -11,7 +11,7 @@ import {
   numberOfBedsState,
   numberOfBathroomsState,
   maximumGuestsState,
-} from '@/util/hotelState'
+} from '@/store/hotelState'
 
 export default function HotelDetails() {
   const [bedroomCount, setBedroomCount] = useRecoilState(numberOfBedroomsState)
