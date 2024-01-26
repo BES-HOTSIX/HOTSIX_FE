@@ -51,9 +51,10 @@ export default function ReservationCancelDetail({ id }) {
 							alt="숙소 대표 이미지"
 							style={styles.image}
 						/>
-						<div>
+						<div style={styles.hotelTextContainer}>
 							<h2 style={styles.hotelName}>{reservationData.hotelNickname}</h2>
 							<p style={styles.hotelDesc}>{reservationData.hotelDescription}</p>
+							<p style={styles.hotelHost}>호스트 : {reservationData.hotelHost}</p>
 						</div>
 					</div>
 					<div style={styles.reservationDetails}>
@@ -165,7 +166,8 @@ const styles = {
 	},
 	hotelInfo: {
 		display: 'flex',
-		marginBottom: '20px',
+		alignItems: 'stretch',
+		marginBottom: '30px',
 	},
 	image: {
 		width: '200px',
@@ -174,13 +176,24 @@ const styles = {
 		marginRight: '20px',
 		borderRadius: '8px', // 필요한 경우 이미지에 둥근 모서리를 적용
 	},
+	hotelTextContainer: {
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-between',
+		flex: 1
+	},
 	hotelName: {
-		margin: '0 0 10px 0',
+		flex: 1,
+		marginBottom: '20px',
 		fontWeight: 'bold',
 	},
 	hotelDesc: {
-		margin: '0',
+		flex: 3,
+		marginBottom: '20px',
 		color: '#555',
+	},
+	hotelHost: {
+		flex: 1,
 	},
 	reservationDetails: {
 		marginBottom: '20px',
@@ -190,7 +203,7 @@ const styles = {
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
-		marginBottom: '10px',
+		marginBottom: '20px',
 	},
 	paymentInfo: {
 		marginBottom: '20px',
