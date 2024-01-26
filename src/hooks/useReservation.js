@@ -23,7 +23,6 @@ export const useReservationDetail = (reserveId) => {
   });
 
   console.log("reserverId = " + reserveId);
-  console.log("reserveration  = " + reservation.objData.paidPrice);
 
   return { reservation, isLoading, isFetching, isError, error };
 };

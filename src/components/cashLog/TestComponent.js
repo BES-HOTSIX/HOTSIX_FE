@@ -1,5 +1,5 @@
 "use client";
-import { useCashDetail } from "@/hooks/useCash";
+import { useCashDetail } from "@/hooks/useCashLog";
 
 export default function TestComponent({ id }) {
   console.log(id);
