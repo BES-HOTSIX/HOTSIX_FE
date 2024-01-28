@@ -5,7 +5,7 @@ import { Input, Button } from '@nextui-org/react'
 import { FaArrowRight, FaArrowLeft } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
-import { hotelPricePerNightState } from '@/util/hotelState'
+import { hotelPricePerNightState } from '@/store/hotelState'
 import { toast } from 'react-toastify'
 
 export default function HotelPrice() {

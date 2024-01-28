@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@nextui-org/react'
 import { FaArrowRight, FaArrowLeft } from 'react-icons/fa'
 import { useRecoilState } from 'recoil'
-import { hotelAddressState } from '@/util/hotelState'
+import { hotelAddressState } from '@/store/hotelState'
 import { toast } from 'react-toastify'
 
 export default function HotelLocationSearch() {

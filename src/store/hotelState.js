@@ -6,7 +6,7 @@ const isClient = typeof window !== 'undefined'
 
 // RecoilPersist 설정
 const { persistAtom } = recoilPersist({
-  key: 'sessionStorage', // 고유한 key 값
+  key: 'hotelState', // 고유한 key 값
   storage: isClient ? sessionStorage : undefined, // 서버 사이드에서는 undefined
 })
 

@@ -19,7 +19,7 @@ import {
 } from 'react-icons/md'
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import { useRecoilState } from 'recoil'
-import { hotelAmenitiesState } from '@/util/hotelState'
+import { hotelAmenitiesState } from '@/store/hotelState'
 
 export default function HotelAmenities() {
   const [amenities, setAmenities] = useRecoilState(hotelAmenitiesState)

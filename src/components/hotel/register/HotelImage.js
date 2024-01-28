@@ -21,7 +21,7 @@ import {
   hotelDescriptionState,
   hotelPricePerNightState,
   hotelImagesState,
-} from '@/util/hotelState'
+} from '@/store/hotelState'
 import { toast } from 'react-toastify'
 
 export default function HotelImage() {
@@ -73,7 +73,7 @@ export default function HotelImage() {
     resetHotelName()
     resetHotelDescription()
     resetHotelPricePerNight()
-    sessionStorage.removeItem('sessionStorage')
+    sessionStorage.removeItem('hotelState')
   }
 
   const handleComplete = (e) => {

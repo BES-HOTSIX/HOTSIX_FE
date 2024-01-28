@@ -5,8 +5,6 @@ import axios from '@/config/axios-config'
 const fetchReservationDetail = async (reserveId) => {
 	const res = await axios.get(`api/v1/reserve/detail/${reserveId}`)
 
-	console.log('fetchReservationDetail')
-
 	return res.data
 }
 
