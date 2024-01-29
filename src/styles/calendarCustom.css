@@ -86,3 +86,8 @@
 	padding: 0;
 	width: 100px;
 }
+
+.custom-wrap4 .react-datepicker__day--disabled {
+	background-color: transparent; /* 배경색 제거 */
+	color: #ccc; /* 글자색 변경 */
+}

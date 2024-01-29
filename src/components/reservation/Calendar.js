@@ -2,7 +2,7 @@ import { forwardRef, useState } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ko from 'date-fns/locale/ko';
-import { getMonth, getYear, getDate } from 'date-fns';
+import { getMonth, getYear, getDate, isBefore, addDays } from 'date-fns';
 import dayjs from 'dayjs';
 
 import '../../styles/calendarCustom.css';
@@ -24,9 +24,32 @@ const CustomInput = forwardRef((props, ref) => {
 export default function CalendarCustom() {
 	const today = new Date();
 	const twoYearsLater = new Date(today.getFullYear() + 2, today.getMonth(), today.getDate());
-
+	const excludedDates = [
+		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3),
+		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 4),
+		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5)
+	];
 	const [startDate, setStartDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7));
+	const [maxEndDate, setMaxEndDate] = useState(null);
+
+	// 체크인 날짜가 변경될 때 호출되는 함수
+	const handleStartDateChange = (date) => {
+		setStartDate(date);
+
+		// 선택 불가능한 날짜 중 체크인 날짜 이후의 첫 번째 날짜를 찾음
+		const firstDisabledDateAfterStart = excludedDates.find(excludedDates =>
+			isBefore(date, excludedDates)
+		);
+
+		// 체크아웃 날짜의 최대값을 설정 (선택 불가능한 날짜의 전날)
+		if (firstDisabledDateAfterStart) {
+			setMaxEndDate(addDays(firstDisabledDateAfterStart, -1));
+		} else {
+			// 모든 날짜가 선택 가능한 경우
+			setMaxEndDate(twoYearsLater);
+		}
+	};
 
 	const _ = require('lodash');
 	const years = _.range(getYear(new Date()), getYear(new Date()) + 3, 1);
@@ -116,12 +139,11 @@ export default function CalendarCustom() {
 					//최소(minDate),최대날짜(maxDate) 범위 지정
 					minDate={today}	// 현재날짜부터
 					maxDate={twoYearsLater}	// 2년 뒤까지
-
+					excludeDates={excludedDates}
 					
 					selected={startDate}
-					onChange={(date) => setStartDate(date)}
+					onChange={handleStartDateChange}
 					selectsStart
-					
 					
 					startDate={startDate}
 					endDate={endDate}
@@ -189,16 +211,18 @@ export default function CalendarCustom() {
 					dateFormat='yyyy.MM.dd'
 					disabledKeyboardNavigation
 					locale='ko'
-					maxDate={twoYearsLater}
+
+					minDate={startDate}
+					maxDate={maxEndDate}
+					excludeDates={excludedDates}
 
 					selected={endDate}
 					onChange={(date) => setEndDate(date)}
 					selectsEnd
-
+					
 					startDate={startDate}
 					endDate={endDate}
 					
-					minDate={startDate}
 				/>
 			</div>
 		</div>
