@@ -44,7 +44,10 @@ export default function Navbar() {
         <div className='hidden lg:flex flex-none gap-10 h-full items-center'>
           <div className='flex gap-4'>
             {user ? (
-              <>
+              <div className='flex space-x-4'>
+                <p className='text-sm flex items-center mr-3'>
+                  {user?.objData.nickname}님 환영합니다
+                </p>
                 <Link
                   href='/hotel/register'
                   className='text-sm flex items-center justify-center gap-1'>
@@ -58,7 +61,7 @@ export default function Navbar() {
                     로그아웃
                   </button>
                 </Link>
-              </>
+              </div>
             ) : (
               <>
                 <Link href='/auth/signin'>

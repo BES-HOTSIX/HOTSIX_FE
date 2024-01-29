@@ -12,9 +12,11 @@ import { useHotelDetail, useModifyHotel } from '@/hooks/useHotel'
 import { Input, Textarea } from '@nextui-org/react'
 import AddressInput from '@/components/hotel/register/ui/AddressInput'
 import { toast } from 'react-toastify'
+import { useUser } from '@/hooks/useUser'
 
 export default function HotelModify({ id }) {
-  const { hotel, isLoading, isError, error } = useHotelDetail(id)
+  const { hotel } = useHotelDetail(id)
+  const { user, isLoading } = useUser()
   const [images, setImages] = useState([])
   const [deletedImages, setDeletedImages] = useState([])
   const [newImages, setnewImages] = useState([])
@@ -229,7 +231,7 @@ export default function HotelModify({ id }) {
 
   if (isLoading) return <div></div>
 
-  return (
+  return user.objData.nickname === hotel.host ? (
     <div>
       <h1 className='text-2xl text-center mb-12 text-stone-400'>
         숙소 정보 수정
@@ -426,5 +428,7 @@ export default function HotelModify({ id }) {
         </Button>
       </div>
     </div>
+  ) : (
+    <p>잘못된 접근입니다.</p>
   )
 }

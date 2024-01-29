@@ -1,10 +1,10 @@
 import axios from '@/config/axios-config'
 
-export const reissueAccessToken = async (accessToken, memberId) => {
+export const reissueAccessToken = async (accessToken) => {
   const response = await axios
     .post(
       '/token',
-      { memberId: memberId },
+      {},
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
