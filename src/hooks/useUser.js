@@ -69,11 +69,11 @@ export const useLoginUser = () => {
     onSuccess: (res) => {
       const loginResult = res.data.objData
 
+      console.log(loginResult)
+
       const accessToken = loginResult.accessToken
-      const memberId = loginResult.memberId
 
       sessionStorage.setItem('ACCESS_TOKEN_KEY', accessToken)
-      sessionStorage.setItem('MEMBER_ID', memberId)
       axios.defaults.headers.Authorization = `Bearer ${accessToken}`
 
       toast.success('로그인에 성공했습니다!')
@@ -90,6 +90,124 @@ export const useLoginUser = () => {
   })
 
   return { submitLoginUser, isPending, isError, error }
+}
+
+const fetchKakaoLoginUser = async (code) => {
+  return await axios.post('/login/kakao', { code: code })
+}
+
+export const useKakaoLoginUser = () => {
+  const {
+    mutate: submitKakaoLoginUser,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationKey: 'kakaoLogin',
+    mutationFn: (code) => {
+      return fetchKakaoLoginUser(code)
+    },
+    onSuccess: (res) => {
+      const loginResult = res.data.objData
+
+      console.log(loginResult)
+
+      const accessToken = loginResult.accessToken
+
+      sessionStorage.setItem('ACCESS_TOKEN_KEY', accessToken)
+      axios.defaults.headers.Authorization = `Bearer ${accessToken}`
+
+      toast.success('로그인에 성공했습니다!')
+      window.location.href = '/'
+    },
+    onError: (err) => {
+      console.log(err)
+
+      return err
+    },
+  })
+
+  return { submitKakaoLoginUser, isPending, isError, error }
+}
+
+const fetchGoogleLoginUser = async (code) => {
+  return await axios.post('/login/google', { code: code })
+}
+
+export const useGoogleLoginUser = () => {
+  const {
+    mutate: submitGoogleLoginUser,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationKey: 'googleLogin',
+    mutationFn: (code) => {
+      return fetchGoogleLoginUser(code)
+    },
+    onSuccess: (res) => {
+      const loginResult = res.data.objData
+
+      console.log(loginResult)
+
+      const accessToken = loginResult.accessToken
+
+      sessionStorage.setItem('ACCESS_TOKEN_KEY', accessToken)
+      axios.defaults.headers.Authorization = `Bearer ${accessToken}`
+
+      toast.success('로그인에 성공했습니다!')
+      window.location.href = '/'
+    },
+    onError: (err) => {
+      console.log(err)
+
+      return err
+    },
+  })
+
+  return { submitGoogleLoginUser, isPending, isError, error }
+}
+
+const fetchNaverLoginUser = async (secret) => {
+  console.log('fecth function ', secret.code, secret.state)
+  return await axios.post('/login/naver', {
+    code: secret.code,
+    state: secret.state,
+  })
+}
+
+export const useNaverLoginUser = () => {
+  const {
+    mutate: submitNaverLoginUser,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationKey: 'naverLogin',
+    mutationFn: (secret) => {
+      return fetchNaverLoginUser(secret)
+    },
+    onSuccess: (res) => {
+      const loginResult = res.data.objData
+
+      console.log(loginResult)
+
+      const accessToken = loginResult.accessToken
+
+      sessionStorage.setItem('ACCESS_TOKEN_KEY', accessToken)
+      axios.defaults.headers.Authorization = `Bearer ${accessToken}`
+
+      toast.success('로그인에 성공했습니다!')
+      window.location.href = '/'
+    },
+    onError: (err) => {
+      console.log(err)
+
+      return err
+    },
+  })
+
+  return { submitNaverLoginUser, isPending, isError, error }
 }
 
 const fetchUser = async () => {
