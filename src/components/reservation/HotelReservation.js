@@ -4,19 +4,18 @@ import React, { useState } from 'react';
 import { useHotelDetail } from '@/hooks/useHotel';
 import { Button, Spacer, Input, Select } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
-// import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CalendarCustom from './Calendar';
 
 export default function HotelReservation({ id }) {
-	const { hotel, isLoading, isError, error } = useHotelDetail(id)
+	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id)
 	const [guestCount, setGuestCount] = useState(1);
 	const [startDate, setStartDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(null);
 
 	const router = useRouter();
 
-	if (isLoading) {
+	if (isHotelLoading) {
 		return <div>loading</div>
 	}
 
