@@ -67,16 +67,16 @@ export const useLoginUser = () => {
       return fetchLoginUser(formData)
     },
     onSuccess: (res) => {
-      const loginResult = res.data.objData
+      console.log(res)
+      const accessToken = res.data.objData.accessToken
 
-      console.log(loginResult)
-
-      const accessToken = loginResult.accessToken
+      console.log(accessToken)
 
       sessionStorage.setItem('ACCESS_TOKEN_KEY', accessToken)
       axios.defaults.headers.Authorization = `Bearer ${accessToken}`
 
       toast.success('로그인에 성공했습니다!')
+
       window.location.href = '/'
     },
     onError: (err) => {
@@ -108,16 +108,16 @@ export const useKakaoLoginUser = () => {
       return fetchKakaoLoginUser(code)
     },
     onSuccess: (res) => {
-      const loginResult = res.data.objData
+      console.log(res)
+      const accessToken = res.data.objData.accessToken
 
-      console.log(loginResult)
-
-      const accessToken = loginResult.accessToken
+      console.log(accessToken)
 
       sessionStorage.setItem('ACCESS_TOKEN_KEY', accessToken)
       axios.defaults.headers.Authorization = `Bearer ${accessToken}`
 
       toast.success('로그인에 성공했습니다!')
+
       window.location.href = '/'
     },
     onError: (err) => {
@@ -146,16 +146,16 @@ export const useGoogleLoginUser = () => {
       return fetchGoogleLoginUser(code)
     },
     onSuccess: (res) => {
-      const loginResult = res.data.objData
+      console.log(res)
+      const accessToken = res.data.objData.accessToken
 
-      console.log(loginResult)
-
-      const accessToken = loginResult.accessToken
+      console.log(accessToken)
 
       sessionStorage.setItem('ACCESS_TOKEN_KEY', accessToken)
       axios.defaults.headers.Authorization = `Bearer ${accessToken}`
 
       toast.success('로그인에 성공했습니다!')
+
       window.location.href = '/'
     },
     onError: (err) => {
@@ -188,16 +188,16 @@ export const useNaverLoginUser = () => {
       return fetchNaverLoginUser(secret)
     },
     onSuccess: (res) => {
-      const loginResult = res.data.objData
+      console.log(res)
+      const accessToken = res.data.objData.accessToken
 
-      console.log(loginResult)
-
-      const accessToken = loginResult.accessToken
+      console.log(accessToken)
 
       sessionStorage.setItem('ACCESS_TOKEN_KEY', accessToken)
       axios.defaults.headers.Authorization = `Bearer ${accessToken}`
 
       toast.success('로그인에 성공했습니다!')
+
       window.location.href = '/'
     },
     onError: (err) => {
