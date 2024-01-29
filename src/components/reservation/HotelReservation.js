@@ -92,8 +92,9 @@ export default function HotelReservation({ id }) {
 					<div style={styles.hotelInfo}>
 						<img src={mainImage} alt="숙소 대표 이미지" style={styles.image} />
 						<div style={styles.hotelTextContainer}>
-							<h3 style={styles.hotelName}>호텔 타이틀 {hotel.hotelNickname}</h3>
-							<p style={styles.hotelDesc}>호텔 설명 {hotel.hotelDescription}</p>
+							<h3 style={styles.hotelName}>{hotel.nickname}</h3>
+							<p style={styles.hotelDesc}>{hotel.description}</p>
+							<p style={styles.hotelHost}>호스트 : {hotel.host}</p>
 						</div>
 					</div>
 
@@ -188,17 +189,21 @@ const styles = {
 	hotelTextContainer: {
 		display: 'flex',
 		flexDirection: 'column',
+		justifyContent: 'space-between',
 		flex: 1,
 	},
 	hotelName: {
 		flex: 1,
-		margin: '20px 0',
+		marginBottom: '20px',
 		fontWeight: 'bold',
 	},
 	hotelDesc: {
-		flex: 2,
+		flex: 3,
 		marginBottom: '20px',
 		color: '#555',
+	},
+	hotelHost: {
+		flex: 1,
 	},
 	paymentSection: {
 		flex: 1,
