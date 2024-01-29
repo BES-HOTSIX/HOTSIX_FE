@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { useHotelDetail } from '@/hooks/useHotel';
 import { Button, Spacer, Input, Select } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
-import DatePicker from 'react-datepicker';
+// import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import CalendarCustom from './Calendar';
 
 export default function HotelReservation({ id }) {
 	const { hotel, isLoading, isError, error } = useHotelDetail(id)
@@ -13,24 +14,24 @@ export default function HotelReservation({ id }) {
 	const [startDate, setStartDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(null);
 
-	const handleDateChange = (dates) => {
-		const [start, end] = dates;
-		setStartDate(start);
-		setEndDate(end);
-};
-
 	const router = useRouter();
 
 	if (isLoading) {
 		return <div>loading</div>
 	}
-	
+
 	if (isError) {
 		return <div>Error: {error.message}</div>;
 	}
-
+	
 	const mainImage = hotel.imagesResponse.imageUrl[0]
 	const staticImageUrl = '/tosspay.png';
+
+	const handleDateChange = (dates) => {
+		const [start, end] = dates;
+		setStartDate(start);
+		setEndDate(end);
+	};
 
 	// Handle the guest count change
 	const handleGuestCountChange = (delta) => {
@@ -64,14 +65,7 @@ export default function HotelReservation({ id }) {
 					<h1 style={styles.title}>예약하기</h1>
 					
 					<label htmlFor="date">날짜 선택</label>
-					<DatePicker
-								selected={startDate}
-								onChange={handleDateChange}
-								startDate={startDate}
-								endDate={endDate}
-								selectsRange
-								inline
-						/>
+					<CalendarCustom/>
 					<Spacer y={1} />
 
 					<div style={styles.guestCountContainer}>
@@ -159,7 +153,7 @@ const styles = {
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'flex-start',
-		marginBottom: '20px',
+		margin: '40px 0',
 	},
 	guestCountLabel: {
 		marginBottom: '10px',
