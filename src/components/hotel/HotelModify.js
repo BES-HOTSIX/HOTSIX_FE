@@ -15,7 +15,7 @@ import { toast } from 'react-toastify'
 import { useUser } from '@/hooks/useUser'
 
 export default function HotelModify({ id }) {
-  const { hotel } = useHotelDetail(id)
+  const { hotel, isHotelLoading } = useHotelDetail(id)
   const { user, isLoading } = useUser()
   const [images, setImages] = useState([])
   const [deletedImages, setDeletedImages] = useState([])
@@ -230,6 +230,7 @@ export default function HotelModify({ id }) {
   }
 
   if (isLoading) return <div></div>
+  if (isHotelLoading) return <div></div>
 
   return user.objData.nickname === hotel.host ? (
     <div>

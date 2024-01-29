@@ -26,25 +26,23 @@ export default function HotelDetail({ id }) {
     router.push(`/hotel/reserve/${id}`)
   }
 
-  const { hotel, isLoading, isError, error } = useHotelDetail(id)
-  const { user } = useUser()
+  const { hotel, isHotelLoading, isFetching, isError, error } =
+    useHotelDetail(id)
+  const { user, isLoading } = useUser()
   const { submitDelete, isPending } = useDeleteHotel(id)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
+  const mainImage = hotel?.imagesResponse.imageUrl[0]
+  const otherImages = hotel?.imagesResponse.imageUrl.slice(1, 5)
+
   if (isLoading) return <div></div>
-  if (isError) return <div>Error: {error.message}</div>
-
-  const mainImage = hotel.imagesResponse.imageUrl[0]
-  const otherImages = hotel.imagesResponse.imageUrl.slice(1, 5)
-
-  console.log(hotel)
-  console.log(user)
+  if (isHotelLoading) return <div></div>
 
   return (
     <div className='w-full mx-auto p-4'>
       <div className='flex justify-between'>
         <h1 className='text-2xl mb-3 '>{hotel.nickname}</h1>
-        {user.objData.nickname === hotel.host && (
+        {user?.objData.nickname === hotel.host && (
           <div className='flex justify-end items-center gap-2 h-10 text-sm'>
             <Link href={`/hotel/${id}/modify`}>
               <span>수정</span>
@@ -99,7 +97,7 @@ export default function HotelDetail({ id }) {
             </div>
             <div className='flex items-center text-lg mb-2'>
               <MdPerson4 className='text-xl mr-2' />
-              <p>호스트: {hotel?.nickname}</p>
+              <p>호스트: {hotel.host}</p>
             </div>
             <div className='flex items-center text-lg mb-2'>
               <MdLocationOn className='text-xl mr-2' />
