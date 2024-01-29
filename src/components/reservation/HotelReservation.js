@@ -35,9 +35,17 @@ export default function HotelReservation({ id }) {
 	// Handle the guest count change
 	const handleGuestCountChange = (delta) => {
 		setGuestCount((prevCount) => {
-			if (prevCount <= 1 && delta < 0) {
-				return 1; // The count can't go below 1
+			// 증가하는 경우, 최대 인원 수를 초과하지 않도록 확인
+			if (delta > 0 && prevCount >= hotel.maxPeople) {
+				return hotel.maxPeople;
 			}
+
+			// 감소하는 경우, 인원 수가 1 미만으로 내려가지 않도록 확인
+			if (delta < 0 && prevCount <= 1) {
+					return 1;
+			}
+
+			// 위 조건에 해당하지 않는 경우, 인원 수 변경
 			return prevCount + delta;
 		});
 	};
