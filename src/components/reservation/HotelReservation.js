@@ -65,7 +65,7 @@ export default function HotelReservation({ id }) {
 					<h1 style={styles.title}>예약하기</h1>
 					
 					<label htmlFor="date">날짜 선택</label>
-					<CalendarCustom/>
+					<CalendarCustom />
 					<Spacer y={1} />
 
 					<div style={styles.guestCountContainer}>
@@ -95,6 +95,11 @@ export default function HotelReservation({ id }) {
 							<h3 style={styles.hotelName}>호텔 타이틀 {hotel.hotelNickname}</h3>
 							<p style={styles.hotelDesc}>호텔 설명 {hotel.hotelDescription}</p>
 						</div>
+					</div>
+
+					<div style={styles.paymentAmount}>
+						<h3 style={styles.paymentAmountTitle}>결제 금액</h3>
+						<p style={styles.paymentAmountValue}>{hotel.price}원</p>
 					</div>
 					
 					<div style={styles.paymentDetails}>
@@ -153,7 +158,7 @@ const styles = {
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'flex-start',
-		margin: '40px 0',
+		margin: '80px 0',
 	},
 	guestCountLabel: {
 		marginBottom: '10px',
@@ -202,6 +207,12 @@ const styles = {
 		flexDirection: 'column',
 		justifyContent: 'space-between',
 		alignSelf: 'flex-start',
+	},
+	paymentAmount: {
+		marginBottom: '40px',
+	},
+	paymentAmountTitle: {
+		marginBottom: '10px',
 	},
 	paymentDetails: {
 		marginBottom: '40px',
