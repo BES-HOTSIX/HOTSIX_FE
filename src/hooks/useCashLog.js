@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "@/config/axios-config";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { useRouter } from "next/router";
 
 /**  상세 정보 */
 const fetchCashLogForPay = async (cashLogId) => {
@@ -41,8 +40,6 @@ const fetchReservationForPay = async (reserveId) => {
 };
 
 export const useReservationForPay = (reserveId) => {
-  console.log("????");
-
   const {
     data: reservation,
     isLoading,
@@ -54,7 +51,7 @@ export const useReservationForPay = (reserveId) => {
     queryFn: () => fetchReservationForPay(reserveId),
   });
 
-  console.log("Payment reserverId =??? " + reserveId);
+  console.log("Payment reserverId = " + reserveId);
 
   return { reservation, isLoading, isFetching, isError, error };
 };
@@ -65,8 +62,8 @@ const fetchReserveForCashPayment = async (reserveId) => {
 };
 
 export const useReserveForCashPayment = () => {
-  console.log("detected event");
   const queryClient = useQueryClient();
+  console.log("detected event");
   const [cashLogConfirm, setCashLogConfirm] = useState(null);
   const {
     mutate: submitReservation,
@@ -90,6 +87,8 @@ export const useReserveForCashPayment = () => {
 
       setCashLogConfirm(res);
 
+      console.log("res = " + res);
+
       queryClient.invalidateQueries({ queryKey: ["reserve"] });
     },
     onError: (err) => {
@@ -102,7 +101,31 @@ export const useReserveForCashPayment = () => {
     },
   });
 
-  console.log("cashLogConfirm = " + cashLogConfirm);
-
   return { submitReservation, cashLogConfirm, isPending, isError, error };
+};
+
+// 예약 완료창
+const fetchCashLogForConfirm = async (cashLogId) => {
+  const res = await axios.get(`api/v1/cashLog/${cashLogId}/confirm`);
+
+  console.log("fetchCashLogForConfirm");
+
+  return res.data;
+};
+
+export const useCashLogForConfirm = (cashLogId) => {
+  const {
+    data: cashLog,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["cashLogForConfirm", cashLogId],
+    queryFn: () => fetchCashLogForConfirm(cashLogId),
+  });
+
+  console.log("cashLogId = " + cashLogId);
+
+  return { cashLog, isLoading, isFetching, isError, error };
 };

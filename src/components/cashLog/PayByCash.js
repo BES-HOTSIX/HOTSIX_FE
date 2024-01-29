@@ -6,12 +6,10 @@ import {
 } from "@/hooks/useCashLog";
 import { Button, Card, CardBody, Image, Slider } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { CiImageOff } from "react-icons/ci";
 
 export default function PayByCash({ reserveId }) {
-  const condition = false;
-
   const router = useRouter();
 
   const {
@@ -22,13 +20,18 @@ export default function PayByCash({ reserveId }) {
     error: submitError,
   } = useReserveForCashPayment();
 
-  const goPayByCash = () => {
-    submitReservation(reserveId);
+  if (cashLogConfirm) {
+    const cashLogId = cashLogConfirm.data.objData.cashLogId;
 
-    // router.push(`/hotel`);
+    router.push(`/cashLog/${cashLogId}/confirm`);
+  }
+
+  const goPayByCash = (e) => {
+    e.preventDefault();
+
+    submitReservation(reserveId);
   };
 
-  console.log("revv");
   const { reservation, isLoading, isError, error } =
     useReservationForPay(reserveId);
 
@@ -43,8 +46,6 @@ export default function PayByCash({ reserveId }) {
   const goBack = () => {
     router.back();
   };
-
-  console.log("revvvvv");
 
   const reservationData = reservation.objData;
 
@@ -85,7 +86,7 @@ export default function PayByCash({ reserveId }) {
     <div>
       <div>
         <div className="flex justify-center mb-5" style={{ fontSize: "40px" }}>
-          결제하기
+          예약하기
         </div>
         <div className="flex justify-center mb-5">
           <Card
@@ -182,7 +183,7 @@ export default function PayByCash({ reserveId }) {
           <Button onClick={goBack} className="mr-20" color="default">
             뒤로가기
           </Button>
-          <Button type="button" onClick={goPayByCash} color="primary">
+          <Button onClick={goPayByCash} color="primary">
             결제하기
           </Button>
         </div>
