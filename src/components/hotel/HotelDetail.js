@@ -6,11 +6,17 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FaBed, FaHome, FaKey, FaCalendarCheck } from 'react-icons/fa'
-import { MdBathroom, MdFamilyRestroom, MdLocationOn } from 'react-icons/md'
+import {
+  MdBathroom,
+  MdFamilyRestroom,
+  MdLocationOn,
+  MdPerson4,
+} from 'react-icons/md'
 import ConfirmAlert from '../ui/modal/ConfirmAlert'
 import { amenitiesOptions } from '@/constants/hotel'
 import { useDeleteHotel } from '@/hooks/useHotel'
 import { formatPrice } from '@/constants/hotel'
+import { useUser } from '@/hooks/useUser'
 
 export default function HotelDetail({ id }) {
   const router = useRouter()
@@ -21,6 +27,7 @@ export default function HotelDetail({ id }) {
   }
 
   const { hotel, isLoading, isError, error } = useHotelDetail(id)
+  const { user } = useUser()
   const { submitDelete, isPending } = useDeleteHotel(id)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
@@ -31,19 +38,22 @@ export default function HotelDetail({ id }) {
   const otherImages = hotel.imagesResponse.imageUrl.slice(1, 5)
 
   console.log(hotel)
+  console.log(user)
 
   return (
     <div className='w-full mx-auto p-4'>
       <div className='flex justify-between'>
         <h1 className='text-2xl mb-3 '>{hotel.nickname}</h1>
-        <div className='flex justify-end items-center gap-2 h-10 text-sm'>
-          <Link href={`/hotel/${id}/modify`}>
-            <span>수정</span>
-          </Link>
-          <button onClick={() => setIsConfirmOpen(true)}>
-            <span>삭제</span>
-          </button>
-        </div>
+        {user.objData.nickname === hotel.host && (
+          <div className='flex justify-end items-center gap-2 h-10 text-sm'>
+            <Link href={`/hotel/${id}/modify`}>
+              <span>수정</span>
+            </Link>
+            <button onClick={() => setIsConfirmOpen(true)}>
+              <span>삭제</span>
+            </button>
+          </div>
+        )}
       </div>
 
       <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
@@ -86,6 +96,10 @@ export default function HotelDetail({ id }) {
           <div className='w-[55vw]'>
             <div className='w-[40vw]'>
               <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
+            </div>
+            <div className='flex items-center text-lg mb-2'>
+              <MdPerson4 className='text-xl mr-2' />
+              <p>호스트: {hotel?.nickname}</p>
             </div>
             <div className='flex items-center text-lg mb-2'>
               <MdLocationOn className='text-xl mr-2' />
