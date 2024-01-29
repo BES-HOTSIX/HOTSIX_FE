@@ -74,29 +74,29 @@ export default function SignUpForm() {
     e.preventDefault()
     // 비밀번호 확인 로직 추가
     if (signupForm.password !== signupForm.confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.')
+      toast.error('비밀번호가 일치하지 않습니다.')
       return 
     }
 
     // 추가: 입력란이 빈칸인 경우 메시지 출력
     if (signupForm.username.trim() === '') {
-      alert('유저네임을 입력하십시오.');
-      return;
-    }
-
-    if (signupForm.nickname.trim() === '') {
-      alert('닉네임을 입력하십시오.');
+      toast.error('유저네임을 입력하십시오.');
       return;
     }
 
     if (signupForm.password.trim() === '') {
-      alert('비밀번호를 입력하십시오.');
+      toast.error('비밀번호를 입력하십시오.');
       return;
     }
 
     if (!passwordStrength.isValid) {
-      alert(passwordStrength.message)
+      toast.error(passwordStrength.message)
       return
+    }
+
+    if (signupForm.nickname.trim() === '') {
+      toast.error('닉네임을 입력하십시오.');
+      return;
     }
 
     submitRegisterUser(signupForm)
