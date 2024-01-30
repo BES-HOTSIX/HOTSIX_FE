@@ -29,19 +29,15 @@ export default function CalendarCustom({startDate, endDate, setStartDate, setEnd
 		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7),
 		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 8)
 	];
-	// const [startDate, setStartDate] = useState(new Date());
-	// const [endDate, setEndDate] = useState(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7));
 	const [maxEndDate, setMaxEndDate] = useState(null);
 
 	// 체크인 날짜가 변경될 때 호출되는 함수
 	const handleStartDateChange = (date) => {
 		setStartDate(date);
-
 		// 선택 불가능한 날짜 중 체크인 날짜 이후의 첫 번째 날짜를 찾음
 		const firstDisabledDateAfterStart = excludedDates.find(excludedDates =>
 			isBefore(date, excludedDates)
 		);
-
 		// 체크아웃 날짜의 최대값을 설정 (선택 불가능한 날짜의 전날)
 		if (firstDisabledDateAfterStart) {
 			setMaxEndDate(addDays(firstDisabledDateAfterStart, -1));

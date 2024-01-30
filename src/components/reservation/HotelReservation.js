@@ -11,9 +11,9 @@ export default function HotelReservation({ id }) {
 	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id)
 	const [guestCount, setGuestCount] = useState(1);
 
-	const today = new Date();
+	// CalendarCustom에 props로 전달
 	const [startDate, setStartDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7));
+	const [endDate, setEndDate] = useState(new Date());
 
 	const router = useRouter();
 
@@ -28,12 +28,6 @@ export default function HotelReservation({ id }) {
 	const mainImage = hotel.imagesResponse.imageUrl[0]
 	const staticImageUrl = '/tosspay.png';
 
-	const handleDateChange = (dates) => {
-		const [start, end] = dates;
-		setStartDate(start);
-		setEndDate(end);
-	};
-
 	// Handle the guest count change
 	const handleGuestCountChange = (delta) => {
 		setGuestCount((prevCount) => {
@@ -41,22 +35,54 @@ export default function HotelReservation({ id }) {
 			if (delta > 0 && prevCount >= hotel.maxPeople) {
 				return hotel.maxPeople;
 			}
-
 			// 감소하는 경우, 인원 수가 1 미만으로 내려가지 않도록 확인
 			if (delta < 0 && prevCount <= 1) {
 					return 1;
 			}
-
 			// 위 조건에 해당하지 않는 경우, 인원 수 변경
 			return prevCount + delta;
 		});
 	};
 
+
 	// Submit the reservation
-	const handleSubmit = () => {
-		// Implement submission logic here
-		console.log(`Date: ${date}, Guest Count: ${guestCount}`);
-		// router.push('/reservation/confirm');
+	const handleSubmit = async () => {
+		// 날짜 차이 계산 (밀리초 단위)
+    const timeDiff = endDate.getTime() - startDate.getTime();
+    // 밀리초를 일(day) 단위로 변환 (1일 = 24시간 = 86400000밀리초)
+    const daysDiff = timeDiff / (1000 * 3600 * 24);
+    // 호텔 가격 계산
+    const calculatedPrice = daysDiff * hotel.price;
+
+		const reservationInfo = {
+			numOfGuests: guestCount,
+			checkInDate: startDate,
+			checkOutDate: endDate,
+			price: calculatedPrice,
+			isPaid: false
+		};
+	
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(reservationInfo)
+			});
+
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+
+			const result = await response.json();
+			console.log('Reservation successful:', result);
+			// Redirect or show success message
+			const reserveId = result.objData.id;
+			router.push(`/cashLog/payByCash/${reserveId}`);
+		} catch (error) {
+			console.error('Error making reservation:', error);
+		}
 	};
 
 	return (
@@ -67,10 +93,10 @@ export default function HotelReservation({ id }) {
 					
 					<label htmlFor="date">날짜 선택</label>
 					<CalendarCustom
-						startDate={startDate} 
-						endDate={endDate} 
-						setStartDate={setStartDate} 
-						setEndDate={setEndDate} 
+						startDate={startDate}
+						endDate={endDate}
+						setStartDate={setStartDate}
+						setEndDate={setEndDate}
 					/>
 					<Spacer y={1} />
 
