@@ -4,7 +4,6 @@ import { useCashLogForConfirm } from "@/hooks/useCashLog";
 import { Button, Card, CardBody, Image } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { CiImageOff } from "react-icons/ci";
 
 export default function Confirm({ cashLogId }) {
   const router = useRouter();
@@ -18,18 +17,18 @@ export default function Confirm({ cashLogId }) {
 
   if (isError) {
     return <div>Error: {error.message}</div>;
-  } // TODO 여기서부터 시작
+  }
 
-  const goBack = () => {
-    router.back();
+  const cashLogData = cashLog.objData;
+
+  const goHome = () => {
+    router.push("");
   };
 
   const payByCash = (e) => {
     e.preventDefault();
-    // router.push("/cashLog/");
+    router.push(`/reserve/detail/${cashLogData.reserveId}`);
   };
-
-  const cashLogData = cashLog.objData;
 
   // createdAt 날짜 형식을 'nnnn.nn.nn' 형태로 포맷
   const formattedCreatedAt = new Date(cashLogData.createdAt)
@@ -70,7 +69,7 @@ export default function Confirm({ cashLogId }) {
         <div className="flex justify-center mb-5" style={{ fontSize: "20px" }}>
           예약이 완료되었습니다
           <br />
-          예약번호 {cashLogData.reservationId}
+          예약번호 {cashLogData.reserveId}
         </div>
         <div className="flex justify-center mb-5">
           <Card
@@ -142,7 +141,7 @@ export default function Confirm({ cashLogId }) {
           </Card>
         </div>
         <div className="flex justify-center mt-5">
-          <Button onClick={goBack} className="mr-20" color="default">
+          <Button onClick={goHome} className="mr-20" color="default">
             홈
           </Button>
           <Button onClick={payByCash} color="primary">
