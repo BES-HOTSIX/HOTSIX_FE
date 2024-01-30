@@ -3,9 +3,18 @@
 import Link from 'next/link'
 import CategoryMenu from './ui/navbar-menu/CategoryMenu'
 import HotelIcon from './ui/icon/HotelIcon'
-import Dropdown from './ui/navbar-menu/Dropdown'
 import { useUser } from '@/hooks/useUser'
 import axios from '@/config/axios-config'
+import { FiMenu } from 'react-icons/fi'
+import {
+  Dropdown as NextDropDown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+  User,
+  Avatar,
+} from '@nextui-org/react'
 
 export default function Navbar() {
   const { user, isLoading, isError } = useUser()
@@ -42,7 +51,7 @@ export default function Navbar() {
       <div className='flex-none gap-1'>
         <div className='lg:hidden flex gap-1'></div>
         <div className='hidden lg:flex flex-none gap-10 h-full items-center'>
-          <div className='flex gap-4'>
+          <div className='flex'>
             {user ? (
               <div className='flex space-x-4'>
                 <p className='text-sm flex items-center mr-3'>
@@ -65,12 +74,12 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href='/auth/signin'>
-                  <button className='bg-sage-600 text-sm font-semibold py-3 px-4'>
+                  <button className='bg-sage-600 text-sm font-semibold py-4 px-4'>
                     로그인
                   </button>
                 </Link>
                 <Link href='/auth/signup'>
-                  <button className='bg-sage-600 text-sm font-semibold py-3 px-4'>
+                  <button className='bg-sage-600 text-sm font-semibold py-4 px-4'>
                     회원가입
                   </button>
                 </Link>
@@ -78,8 +87,71 @@ export default function Navbar() {
             )}
           </div>
         </div>
+        <div className='md:flex lg:hidden mr-2'>
+          {user ? (
+            <>
+              <NextDropDown placement='bottom-end'>
+                <DropdownTrigger>
+                  <Avatar
+                    isBordered
+                    as='button'
+                    className='transition-transform'
+                    src={user?.objData.imageUrl}
+                  />
+                </DropdownTrigger>
+                <div className='md:flex lg:hidden mr-2'>
+                  <DropdownMenu aria-label='Profile Actions' variant='flat'>
+                    <DropdownItem key='profile' className='h-14 gap-2'>
+                      <p className='font-semibold'>{user.objData.nickname}</p>
+                    </DropdownItem>
+                    <DropdownItem key='hotle' href='/hotel'>
+                      전체 숙소
+                    </DropdownItem>
+                    <DropdownItem key='register' href='/hotel/register'>
+                      숙소 등록
+                    </DropdownItem>
+                    <DropdownItem key='mypage' href='/mypage'>
+                      마이페이지
+                    </DropdownItem>
+
+                    <DropdownItem
+                      onClick={handleLogout}
+                      key='logout'
+                      color='danger'>
+                      로그아웃
+                    </DropdownItem>
+                  </DropdownMenu>
+                </div>
+              </NextDropDown>
+            </>
+          ) : (
+            <>
+              <NextDropDown>
+                <DropdownTrigger>
+                  <Button
+                    size='sm'
+                    variant='light'
+                    auto
+                    startContent={<FiMenu size={24} />}></Button>
+                </DropdownTrigger>
+                <div className='md:flex lg:hidden mr-2'>
+                  <DropdownMenu aria-label='Static Actions'>
+                    <DropdownItem key='signin' href='/auth/signin'>
+                      로그인
+                    </DropdownItem>
+                    <DropdownItem key='signup' href='/auth/signup'>
+                      회원가입
+                    </DropdownItem>
+                    <DropdownItem key='copy' href='/hotel'>
+                      전체 숙소
+                    </DropdownItem>
+                  </DropdownMenu>
+                </div>
+              </NextDropDown>
+            </>
+          )}
+        </div>
       </div>
-      <Dropdown menu='dropdown' />
     </div>
   )
 }
