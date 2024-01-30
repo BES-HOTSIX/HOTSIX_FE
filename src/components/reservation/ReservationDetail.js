@@ -112,6 +112,11 @@ export default function ReservationDetail({ id }) {
 							<Button style={styles.button} onClick={handleCancelClick}>예약 취소</Button>
 						</div>
 					)}
+					{!isCancellationAllowed && (
+						<div style={styles.actions}>
+							<Button style={styles.button} onClick={handleCancelClick}>리뷰 작성</Button>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>
