@@ -22,7 +22,7 @@ export default function MyLike() {
     return (
         <div className='flex h-screen'>
             <div className={"flex flex-col w-full gap-5 px-5"}>
-                {pages === 0 && <div>예약내역이 없습니다.</div>}
+                {pages === 0 && <div>찜한내역이 없습니다.</div>}
                 {likesHotelsQuery.isLoading && Array(4).fill(0).map((_, index) => {
                     return (
                         <Skeleton key={index} height={200}/>
