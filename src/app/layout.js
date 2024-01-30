@@ -9,8 +9,8 @@ import 'react-toastify/dist/ReactToastify.css'
 
 export const metadata = {
   title: {
-    default: 'HOTSIX',
-    template: '%s | HOTSIX',
+    default: 'HOTSHARE',
+    template: '%s | HOTSHARE',
   },
   description: 'home',
 }

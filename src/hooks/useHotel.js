@@ -96,7 +96,7 @@ const fetchHotelDetail = async (hotelId) => {
 export const useHotelDetail = (hotelId) => {
   const {
     data: hotel,
-    isLoading,
+    isLoading: isHotelLoading,
     isFetching,
     isError,
     error,
@@ -105,7 +105,7 @@ export const useHotelDetail = (hotelId) => {
     queryFn: () => fetchHotelDetail(hotelId),
   })
 
-  return { hotel, isLoading, isFetching, isError, error }
+  return { hotel, isHotelLoading, isFetching, isError, error }
 }
 
 /** 호텔 정보 수정 */
