@@ -16,6 +16,7 @@ import {
 } from "@nextui-org/react";
 import {useState} from "react";
 import axios from "axios";
+import convertToISO8601 from "@/util/convertToISO8601";
 
 export default function MyHotels() {
     const [page, setPage] = useState(1);
@@ -75,6 +76,12 @@ export default function MyHotels() {
                                             </TableCell>
                                         )
 
+                                    } else if (columnKey === "createdAt") {
+                                        return (
+                                            <TableCell>
+                                                {convertToISO8601(getKeyValue(item, columnKey))}
+                                            </TableCell>
+                                        )
                                     } else {
                                         return <TableCell>{getKeyValue(item, columnKey)}</TableCell>
                                     }

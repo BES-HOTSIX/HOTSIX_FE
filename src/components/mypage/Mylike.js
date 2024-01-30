@@ -1,61 +1,54 @@
 'use client'
-
+import {useMemo, useState} from "react";
 import {keepPreviousData, useQuery} from "@tanstack/react-query";
 import instance from "@/config/axios-config";
 import axios from "axios";
 import {Button, Card, CardBody, Image, Link, Pagination, Skeleton} from "@nextui-org/react";
-import {useMemo, useState} from "react";
-import convertToISO8601 from "@/util/convertToISO8601";
-import calculateDaysBetween from "@/util/calculateDaysBetween";
+import formatToKRW from "@/util/formatToKRW";
 
-export default function MyReservations() {
+export default function MyLike() {
     const [page, setPage] = useState(1);
 
-    const reservationsQuery = useQuery({
-        queryKey: ['reservations', page],
-        queryFn: () => instance.get(`api/v1/members/me/reservations?page=${page - 1}`, {
+    const likesHotelsQuery = useQuery({
+        queryKey: ['likes', page],
+        queryFn: () => instance.get(`api/v1/members/me/likes?page=${page - 1}`, {
             ...axios.defaults,
-            useAuth: true
+            useAuth: true,
         }).then((res) => res.data),
         placeholderData: keepPreviousData
     })
 
-    const pages = useMemo(() => reservationsQuery.data?.objData.totalPages ?? 0, [reservationsQuery.data?.objData.totalPages])
-
+    const pages = useMemo(() => likesHotelsQuery.data?.objData.totalPages ?? 0, [likesHotelsQuery.data?.objData.totalPages])
     return (
         <div className='flex h-screen'>
             <div className={"flex flex-col w-full gap-5 px-5"}>
                 {pages === 0 && <div>예약내역이 없습니다.</div>}
-                {reservationsQuery.isLoading && Array(4).fill(0).map((_, index) => {
+                {likesHotelsQuery.isLoading && Array(4).fill(0).map((_, index) => {
                     return (
                         <Skeleton key={index} height={200}/>
                     )
                 })}
-                {reservationsQuery.isSuccess && reservationsQuery.data?.objData.content.map((reservation, index) => {
+                {likesHotelsQuery.isSuccess && likesHotelsQuery.data?.objData.content.map((hotel, index) => {
                     return (
                         <Card key={index} className={"!overflow-visible"}>
                             <CardBody>
                                 <div className={"flex gap-5"}>
                                     <Image
-                                        src={reservation.hotelPhotoUrl}
+                                        src={hotel.imagesResponse.imageUrl[0]}
                                         width={150}
                                     />
                                     <div className={"flex flex-col justify-between"}>
-                                        <div className={"text-2xl"}>{reservation.hotelNickname}</div>
+                                        <div className={"text-2xl"}>{hotel.nickname}</div>
                                         <div className={"flex"}>
-                                            <div>{convertToISO8601(reservation.checkInDate)} ~ {convertToISO8601(reservation.checkOutDate)}</div>
+                                            <div>{hotel.hotelType}</div>
                                             <div className={"mx-2"}>|</div>
-                                            <div>{calculateDaysBetween(reservation.checkOutDate, reservation.checkInDate)}박</div>
-                                            <div className={"mx-2"}>|</div>
-                                            <div>
-                                                {reservation.numOfGuests}명
-                                            </div>
+                                            <div>{formatToKRW(hotel.price)}원</div>
                                         </div>
                                     </div>
 
                                     <div className={"flex flex-col ml-auto justify-between"}>
-                                        <Button as={Link} href={`/reserve/detail/${reservation.id}`}>상세보기</Button>
-                                        <Button>후기작성</Button>
+                                        <Button>찜 취소</Button>
+                                        <Button as={Link} href={`/hotel/${hotel.id}`}>상세보기</Button>
                                     </div>
                                 </div>
                             </CardBody>
@@ -79,5 +72,5 @@ export default function MyReservations() {
                 }
             </div>
         </div>
-    );
+    )
 }

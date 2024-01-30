@@ -13,6 +13,7 @@ export default function LeftBar(props) {
         {text: "환전하기", link: "/mypage/exchange"},
         {text: "결제 내역", link: "/mypage/payments/history"},
         {text: "내가 등록한 숙소", link: "/mypage/hotels"},
+        {text: "내가 찜한 숙소", link: "/mypage/like"},
     ]
     const pathName = usePathname();
 
