@@ -2,7 +2,6 @@
 import {
     Avatar,
     Button,
-    Input,
     Modal,
     ModalBody,
     ModalContent,
@@ -11,11 +10,9 @@ import {
     useDisclosure
 } from "@nextui-org/react";
 import {useMutation} from "@tanstack/react-query";
-import instance from "@/config/axios-config";
-import axios from "axios";
+import {fileApiAxios} from "@/config/axios-config";
 import {Bounce, toast} from "react-toastify";
 import {useState} from "react";
-import {FaUserCircle} from "react-icons/fa";
 
 export default function ImageChange() {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -28,11 +25,10 @@ export default function ImageChange() {
     const mutation = useMutation({
         mutationFn: (selectedFile) => {
             const formData = new FormData();
-            formData.append("image", selectedFile)
+            formData.append("files", selectedFile)
 
-            return instance.put("/api/v1/members/image", formData, {
-                ...axios.defaults,
-                useAuth: true
+            return fileApiAxios.put("/api/v1/members/image", formData, {
+                useAuth: true,
             })
         },
         onSuccess: () => {
@@ -59,12 +55,13 @@ export default function ImageChange() {
     const [previewSrc, setPreviewSrc] = useState(null);
 
     const handlePreviewChange = (event) => {
+        event.preventDefault();
         const file = event.target.files[0];
         const reader = new FileReader();
 
         reader.onloadend = () => {
             setPreviewSrc(reader.result);
-            console.log(previewSrc)
+            setSelectedFile(file)
         };
 
         if (file) {
@@ -86,11 +83,8 @@ export default function ImageChange() {
                                 <ModalBody>
                                     <div className={"flex flex-col items-center gap-3"}>
                                         <div>미리보기</div>
-                                        {previewSrc ?
-                                            <Avatar src={previewSrc} className={"w-44 h-44"}/> :
-                                            <FaUserCircle size={100}/>
-                                        }
-                                        <Input type={"file"} accept={"image/*"} onChange={handlePreviewChange}/>
+                                        <Avatar src={previewSrc} className={"w-44 h-44"}/>
+                                        <input type={"file"} accept={"image/*"} onChange={handlePreviewChange}/>
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
