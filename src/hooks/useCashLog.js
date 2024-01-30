@@ -1,7 +1,39 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios from "@/config/axios-config";
 import { toast } from "react-toastify";
 import { useState } from "react";
+
+// 나의 캐시 사용 내역
+const fetchMyCashLog = async (page) => {
+  const res = await axios.get(`api/v1/cashLog/me?page=${page}`, {
+    ...axios.defaults,
+    useAuth: true,
+  });
+
+  return res.data;
+};
+
+export const useMyCashLog = (page) => {
+  const {
+    data: myCashLog,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["myCashLog", page],
+    queryFn: () => fetchMyCashLog(page),
+    retry: 0,
+    placeholderData: keepPreviousData,
+  });
+
+  return { myCashLog, isLoading, isFetching, isError, error };
+};
 
 /**  상세 정보 */
 const fetchCashLogForPay = async (cashLogId) => {

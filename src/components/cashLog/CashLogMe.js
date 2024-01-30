@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Table,
@@ -9,33 +11,38 @@ import {
   Pagination,
   getKeyValue,
 } from "@nextui-org/react";
-import { users } from "./data";
+import { useMyCashLog } from "@/hooks/useCashLog";
 
 export default function CashLogMe() {
   const [page, setPage] = React.useState(1);
-  const rowsPerPage = 4;
+  const { myCashLog, isLoading, isError, error } = useMyCashLog(page - 1);
 
-  const pages = Math.ceil(users.length / rowsPerPage);
+  if (isLoading) return <div></div>;
 
-  const items = React.useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+  if (!myCashLog) return <div>잘못된 접근입니다</div>;
 
-    return users.slice(start, end);
-  }, [page, users]);
+  console.log(myCashLog);
+
+  const cashLogsData = myCashLog.objData;
+
+  const cashLogs = cashLogsData.content;
+
+  console.log(cashLogs); //
+
+  const totalPages = cashLogsData.totalPages;
 
   return (
     <Table
       aria-label="Example table with client side pagination"
       bottomContent={
-        <div className="flex w-full justify-center">
+        <div className="flex w-full h-10 justify-center">
           <Pagination
             isCompact
             showControls
             showShadow
             color="secondary"
             page={page}
-            total={pages}
+            total={totalPages}
             onChange={(page) => setPage(page)}
           />
         </div>
@@ -45,15 +52,15 @@ export default function CashLogMe() {
       }}
     >
       <TableHeader>
-        <TableColumn key="name">NAME</TableColumn>
-        <TableColumn key="role">ROLE</TableColumn>
-        <TableColumn key="status">STATUS</TableColumn>
+        <TableColumn key="eventType">카테고리</TableColumn>
+        <TableColumn key="price">금액</TableColumn>
+        <TableColumn key="cashLogId">식별번호</TableColumn>
       </TableHeader>
-      <TableBody items={items}>
-        {(item) => (
-          <TableRow key={item.name}>
+      <TableBody items={cashLogs}>
+        {(cashLog) => (
+          <TableRow key={cashLog.cashLogId}>
             {(columnKey) => (
-              <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+              <TableCell>{getKeyValue(cashLog, columnKey)}</TableCell>
             )}
           </TableRow>
         )}
