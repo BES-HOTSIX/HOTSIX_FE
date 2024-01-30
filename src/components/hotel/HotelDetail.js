@@ -17,6 +17,7 @@ import { amenitiesOptions } from '@/constants/hotel'
 import { useDeleteHotel } from '@/hooks/useHotel'
 import { formatPrice } from '@/constants/hotel'
 import { useUser } from '@/hooks/useUser'
+import LikeButton from '@/app/hotel/like/LikeButton'
 
 export default function HotelDetail({ id }) {
   const router = useRouter()
@@ -58,9 +59,6 @@ export default function HotelDetail({ id }) {
 
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
         <div className='md:col-span-2 mb-4 relative h-[600px]'>
-          {' '}
-          {/* Adjust height as needed */}
-          {/* 큰 이미지 */}
           <Image
             src={mainImage}
             alt='Main Image'
@@ -68,6 +66,9 @@ export default function HotelDetail({ id }) {
             objectFit='cover'
             className='rounded-md'
           />
+          <div className='absolute top-2 left-2'>
+            {user && <LikeButton hotelId={id} />}
+          </div>
         </div>
         <div className='grid grid-cols-2 gap-4 h-[600px]'>
           {' '}
@@ -95,6 +96,7 @@ export default function HotelDetail({ id }) {
             <div className='w-[40vw]'>
               <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
             </div>
+
             <div className='flex items-center text-lg mb-2'>
               <MdPerson4 className='text-xl mr-2' />
               <p>호스트: {hotel.host}</p>
