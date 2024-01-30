@@ -90,7 +90,7 @@ export default function ImageChange() {
                                             <Avatar src={previewSrc} className={"w-44 h-44"}/> :
                                             <FaUserCircle size={100}/>
                                         }
-                                        <Input type={"file"} onChange={handlePreviewChange}/>
+                                        <Input type={"file"} accept={"image/*"} onChange={handlePreviewChange}/>
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
