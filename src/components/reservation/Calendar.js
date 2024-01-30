@@ -21,16 +21,16 @@ const CustomInput = forwardRef((props, ref) => {
 	);
 });
 
-export default function CalendarCustom() {
+export default function CalendarCustom({startDate, endDate, setStartDate, setEndDate}) {
 	const today = new Date();
 	const twoYearsLater = new Date(today.getFullYear() + 2, today.getMonth(), today.getDate());
 	const excludedDates = [
-		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3),
-		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 4),
-		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5)
+		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 6),
+		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7),
+		new Date(today.getFullYear(), today.getMonth(), today.getDate() + 8)
 	];
-	const [startDate, setStartDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7));
+	// const [startDate, setStartDate] = useState(new Date());
+	// const [endDate, setEndDate] = useState(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7));
 	const [maxEndDate, setMaxEndDate] = useState(null);
 
 	// 체크인 날짜가 변경될 때 호출되는 함수
@@ -222,7 +222,6 @@ export default function CalendarCustom() {
 					
 					startDate={startDate}
 					endDate={endDate}
-					
 				/>
 			</div>
 		</div>

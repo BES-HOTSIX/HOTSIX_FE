@@ -10,8 +10,10 @@ import CalendarCustom from './Calendar';
 export default function HotelReservation({ id }) {
 	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id)
 	const [guestCount, setGuestCount] = useState(1);
+
+	const today = new Date();
 	const [startDate, setStartDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(null);
+	const [endDate, setEndDate] = useState(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7));
 
 	const router = useRouter();
 
@@ -64,7 +66,12 @@ export default function HotelReservation({ id }) {
 					<h1 style={styles.title}>예약하기</h1>
 					
 					<label htmlFor="date">날짜 선택</label>
-					<CalendarCustom />
+					<CalendarCustom
+						startDate={startDate} 
+						endDate={endDate} 
+						setStartDate={setStartDate} 
+						setEndDate={setEndDate} 
+					/>
 					<Spacer y={1} />
 
 					<div style={styles.guestCountContainer}>
