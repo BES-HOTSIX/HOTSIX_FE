@@ -18,7 +18,7 @@ import {useUser} from "@/hooks/useUser";
 export default function ImageChange() {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [selectedFile, setSelectedFile] = useState(null);
-    const {refetch} = useUser();
+    const {refetch, user} = useUser();
 
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
@@ -28,6 +28,10 @@ export default function ImageChange() {
         mutationFn: (selectedFile) => {
             const formData = new FormData();
             formData.append("files", selectedFile)
+
+            if (user.image) {
+
+            }
 
             return fileApiAxios.put("/api/v1/members/image", formData, {
                 useAuth: true,
