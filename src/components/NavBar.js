@@ -109,7 +109,7 @@ export default function Navbar() {
                     <DropdownItem key='register' href='/hotel/register'>
                       숙소 등록
                     </DropdownItem>
-                    <DropdownItem key='mypage' href='/mypage'>
+                    <DropdownItem key='mypage' href='/mypage/info'>
                       마이페이지
                     </DropdownItem>
 
