@@ -11,7 +11,7 @@ export default function SearchDate() {
 
   return (
     <div className=''>
-      <div className='flex space-x-2 ml-2'>
+      <div className='flex space-x-2 '>
         <FaCalendarAlt className='text-black' /> {/* 달력 아이콘 */}
         <span className='text-black'>날짜 선택</span> {/* 문구 */}
       </div>
@@ -22,7 +22,7 @@ export default function SearchDate() {
         onChange={(update) => setDateRange(update)}
         dateFormat='yyyy/MM/dd'
         minDate={new Date()}
-        className='custom-date-picker-style p-5 rounded-lg border border-black' // Tailwind CSS 클래스 적용
+        className='custom-date-picker-style bg-gray-100 mb-2 p-4 rounded-lg border border-black' // Tailwind CSS 클래스 적용
       />
     </div>
   )

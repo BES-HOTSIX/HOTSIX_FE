@@ -2,13 +2,13 @@
 
 import React from 'react'
 import { Autocomplete, AutocompleteItem, Avatar } from '@nextui-org/react'
-import { FaCalendarAlt } from 'react-icons/fa'
+import { FaCity } from 'react-icons/fa'
 
 export default function SearchCity() {
   return (
     <div>
       <div className='flex space-x-2 ml-2'>
-        <FaCalendarAlt className='text-black' /> {/* 달력 아이콘 */}
+        <FaCity className='text-black' /> {/* 달력 아이콘 */}
         <span className='text-black'>도시 선택</span> {/* 문구 */}
       </div>
       <Autocomplete className='max-w-xs' label='도시'>

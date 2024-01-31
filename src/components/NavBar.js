@@ -39,8 +39,8 @@ export default function Navbar() {
       <div className='flex flex-1 gap-2'>
         <Link
           href='/'
-          className='font-semibold text-2xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'>
-          HOTSIX
+          className='font-bold text-xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'>
+          HOTSHARE
         </Link>
         <div className='hidden lg:flex'>
           <ul className='flex items-center gap-2 px-1 text-sage-700 dark:text-cream text-sm font-semibold tracking-widest'>
@@ -63,13 +63,12 @@ export default function Navbar() {
                   <HotelIcon />
                   숙소 등록
                 </Link>
-                <Link href='/auth/logout'>
-                  <button
-                    onClick={handleLogout}
-                    className='bg-sage-600 text-sm font-semibold py-3 px-4'>
-                    로그아웃
-                  </button>
-                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  className='bg-sage-600 text-sm font-semibold py-3 px-4'>
+                  로그아웃
+                </button>
               </div>
             ) : (
               <>
