@@ -1,5 +1,4 @@
 import HomeBanner from '@/components/HomeBanner'
-import Link from 'next/link'
 
 export default function page() {
     return (
@@ -7,16 +6,8 @@ export default function page() {
             <div className='w-screen'>
                 <HomeBanner/>
             </div>
-
             <div
-                className='max-w-[500px] w-full flex flex-col justify-center gap-10 mt-10 lg:flex-row lg:gap-24 basis-11/12 '>
-                <Link href='/hotel/reserve' className='btn lg:w-32'>
-                    예약하기
-                </Link>
-                <Link href='/hotel/payment' className='btn lg:w-32 '>
-                    결제하기
-                </Link>
-            </div>
+                className='max-w-[500px] w-full flex flex-col justify-center gap-10 mt-10 lg:flex-row lg:gap-24 basis-11/12 '></div>
         </section>
     )
 }

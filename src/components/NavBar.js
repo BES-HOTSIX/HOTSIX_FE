@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import CategoryMenu from './ui/navbar-menu/CategoryMenu'
+import HotelIcon from './ui/icon/HotelIcon'
 import {useUser} from '@/hooks/useUser'
 import axios from '@/config/axios-config'
 import {FiMenu} from 'react-icons/fi'
@@ -30,8 +31,8 @@ export default function Navbar() {
             <div className='flex flex-1 gap-2'>
                 <Link
                     href='/'
-                    className='font-semibold text-2xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'>
-                    HOTSIX
+                    className='font-bold text-xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'>
+                    HOTSHARE
                 </Link>
                 <div className='hidden lg:flex'>
                     <ul className='flex items-center gap-2 px-1 text-sage-700 dark:text-cream text-sm font-semibold tracking-widest'>
@@ -49,9 +50,10 @@ export default function Navbar() {
                                     {user?.objData.nickname}님 환영합니다
                                 </p>
                                 <Link
-                                    href='/'
-                                    className='font-semibold text-2xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'>
-                                    HOTSIX
+                                    href='/hotel/register'
+                                    className='text-sm flex items-center justify-center gap-1'>
+                                    <HotelIcon/>
+                                    숙소 등록
                                 </Link>
                                 <Link href='/auth/logout'>
                                     <button
