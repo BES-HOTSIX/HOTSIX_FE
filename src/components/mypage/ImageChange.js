@@ -28,16 +28,34 @@ export default function ImageChange() {
         setSelectedFile(event.target.files[0]);
     };
 
+    const deleteImage = useMutation({
+        mutationFn: () => {
+            return fileApiAxios.delete(`/api/v1/images?imageUrl=${user.imageUrl}`, {
+                useAuth: true,
+            })
+        },
+        onSuccess: () => {
+            mutation.mutate(selectedFile);
+        },
+        onError: (error) => {
+            toast.error('문제가 생겼습니다 관리자에게 문의해주세요.', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+        }
+    })
+
     const mutation = useMutation({
         mutationFn: (selectedFile) => {
             const formData = new FormData();
             formData.append("files", selectedFile)
-
-
-            if (user.image) {
-
-            }
-
 
             return fileApiAxios.put("/api/v1/members/image", formData, {
                 useAuth: true,
@@ -64,7 +82,11 @@ export default function ImageChange() {
 
     const handleUpload = (e) => {
         e.preventDefault();
-        mutation.mutate(selectedFile);
+        if (user.imageUrl) {
+            deleteImage.mutate()
+        } else {
+            mutation.mutate(selectedFile);
+        }
     }
 
     const [previewSrc, setPreviewSrc] = useState(null);
