@@ -15,11 +15,13 @@ import {Bounce, toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import instance from "@/config/axios-config";
+import {useUser} from "@/hooks/useUser";
 
 export default function NickNameChange() {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [nickName, setNickName] = useState("");
     const [error, setError] = useState({state: false, message: ""});
+    const {refetch} = useUser();
 
     const mutation = useMutation({
         mutationFn: () => {
@@ -30,6 +32,7 @@ export default function NickNameChange() {
         },
         onSuccess: () => {
             onOpenChange();
+            refetch();
             toast.success('닉네임이 변경되었습니다.', {
                 position: "top-center",
                 autoClose: 5000,

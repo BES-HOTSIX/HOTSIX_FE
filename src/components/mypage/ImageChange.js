@@ -11,12 +11,14 @@ import {
 } from "@nextui-org/react";
 import {useMutation} from "@tanstack/react-query";
 import {fileApiAxios} from "@/config/axios-config";
-import {Bounce, toast} from "react-toastify";
+import {Bounce} from "react-toastify";
 import {useState} from "react";
+import {useUser} from "@/hooks/useUser";
 
 export default function ImageChange() {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [selectedFile, setSelectedFile] = useState(null);
+    const {refetch} = useUser();
 
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
@@ -33,6 +35,7 @@ export default function ImageChange() {
         },
         onSuccess: () => {
             onOpenChange();
+            refetch();
             toast.success('이미지가 변경되었습니다', {
                 position: "top-center",
                 autoClose: 5000,
