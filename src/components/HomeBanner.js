@@ -15,13 +15,7 @@ export default function HomeBanner() {
       className='relative w-full h-[400px]'>
       {' '}
       {/* 높이 설정 추가 */}
-      <Image
-        src={mainBannerImage}
-        alt='상단 메인 이미지'
-        layout='fill'
-        objectFit='cover' // 비율 유지 및 컨테이너 채우기
-        className='w-full h-full'
-      />
+      <Image src={mainBannerImage} alt='상단 메인 이미지' fill />
       {/* 배경 이미지 */}
       <div className='absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center mt-14'>
         {/* 배너 콘텐츠 */}

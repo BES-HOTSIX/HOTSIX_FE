@@ -1,11 +1,15 @@
 'use client'
 import {useMemo, useState} from "react";
+
 import {keepPreviousData, useMutation, useQuery} from "@tanstack/react-query";
+
 import instance from "@/config/axios-config";
 import axios from "axios";
 import {Button, Card, CardBody, Image, Link, Pagination, Skeleton} from "@nextui-org/react";
 import formatToKRW from "@/util/formatToKRW";
+
 import {Bounce, toast} from "react-toastify";
+
 
 export default function MyLike() {
     const [page, setPage] = useState(1);
@@ -18,6 +22,7 @@ export default function MyLike() {
         }).then((res) => res.data),
         placeholderData: keepPreviousData
     })
+
 
     const cancelLike = useMutation({
         mutationFn: (hotelId) => instance.post(`api/v1/likes/toggle`, {
@@ -72,7 +77,9 @@ export default function MyLike() {
                                     </div>
 
                                     <div className={"flex flex-col ml-auto justify-between"}>
+
                                         <Button onClick={() => cancelLike.mutate(hotel.id)}>찜 취소</Button>
+
                                         <Button as={Link} href={`/hotel/${hotel.id}`}>상세보기</Button>
                                     </div>
                                 </div>

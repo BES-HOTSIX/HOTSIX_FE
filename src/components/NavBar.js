@@ -105,7 +105,6 @@ export default function Navbar() {
                                         <DropdownItem key='mypage' href='/mypage/info'>
                                             마이페이지
                                         </DropdownItem>
-
                                         <DropdownItem
                                             onClick={handleLogout}
                                             key='logout'

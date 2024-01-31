@@ -35,36 +35,12 @@ export const useMyCashLog = (page) => {
   return { myCashLog, isLoading, isFetching, isError, error };
 };
 
-/**  상세 정보 */
-const fetchCashLogForPay = async (cashLogId) => {
-  const res = await axios.get(`api/v1/cashLog/ForPay/${cashLogId}`);
-
-  console.log("fetchCashForPay");
-
-  return res.data;
-};
-
-export const useCashForPay = (cashLogId) => {
-  const {
-    data: cashLog,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["cashLogForPay", cashLogId],
-    queryFn: () => fetchCashLogForPay(cashLogId),
-  });
-
-  console.log("cashLogId  = " + cashLogId);
-  console.log("cashLog  = " + cashLog);
-
-  return { cashLog, isLoading, isFetching, isError, error };
-};
-
 /**  결제하기 창 */
 const fetchReservationForPay = async (reserveId) => {
-  const res = await axios.get(`api/v1/cashLog/payByCash/${reserveId}`);
+  const res = await axios.get(`api/v1/cashLog/payByCash/${reserveId}`, {
+    ...axios.defaults,
+    useAuth: true,
+  });
 
   console.log("fetchReservationForPay");
 
@@ -97,7 +73,6 @@ const fetchReserveForCashPayment = async (reserveId) => {
 
 export const useReserveForCashPayment = () => {
   const queryClient = useQueryClient();
-  console.log("detected event");
   const [cashLogConfirm, setCashLogConfirm] = useState(null);
   const {
     mutate: submitReservation,
@@ -162,4 +137,55 @@ export const useCashLogForConfirm = (cashLogId) => {
   console.log("cashLogId = " + cashLogId);
 
   return { cashLog, isLoading, isFetching, isError, error };
+};
+
+// TossPayments post 요청
+const fetchTossPayments = async (payment) => {
+  console.log(`fetchTossPayments ${payment}`);
+
+  return await axios.post(`/api/v1/cashLog/confirm`, payment);
+};
+
+export const useTossPayments = () => {
+  const queryClient = useQueryClient();
+  const [response, setResponse] = useState(null);
+  console.log("detected event");
+  const {
+    mutate: submitTossPayments,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: (payment) => {
+      return fetchTossPayments(payment);
+    },
+    onSuccess: (res) => {
+      console.log("토스페이먼트 결제 성공");
+      console.log(res);
+
+      if (!res.data.result) {
+        toast.error("토스페이먼트 결제에 실패했습니다 🥲");
+        return;
+      }
+
+      setResponse(res);
+
+      console.log(`response is`);
+      console.log(res);
+
+      toast.success("토스페이먼트 결제가 완료되었습니다!");
+
+      queryClient.invalidateQueries({ queryKey: ["tossPayments"] });
+    },
+    onError: (err) => {
+      console.log("토스페이먼트 결제 실패");
+      console.log(err);
+
+      toast.error("토스페이먼트 결제에 실패했습니다 🥲");
+
+      return err;
+    },
+  });
+
+  return { submitTossPayments, response, isPending, isError, error };
 };
