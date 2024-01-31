@@ -61,13 +61,11 @@ const ReviewList = () => {
     return stars;
   };
 
-  const handleDeleteReview = async (reviewId) => {
-    console.log("Review ID:", reviewId);
+  const handleDeleteReview = async (id) => {
+    console.log("Review ID:", id);
 
     try {
-      await axios.delete(
-        `http://localhost:8080/api/v1/review/delete/${reviewId}`
-      );
+      await axios.delete(`http://localhost:8080/api/v1/review/delete/${id}`);
       console.log("리뷰가 성공적으로 삭제되었습니다.");
       // 삭제 후 리뷰 다시 로드
       fetchReviews(); // 수정: 함수 내부에 있던 부분을 호출로 변경
@@ -93,7 +91,8 @@ const ReviewList = () => {
         >
           {recentReviews.slice(i, i + 2).map((review) => (
             <div key={review.id} style={{ flex: 1, padding: "10px" }}>
-              <p>회원명: {review.memberName}</p>
+              <p>리뷰번호: {review.id}</p>
+              <p>회원명: {review.member}</p>
               <p>
                 평점: {renderStars(review.rating)} ({review.rating})
               </p>
@@ -172,7 +171,8 @@ const ReviewList = () => {
                 <ul style={{ listStyleType: "none", padding: 0 }}>
                   {allReviews.map((review) => (
                     <li key={review.id} style={{ marginBottom: "20px" }}>
-                      <p>회원명: {review.memberName}</p>
+                      <p>리뷰번호: {review.id}</p>
+                      <p>회원명: {review.member}</p>
                       <p>
                         평점: {renderStars(review.rating)} ({review.rating})
                       </p>
