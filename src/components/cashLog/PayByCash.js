@@ -20,6 +20,7 @@ export default function PayByCash({ reserveId }) {
     error: submitError,
   } = useReserveForCashPayment();
 
+  // TODO 이 부분 useEffect 활용해서 한번 해보기
   if (cashLogConfirm) {
     const cashLogId = cashLogConfirm.data.objData.cashLogId;
 
