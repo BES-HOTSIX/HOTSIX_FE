@@ -3,8 +3,12 @@ import axios from "@/config/axios-config";
 
 /**  상세 정보 */
 const fetchReservationDetail = async (reserveId) => {
-  const res = await axios.get(`api/v1/reserve/detail/${reserveId}`);
-
+  const res = await axios.get(
+		`api/v1/reserve/detail/${reserveId}`, {
+			...axios.defaults,
+			useAuth: true
+	});
+  console.log(res);
   return res.data;
 };
 

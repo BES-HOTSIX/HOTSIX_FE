@@ -70,6 +70,8 @@ export default function ReservationDetail({ id }) {
   const isCancellationAllowed =
     new Date(reservationData.checkInDate).getTime() - today.getTime() >
     24 * 60 * 60 * 1000;
+  // 현재 날짜가 체크아웃 날짜보다 같거나 늦은 경우 리뷰 작성 가능
+  const isReviewAllowed = today.getTime() >= new Date(reservationData.checkOutDate).getTime();
 
   const staticImageUrl = "/tosspay.png";
 
@@ -126,7 +128,7 @@ export default function ReservationDetail({ id }) {
 							<Button style={styles.button} onClick={handleCancelClick}>예약 취소</Button>
 						</div>
 					)}
-					{!isCancellationAllowed && (
+					{!isCancellationAllowed && isReviewAllowed && (
 						<div style={styles.actions}>
 							<Button style={styles.button} onClick={handleCancelClick}>리뷰 작성</Button>
 						</div>
