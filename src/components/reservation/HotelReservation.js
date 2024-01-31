@@ -6,9 +6,10 @@ import { Button, Spacer, Input, Select } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import 'react-datepicker/dist/react-datepicker.css';
 import CalendarCustom from './Calendar';
+import axios from '@/config/axios-config'
 
 export default function HotelReservation({ id }) {
-	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id)
+	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id);
 	const [guestCount, setGuestCount] = useState(1);
 
 	// CalendarCustom에 props로 전달
@@ -47,12 +48,16 @@ export default function HotelReservation({ id }) {
 
 	// Submit the reservation
 	const handleSubmit = async () => {
-		// 날짜 차이 계산 (밀리초 단위)
-    const timeDiff = endDate.getTime() - startDate.getTime();
-    // 밀리초를 일(day) 단위로 변환 (1일 = 24시간 = 86400000밀리초)
-    const daysDiff = timeDiff / (1000 * 3600 * 24);
-    // 호텔 가격 계산
-    const calculatedPrice = daysDiff * hotel.price;
+		// 시작 날짜와 종료 날짜의 시간을 자정으로 설정
+		const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+		const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
+		// 날짜 차이 계산
+		const timeDiff = end - start;
+		const daysDiff = timeDiff / (1000 * 3600 * 24);
+
+		// 호텔 가격 계산
+		const calculatedPrice = daysDiff * hotel.price;
 
 		const reservationInfo = {
 			numOfGuests: guestCount,
@@ -63,22 +68,19 @@ export default function HotelReservation({ id }) {
 		};
 	
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(reservationInfo)
+			const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`, reservationInfo, {
+				...axios.defaults,
+				useAuth: true,
 			});
 
-			if (!response.ok) {
+			console.log('response: ', response);
+			if (response.status >= 400) {
 				throw new Error('Network response was not ok');
 			}
 
-			const result = await response.json();
-			console.log('Reservation successful:', result);
 			// Redirect or show success message
-			const reserveId = result.objData.id;
+			const reserveId = response.data.objData.id;
+			console.log('reserveId: ', reserveId);
 			router.push(`/cashLog/payByCash/${reserveId}`);
 		} catch (error) {
 			console.error('Error making reservation:', error);
