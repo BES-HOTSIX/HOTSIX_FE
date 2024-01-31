@@ -1,39 +1,38 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Input, Button } from '@nextui-org/react'
-import { FaUser, FaLock, FaPen } from 'react-icons/fa'
-import { useRegisterUser } from '@/hooks/useUser'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import React, { useState } from 'react';
+import { Input, Button, Avatar } from '@nextui-org/react';
+import { FaUser, FaLock, FaPen } from 'react-icons/fa';
+import { useRegisterUser } from '@/hooks/useUser';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SignUpForm() {
-  const { submitRegisterUser, isPending, isError, error } = useRegisterUser()
+  const { submitRegisterUser } = useRegisterUser();
 
   const [signupForm, setSignupForm] = useState({
     username: '',
     password: '',
     confirmPassword: '',
     nickname: '',
-  })
+  });
 
   const [passwordStrength, setPasswordStrength] = useState({
     isValid: false,
     message: '',
-  })
+  });
 
-  // Confirm Password 일치 여부 상태
-  const [passwordMatch, setPasswordMatch] = useState(true); 
-
-  // Confirm Password 필드에 대한 상태와 메시지
+  const [passwordMatch, setPasswordMatch] = useState(true);
   const [confirmPasswordMessage, setConfirmPasswordMessage] = useState('');
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setSignupForm({
       ...signupForm,
       [name]: value,
-    })
+    });
 
     if (name === 'password') {
       checkPasswordStrength(value);
@@ -47,57 +46,59 @@ export default function SignUpForm() {
         setConfirmPasswordMessage('');
       }
     }
-  }
+  };
+
+  const handleImageUpload = (files) => {
+    const selectedFile = files[0];
+    setSelectedImage(selectedFile);
+    toast.success(selectedFile ? '프로필 이미지가 등록되었습니다.' : '프로필 이미지를 선택해주세요.');
+  };
+
   const checkPasswordStrength = (password) => {
-    const regexUpperCase = /[A-Z]/
-    const regexLowerCase = /[a-z]/
-    const regexSpecialChar = /[!@#$%^&*(),.?":{}|<>]/
-    const minLength = 7
+    const regexUpperCase = /[A-Z]/;
+    const regexLowerCase = /[a-z]/;
+    const regexSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
+    const minLength = 7;
 
-    const isUpperCase = regexUpperCase.test(password)
-    const isLowerCase = regexLowerCase.test(password)
-    const isSpecialChar = regexSpecialChar.test(password)
-    const isLengthValid = password.length >= minLength
+    const isUpperCase = regexUpperCase.test(password);
+    const isLowerCase = regexLowerCase.test(password);
+    const isSpecialChar = regexSpecialChar.test(password);
+    const isLengthValid = password.length >= minLength;
 
-    const isValid =
-      isUpperCase && isLowerCase && isSpecialChar && isLengthValid
+    const isValid = isUpperCase && isLowerCase && isSpecialChar && isLengthValid;
 
     setPasswordStrength({
       isValid,
-      message: isValid
-        ? '비밀번호가 안전합니다.'
-        : '대소문자, 특수문자를 포함하고 7자 이상이어야 합니다.',
+      message: isValid ? '비밀번호가 안전합니다.' : '대소문자, 특수문자를 포함하고 7자 이상이어야 합니다.',
     })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // 비밀번호 확인 로직 추가
+
     if (signupForm.password !== signupForm.confirmPassword) {
       toast.error('비밀번호가 일치하지 않습니다.')
-      return 
-    }
-
-    // 추가: 입력란이 빈칸인 경우 메시지 출력
-    if (signupForm.username.trim() === '') {
-      toast.error('유저네임을 입력하십시오.');
       return;
     }
 
-    if (signupForm.password.trim() === '') {
-      toast.error('비밀번호를 입력하십시오.');
-      return;
+    if (signupForm.username.trim() === '' || signupForm.password.trim() === '' || signupForm.nickname.trim() === '') {
+      toast.error('모든 필수 항목을 입력하세요.')
+      return
     }
 
     if (!passwordStrength.isValid) {
       toast.error(passwordStrength.message)
-      return
-    }
-
-    if (signupForm.nickname.trim() === '') {
-      toast.error('닉네임을 입력하십시오.');
       return;
     }
+
+    // 이미지 업로드 함수 호출
+  if (!selectedImage) {
+    // 이미지가 선택되지 않은 경우 알림 표시
+    toast.error('프로필 이미지를 선택해주세요.')
+    return;
+  }
+
+    handleImageUpload(selectedImage)
 
     submitRegisterUser(signupForm)
   }
@@ -108,6 +109,22 @@ export default function SignUpForm() {
         <h2 className='flex justify-center text-lg font-semibold mb-4'>
           회원가입
         </h2>
+        <div className='mb-4 flex items-center justify-center'>
+          <label htmlFor='profileImage' className='cursor-pointer'>
+            <Avatar
+              src={selectedImage ? URL.createObjectURL(selectedImage) : null}
+              size='xl'
+              alt='프로필 이미지'
+            />
+            <input
+              type='file'
+              accept='image/*'
+              id='profileImage'
+              className='hidden'
+              onChange={(e) => handleImageUpload(e.target.files)}
+            />
+          </label>
+        </div>
         <div className='mb-4'>
           <Input
             clearable
@@ -136,12 +153,11 @@ export default function SignUpForm() {
             value={signupForm.password}
             onChange={handleChange}
           />
-        <div className='text-sm text-gray-500 mt-1'>
+          <div className='text-sm text-gray-500 mt-1'>
             {passwordStrength.message}
           </div>
         </div>
         <div className='mb-4'>
-          {/* Confirm Password 필드 */}
           <Input
             clearable
             bordered
@@ -155,7 +171,6 @@ export default function SignUpForm() {
             value={signupForm.confirmPassword}
             onChange={handleChange}
           />
-          {/* Confirm Password 일치 여부 및 메시지 표시 */}
           {!passwordMatch && (
             <div className='text-sm text-red-500 mt-1'>
               {confirmPasswordMessage}
