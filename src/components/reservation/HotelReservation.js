@@ -48,12 +48,16 @@ export default function HotelReservation({ id }) {
 
 	// Submit the reservation
 	const handleSubmit = async () => {
-		// 날짜 차이 계산 (밀리초 단위)
-    const timeDiff = endDate.getTime() - startDate.getTime();
-    // 밀리초를 일(day) 단위로 변환 (1일 = 24시간 = 86400000밀리초)
-    const daysDiff = timeDiff / (1000 * 3600 * 24);
-    // 호텔 가격 계산
-    const calculatedPrice = daysDiff * hotel.price;
+		// 시작 날짜와 종료 날짜의 시간을 자정으로 설정
+		const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+		const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
+		// 날짜 차이 계산
+		const timeDiff = end - start;
+		const daysDiff = timeDiff / (1000 * 3600 * 24);
+
+		// 호텔 가격 계산
+		const calculatedPrice = daysDiff * hotel.price;
 
 		const reservationInfo = {
 			numOfGuests: guestCount,
@@ -68,30 +72,16 @@ export default function HotelReservation({ id }) {
 				...axios.defaults,
 				useAuth: true,
 			});
-			// const token = sessionStorage.getItem('ACCESS_TOKEN_KEY');
-			// const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`, {
-			// 	method: 'POST',
-			// 	headers: {
-			// 		'Content-Type': 'application/json',
-			// 		'Authorization': `Bearer ${token}` // Bearer 토큰을 헤더에 추가
-			// 	},
-			// 	body: JSON.stringify(reservationInfo), // 요청 본문에 데이터 추가
-			// });
 
 			console.log('response: ', response);
 			if (response.status >= 400) {
 				throw new Error('Network response was not ok');
 			}
-			// if (!response.ok) {
-			// 	throw new Error('Network response was not ok');
-			// }
 
 			// Redirect or show success message
 			const reserveId = response.data.objData.id;
-			// const result = await response.json();
-			// const reserveId = result.objData.id;
 			console.log('reserveId: ', reserveId);
-			router.push(`/cashLog/payByCash/${reserveId}`);
+			// router.push(`/cashLog/payByCash/${reserveId}`);
 		} catch (error) {
 			console.error('Error making reservation:', error);
 		}
