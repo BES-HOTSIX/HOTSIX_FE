@@ -16,22 +16,22 @@ const ReviewList = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalSize, setModalSize] = useState("md");
 
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/v1/review/all"
+      );
+      setAllReviews(response.data);
+
+      // 최근 4개 리뷰
+      const recentReviewsData = response.data.slice(0, 4);
+      setRecentReviews(recentReviewsData);
+    } catch (error) {
+      console.error("리뷰를 불러오는 중 에러 발생:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8080/api/v1/review/all"
-        );
-        setAllReviews(response.data);
-
-        // 최근 4개 리뷰
-        const recentReviewsData = response.data.slice(0, 4);
-        setRecentReviews(recentReviewsData);
-      } catch (error) {
-        console.error("리뷰를 불러오는 중 에러 발생:", error);
-      }
-    };
-
     fetchReviews();
   }, []);
 
@@ -61,6 +61,23 @@ const ReviewList = () => {
     return stars;
   };
 
+  const handleDeleteReview = async (reviewId) => {
+    console.log("Review ID:", reviewId);
+
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/v1/review/delete/${reviewId}`
+      );
+      console.log("리뷰가 성공적으로 삭제되었습니다.");
+      // 삭제 후 리뷰 다시 로드
+      fetchReviews(); // 수정: 함수 내부에 있던 부분을 호출로 변경
+      alert("리뷰가 성공적으로 삭제되었습니다.");
+    } catch (error) {
+      console.error("리뷰 삭제 중 오류 발생:", error);
+      alert("리뷰 삭제에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
   // 최근 리뷰를 2x2 그리드로 렌더링
   const renderRecentReviewsGrid = () => {
     const grid = [];
@@ -81,7 +98,7 @@ const ReviewList = () => {
                 평점: {renderStars(review.rating)} ({review.rating})
               </p>
               <p style={{ textAlign: "left", whiteSpace: "pre-line" }}>
-                {review.body.length > 50 ? (
+                {review.body && review.body.length > 50 ? (
                   <>
                     {review.body.slice(0, 50)}
                     <br />
@@ -101,6 +118,13 @@ const ReviewList = () => {
                 서비스: {renderStars(review.staffService)} (
                 {review.staffService})
               </p>
+              {/* 삭제 버튼 추가 */}
+              <Button
+                onClick={() => handleDeleteReview(review.id)}
+                style={{ backgroundColor: "red", color: "white" }}
+              >
+                삭제
+              </Button>
             </div>
           ))}
         </div>
@@ -165,6 +189,13 @@ const ReviewList = () => {
                         서비스: {renderStars(review.staffService)} (
                         {review.staffService})
                       </p>
+                      {/* 삭제 버튼 추가 */}
+                      <Button
+                        onClick={() => handleDeleteReview(review.id)}
+                        style={{ backgroundColor: "red", color: "white" }}
+                      >
+                        삭제
+                      </Button>
                       {/* 다른 리뷰 정보 추가 */}
                     </li>
                   ))}
