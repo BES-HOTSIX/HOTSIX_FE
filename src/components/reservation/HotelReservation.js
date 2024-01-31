@@ -81,7 +81,7 @@ export default function HotelReservation({ id }) {
 			// Redirect or show success message
 			const reserveId = response.data.objData.id;
 			console.log('reserveId: ', reserveId);
-			// router.push(`/cashLog/payByCash/${reserveId}`);
+			router.push(`/cashLog/payByCash/${reserveId}`);
 		} catch (error) {
 			console.error('Error making reservation:', error);
 		}
