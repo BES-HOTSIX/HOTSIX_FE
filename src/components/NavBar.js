@@ -4,12 +4,13 @@ import Link from 'next/link'
 import CategoryMenu from './ui/navbar-menu/CategoryMenu'
 import HotelIcon from './ui/icon/HotelIcon'
 import {useUser} from '@/hooks/useUser'
+import {useEffect} from 'react'
 import axios from '@/config/axios-config'
 import {FiMenu} from 'react-icons/fi'
 import {Avatar, Button, Dropdown as NextDropDown, DropdownItem, DropdownMenu, DropdownTrigger,} from '@nextui-org/react'
 
 export default function Navbar() {
-    const {user, isLoading, isError} = useUser()
+    const {user, isLoading, isError, error, refetch} = useUser()
 
     const handleLogout = async (e) => {
         e.preventDefault()
@@ -25,6 +26,12 @@ export default function Navbar() {
                 console.log(err)
             })
     }
+
+    useEffect(() => {
+        if (!isLoading && !user) {
+            refetch()
+        }
+    }, [user, isLoading, refetch]) // accessToken이 없는 경우, 새로운 accessToken으로 재요청 후 user를 다시 불러옵니다.
 
     return (
         <div className='navbar flex bg-transparent'>
@@ -55,13 +62,12 @@ export default function Navbar() {
                                     <HotelIcon/>
                                     숙소 등록
                                 </Link>
-                                <Link href='/auth/logout'>
-                                    <button
-                                        onClick={handleLogout}
-                                        className='bg-sage-600 text-sm font-semibold py-3 px-4'>
-                                        로그아웃
-                                    </button>
-                                </Link>
+
+                                <button
+                                    onClick={handleLogout}
+                                    className='bg-sage-600 text-sm font-semibold py-3 px-4'>
+                                    로그아웃
+                                </button>
                             </div>
                         ) : (
                             <>
@@ -105,6 +111,7 @@ export default function Navbar() {
                                         <DropdownItem key='mypage' href='/mypage/info'>
                                             마이페이지
                                         </DropdownItem>
+
                                         <DropdownItem
                                             onClick={handleLogout}
                                             key='logout'
