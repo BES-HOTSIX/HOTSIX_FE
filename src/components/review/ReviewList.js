@@ -9,12 +9,15 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react";
+import ReviewForm from "@/components/review/ReviewForm";
 
 const ReviewList = () => {
   const [recentReviews, setRecentReviews] = useState([]);
   const [allReviews, setAllReviews] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalSize, setModalSize] = useState("md");
+  // 리뷰 편집을 위한 state 및 함수 추가
+  const [editingReview, setEditingReview] = useState(null);
 
   const fetchReviews = async () => {
     try {
@@ -42,6 +45,7 @@ const ReviewList = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setEditingReview(null);
   };
 
   const renderStars = (rating) => {
@@ -61,6 +65,22 @@ const ReviewList = () => {
     return stars;
   };
 
+  const handleModifyReview = async (modifiedReview) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/v1/review/modify/${id}`,
+        modifiedReview
+      );
+
+      console.log(response.data.message);
+      fetchReviews();
+      handleCloseModal();
+    } catch (error) {
+      console.error("리뷰 수정 중 에러 발생:", error);
+      alert("리뷰 수정에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
   const handleDeleteReview = async (id) => {
     console.log("Review ID:", id);
 
@@ -74,6 +94,13 @@ const ReviewList = () => {
       console.error("리뷰 삭제 중 오류 발생:", error);
       alert("리뷰 삭제에 실패했습니다. 다시 시도해주세요.");
     }
+  };
+
+  // 편집 모달 열기
+  const handleEditReview = (review) => {
+    setEditingReview(review);
+    setShowModal(true);
+    setModalSize("2xl");
   };
 
   // 최근 리뷰를 2x2 그리드로 렌더링
@@ -165,41 +192,60 @@ const ReviewList = () => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                전체 리뷰
+                {editingReview ? "리뷰 편집" : "전체 리뷰"}
               </ModalHeader>
               <ModalBody>
-                <ul style={{ listStyleType: "none", padding: 0 }}>
-                  {allReviews.map((review) => (
-                    <li key={review.id} style={{ marginBottom: "20px" }}>
-                      <p>리뷰번호: {review.id}</p>
-                      <p>회원명: {review.member}</p>
-                      <p>
-                        평점: {renderStars(review.rating)} ({review.rating})
-                      </p>
-                      <p>{review.body}</p>
-                      <p>
-                        편의시설: {renderStars(review.amenities)} (
-                        {review.amenities})
-                      </p>
-                      <p>
-                        청결도: {renderStars(review.cleanliness)} (
-                        {review.cleanliness})
-                      </p>
-                      <p>
-                        서비스: {renderStars(review.staffService)} (
-                        {review.staffService})
-                      </p>
-                      {/* 삭제 버튼 추가 */}
-                      <Button
-                        onClick={() => handleDeleteReview(review.id)}
-                        style={{ backgroundColor: "red", color: "white" }}
-                      >
-                        삭제
-                      </Button>
-                      {/* 다른 리뷰 정보 추가 */}
-                    </li>
-                  ))}
-                </ul>
+                {editingReview ? (
+                  <ReviewForm
+                    onCloseModal={onClose}
+                    onSubmit={handleModifyReview}
+                    initialReview={editingReview}
+                  />
+                ) : (
+                  <ul style={{ listStyleType: "none", padding: 0 }}>
+                    {allReviews.map((review) => (
+                      <li key={review.id} style={{ marginBottom: "20px" }}>
+                        <p>리뷰번호: {review.id}</p>
+                        <p>회원명: {review.member}</p>
+                        <p>
+                          평점: {renderStars(review.rating)} ({review.rating})
+                        </p>
+                        <p>{review.body}</p>
+                        <p>
+                          편의시설: {renderStars(review.amenities)} (
+                          {review.amenities})
+                        </p>
+                        <p>
+                          청결도: {renderStars(review.cleanliness)} (
+                          {review.cleanliness})
+                        </p>
+                        <p>
+                          서비스: {renderStars(review.staffService)} (
+                          {review.staffService})
+                        </p>
+                        {/* 수정 버튼 추가 */}
+                        <Button
+                          onClick={() => handleEditReview(review)}
+                          style={{
+                            backgroundColor: "orange",
+                            color: "white",
+                            marginRight: "10px",
+                          }}
+                        >
+                          수정
+                        </Button>
+                        {/* 삭제 버튼 추가 */}
+                        <Button
+                          onClick={() => handleDeleteReview(review.id)}
+                          style={{ backgroundColor: "red", color: "white" }}
+                        >
+                          삭제
+                        </Button>
+                        {/* 다른 리뷰 정보 추가 */}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </ModalBody>
               <ModalFooter>
                 <Button

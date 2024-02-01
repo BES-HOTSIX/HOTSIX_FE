@@ -10,7 +10,7 @@ import {
   ModalFooter,
 } from "@nextui-org/react";
 
-const ReviewForm = ({ onReviewSubmit }) => {
+const ReviewForm = ({ hotelId, onReviewSubmit }) => {
   const [body, setBody] = useState("");
   const [ratings, setRatings] = useState({
     amenities: 0,
@@ -30,14 +30,14 @@ const ReviewForm = ({ onReviewSubmit }) => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:8080/api/v1/review/add", {
+      await axios.post(`http://localhost:8080/api/v1/review/add/${hotelId}`, {
         body,
         amenities: ratings.amenities,
         staffService: ratings.staffService,
         cleanliness: ratings.cleanliness,
       });
 
-      // 추가 필요: 등록 후 마이페이지로 이동
+      // 추가 필요: 등록 후 페이지 이동
 
       // 부모 컴포넌트에 등록 완료를 알리기 위해 콜백 호출
       if (typeof onReviewSubmit === "function") {
@@ -47,12 +47,11 @@ const ReviewForm = ({ onReviewSubmit }) => {
       // 모달 닫기
       setShowModal(false);
 
-      // 리뷰가 등록되었다는 메시지 표시
       alert("리뷰가 등록되었습니다.");
     } catch (error) {
       console.error("리뷰 등록 오류:", error);
+      console.error("서버 응답 데이터:", error.response?.data);
 
-      // 리뷰 등록 실패 메시지 표시
       alert("리뷰 등록에 실패했습니다. 다시 시도해주세요.");
     }
   };
