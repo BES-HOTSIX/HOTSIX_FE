@@ -1,3 +1,5 @@
+//src/components/review/ReviewTest.js
+
 'use client'
 
 import React, { useState } from 'react'
@@ -18,8 +20,9 @@ import { useDeleteHotel } from '@/hooks/useHotel'
 import { formatPrice } from '@/constants/hotel'
 import { useUser } from '@/hooks/useUser'
 import LikeButton from '@/app/hotel/like/LikeButton'
+import ReviewList from '@/components/review/ReviewList'
 
-export default function HotelDetail({ id }) {
+export default function ReviewTest({ id }) {
   const router = useRouter()
   const handleReservationButton = (e) => {
     e.preventDefault()
@@ -186,6 +189,9 @@ export default function HotelDetail({ id }) {
           </div>
         </div>
       </div>
+
+      <ReviewList hotelId={id} />
+
       {isConfirmOpen && (
         <ConfirmAlert
           isOpen={isConfirmOpen}
