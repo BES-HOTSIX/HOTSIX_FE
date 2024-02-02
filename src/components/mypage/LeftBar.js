@@ -31,12 +31,11 @@ export default function LeftBar(props) {
             <Spacer y={10}/>
             <ul className={"flex flex-col w-full"}>
                 {items.map((item, index) => (
-                    <li className={`w-full h-15 p-5 flex items-center  ${pathName === item.link ? 'bg-white' : 'hover:cursor-pointer bg-[#898989]'}`}
-                        key={index}>
-                        <Link
-                            href={item.link}>{item.text}
-                        </Link>
-                    </li>
+                    <Link href={item.link} key={`l-${index}`}>
+                        <li className={`w-full h-15 p-5 flex items-center  ${pathName === item.link ? 'bg-white' : 'hover:cursor-pointer bg-[#898989]'}`}>
+                            {item.text}
+                        </li>
+                    </Link>
                 ))}
             </ul>
         </div>

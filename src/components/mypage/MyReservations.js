@@ -3,10 +3,11 @@
 import {keepPreviousData, useQuery} from "@tanstack/react-query";
 import instance from "@/config/axios-config";
 import axios from "axios";
-import {Button, Card, CardBody, Image, Link, Pagination, Skeleton} from "@nextui-org/react";
+import {Button, Card, CardBody, Chip, Image, Link, Pagination, Skeleton} from "@nextui-org/react";
 import {useMemo, useState} from "react";
 import convertToISO8601 from "@/util/convertToISO8601";
 import calculateDaysBetween from "@/util/calculateDaysBetween";
+import isTimeBeforeNow from "@/util/isTimeBeforeNow";
 
 export default function MyReservations() {
     const [page, setPage] = useState(1);
@@ -19,6 +20,14 @@ export default function MyReservations() {
         }).then((res) => res.data),
         placeholderData: keepPreviousData
     })
+
+    function isThreeDaysBefore(time) {
+        let date = new Date(time);
+        let now = new Date();
+        let threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000); // 현재 시간에서 3일을 뺀 시간
+
+        return date >= threeDaysAgo;
+    }
 
     const pages = useMemo(() => reservationsQuery.data?.objData.totalPages ?? 0, [reservationsQuery.data?.objData.totalPages])
 
@@ -42,6 +51,12 @@ export default function MyReservations() {
                                     />
                                     <div className={"flex flex-col justify-between"}>
                                         <div className={"text-2xl"}>{reservation.hotelNickname}</div>
+                                        {isTimeBeforeNow(reservation.checkOutDate) && !reservation.cancelDate &&
+                                            <Chip size={"sm"} color="danger" radius={"md"}>이용완료</Chip>}
+                                        {isThreeDaysBefore(reservation.checkInDate) &&
+                                            <Chip size={"sm"} color="success" radius={"md"}>이용예정</Chip>}
+                                        {reservation.cancelDate &&
+                                            <Chip size={"sm"} color="warning" radius={"md"}>예약취소</Chip>}
                                         <div className={"flex"}>
                                             <div>{convertToISO8601(reservation.checkInDate)} ~ {convertToISO8601(reservation.checkOutDate)}</div>
                                             <div className={"mx-2"}>|</div>
@@ -55,7 +70,11 @@ export default function MyReservations() {
 
                                     <div className={"flex flex-col ml-auto justify-between"}>
                                         <Button as={Link} href={`/reserve/detail/${reservation.id}`}>상세보기</Button>
-                                        <Button>후기작성</Button>
+                                        <Button
+                                            isDisabled={
+                                                isTimeBeforeNow(reservation.checkOutDate) === false ||
+                                                reservation.cancelDate !== null
+                                            }>후기작성</Button>
                                     </div>
                                 </div>
                             </CardBody>
