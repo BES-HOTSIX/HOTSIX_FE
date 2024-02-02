@@ -66,6 +66,7 @@ export default function HotelReservation({ id }) {
 			price: calculatedPrice,
 			isPaid: false
 		};
+		console.log(reservationInfo);
 	
 		try {
 			const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`, reservationInfo, {
@@ -95,6 +96,7 @@ export default function HotelReservation({ id }) {
 					
 					<label htmlFor="date">날짜 선택</label>
 					<CalendarCustom
+						hotelId={id}
 						startDate={startDate}
 						endDate={endDate}
 						setStartDate={setStartDate}
