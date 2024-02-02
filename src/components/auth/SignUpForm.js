@@ -198,7 +198,7 @@ export default function SignUpForm() {
         <Button fullWidth size='lg' type='submit'>
           가입하기
         </Button>
-        {/* 회원가입 바로가기 */}
+        {/* 로그인 바로가기 */}
         <p
           className='mt-4 text-sm text-gray-600 cursor-pointer text-blue-500 text-center'  // text-center 추가
           onClick={goToSignIn}

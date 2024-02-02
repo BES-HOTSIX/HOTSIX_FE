@@ -31,7 +31,7 @@ export default function SignInForm() {
     submitLoginUser(loginForm);
   };
   const goToSignUp = () => {
-    window.location.href = '/auth/resetpassword';
+    window.location.href = '/auth/signup';
   };
 
   return (
@@ -99,7 +99,7 @@ export default function SignInForm() {
         className='mt-4 text-sm text-gray-600 cursor-pointer text-blue-500 text-center'  // text-center 추가
         onClick={goToSignUp}
       >
-        비밀번호 찾기
+        회원가입 바로가기
       </p>
       </form>
     </div>
