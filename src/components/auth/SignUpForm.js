@@ -103,9 +103,13 @@ export default function SignUpForm() {
     submitRegisterUser(signupForm)
   }
 
+  const goToSignIn = () => {
+    window.location.href = '/auth/signin';
+  };
+
   return (
     <div className='flex flex-col items-center justify-center h-[70vh]'>
-      <form onSubmit={handleSubmit} className='p-6 bg-white rounded shadow-md'>
+      <form onSubmit={handleSubmit} className='p-6 bg-white rounded shadow-md' style={{ maxWidth: '350px', width: '100%' }}>
         <h2 className='flex justify-center text-lg font-semibold mb-4'>
           회원가입
         </h2>
@@ -194,6 +198,13 @@ export default function SignUpForm() {
         <Button fullWidth size='lg' type='submit'>
           가입하기
         </Button>
+        {/* 회원가입 바로가기 */}
+        <p
+          className='mt-4 text-sm text-gray-600 cursor-pointer text-blue-500 text-center'  // text-center 추가
+          onClick={goToSignIn}
+        >
+          로그인 바로가기
+        </p>
       </form>
     </div>
   )

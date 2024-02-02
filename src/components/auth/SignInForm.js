@@ -30,6 +30,9 @@ export default function SignInForm() {
 
     submitLoginUser(loginForm);
   };
+  const goToSignUp = () => {
+    window.location.href = '/auth/resetpassword';
+  };
 
   return (
     <div className='flex flex-col items-center justify-center h-[70vh]'>
@@ -81,19 +84,23 @@ export default function SignInForm() {
         <div className='flex flex-col items-center'>
           <div className='flex flex-col gap-4'>
             <div className='hover:bg-gray-100 p-2 rounded-md cursor-pointer flex items-center justify-center transition-all duration-300 transform hover:border'>
-              <span>카카오 로그인</span>
               <KakaoLogin />
             </div>
             <div className='hover:bg-gray-100 p-2 rounded-md cursor-pointer flex items-center justify-center transition-all duration-300 transform hover:border'>
-              <span>네이버 로그인</span>
               <NaverLogin />
             </div>
             <div className='hover:bg-gray-100 p-2 rounded-md cursor-pointer flex items-center justify-center transition-all duration-300 transform hover:border'>
-              <span>구글 로그인</span>
               <GoogleLogin />
             </div>
           </div>
         </div>
+      {/* 회원가입 바로가기 */}
+      <p
+        className='mt-4 text-sm text-gray-600 cursor-pointer text-blue-500 text-center'  // text-center 추가
+        onClick={goToSignUp}
+      >
+        비밀번호 찾기
+      </p>
       </form>
     </div>
   );

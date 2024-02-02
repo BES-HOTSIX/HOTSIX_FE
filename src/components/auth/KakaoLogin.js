@@ -44,10 +44,10 @@ export default function KakaoLogin() {
     onClick={handleKaKaoLoginButton}
     className='flex items-center justify-center rounded'>
     <Image
-      className='ml-4'
+      className='ml-0'
       src={kakaoLoginImage}
       alt='Kakao로 로그인'
-      width={50}
+      width={300}
       height={50}
     />
   </button>
