@@ -5,9 +5,9 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { FaCalendarAlt } from 'react-icons/fa'
 
-export default function SearchDate() {
-  const [dateRange, setDateRange] = useState([new Date(), new Date()])
-  const [startDate, endDate] = dateRange
+export default function SearchDate({ date, setDate }) {
+  // date 배열 구조 분해 할당을 통해 startDate와 endDate를 추출
+  const [startDate, endDate] = date
 
   return (
     <div className=''>
@@ -19,10 +19,10 @@ export default function SearchDate() {
         selectsRange
         startDate={startDate}
         endDate={endDate}
-        onChange={(update) => setDateRange(update)}
+        onChange={(update) => setDate(update)}
         dateFormat='yyyy/MM/dd'
         minDate={new Date()}
-        className='custom-date-picker-style bg-gray-100 mb-2 p-4 rounded-lg border border-black' // Tailwind CSS 클래스 적용
+        className='bg-gray-100 mb-2 p-4 rounded-lg border border-black' // Tailwind CSS 클래스 적용
       />
     </div>
   )

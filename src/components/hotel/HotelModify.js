@@ -129,7 +129,7 @@ export default function HotelModify({ id }) {
   const modifySubmitHandler = (e) => {
     e.preventDefault()
 
-    if (images.length + newImages.length - deletedImages.length < 5) {
+    if (images.length < 5) {
       toast.error('숙소 사진은 최소 5장 이상이어야 합니다.')
       return
     }
