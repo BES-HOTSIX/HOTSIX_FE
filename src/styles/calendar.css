@@ -1,0 +1,13 @@
+.rdrCalendarWrapper {
+	width: 75%;
+	margin: 10px 0;
+}
+
+.rdrDateRangeWrapper {
+	background-color: #fff; /* 배경색 변경 */
+}
+
+.rdrMonthsHorizontal {
+	padding: 0;
+	/* width: fit-content; */
+}
