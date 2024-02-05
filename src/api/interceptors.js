@@ -37,6 +37,8 @@ export const handleTokenError = async (error) => {
 
   const { data, status } = error.response
 
+  console.log(error.response)
+
   if (
     status === HTTP_STATUS_CODE.BAD_REQUEST &&
     data.code === ERROR_CODE.EXPIRED_ACCESS_TOKEN
@@ -45,7 +47,7 @@ export const handleTokenError = async (error) => {
       sessionStorage.getItem('ACCESS_TOKEN_KEY')
     )
       .then((res) => {
-        const accessToken = res.data.objData
+        const accessToken = res.data.objData.accessToken
         originalRequest.headers.Authorization = `Bearer ${accessToken}`
         sessionStorage.setItem('ACCESS_TOKEN_KEY', accessToken)
         return axiosInstance(originalRequest)
@@ -66,8 +68,7 @@ export const handleTokenError = async (error) => {
       data.code === ERROR_CODE.UNAUTHORIZED ||
       data.code === ERROR_CODE.INVALID_ACCESS_TOKEN)
   ) {
-    console.log(data.code)
-    // window.location.href = '/'
+    throw new HTTPError(status, data.message, data.code)
   }
 
   throw error
