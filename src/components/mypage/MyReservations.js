@@ -82,7 +82,12 @@ export default function MyReservations() {
                       >
                         상세보기
                       </Button>
-                      <Button>후기작성</Button>
+                      <Button
+                        as={Link}
+                        href={`/review/${reservation.hotelId}/${reservation.id}`}
+                      >
+                        후기작성
+                      </Button>
                     </div>
                   </div>
                 </CardBody>

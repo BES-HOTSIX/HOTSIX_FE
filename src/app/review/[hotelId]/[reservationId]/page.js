@@ -1,7 +1,7 @@
 //src/app/review/[hotelId]/[reservationId]/page.js
 
 "use client"
-import { useParams } from "react-router-dom"
+import { useParams } from "next/navigation"
 import ReviewForm from "@/components/review/ReviewForm"
 
 const ReviewRegisterPage = () => {
