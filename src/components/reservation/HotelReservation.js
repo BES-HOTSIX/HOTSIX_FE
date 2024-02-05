@@ -5,8 +5,10 @@ import { useHotelDetail } from '@/hooks/useHotel';
 import { Button, Spacer, Input, Select } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import 'react-datepicker/dist/react-datepicker.css';
-import CalendarCustom from './Calendar';
+// import CalendarCustom from './Calendar';
+import CalendarCustom from './CalendarCustom';
 import axios from '@/config/axios-config'
+import { addDays } from 'date-fns';
 
 export default function HotelReservation({ id }) {
 	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id);
@@ -14,7 +16,7 @@ export default function HotelReservation({ id }) {
 
 	// CalendarCustom에 props로 전달
 	const [startDate, setStartDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date());
+	const [endDate, setEndDate] = useState(addDays(new Date(), 1));
 
 	const router = useRouter();
 
@@ -118,8 +120,10 @@ export default function HotelReservation({ id }) {
 					</div>
 					<Spacer y={1} />
 
-					<h3>환불 정책</h3>
-					<p>...환불 정책 내용...</p>
+					<div style={styles.refundPolicy}>
+						<h3>환불 정책</h3>
+						<p>...환불 정책 내용...</p>
+					</div>
 				</div>
 
 				<div style={styles.divider}></div>
@@ -177,6 +181,7 @@ const styles = {
 		display: 'flex',
 		flexDirection: 'column',
 		alignSelf: 'flex-start',
+		justifyContent: 'space-between',
 	},
 	title: {
 		fontSize: '1.5rem',
@@ -184,18 +189,11 @@ const styles = {
 		marginBottom: '20px',
 		flex: 1,
 	},
-	dateInput: {
-		width: '100%',
-		padding: '10px',
-		marginBottom: '10px',
-		border: '1px solid #ddd',
-		borderRadius: '4px',
-	},
 	guestCountContainer: {
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'flex-start',
-		margin: '80px 0',
+		margin: '20px 0',
 	},
 	guestCountLabel: {
 		marginBottom: '10px',
@@ -209,6 +207,9 @@ const styles = {
 	},
 	guestCountNumber: {
 		textAlign: 'center',
+	},
+	refundPolicy: {
+		margin: '20px 0',
 	},
 	hotelInfo: {
 		display: 'flex',
@@ -274,7 +275,6 @@ const styles = {
 		alignSelf: 'flex-start',
 	},
 	button: {
-		padding: '10px 20px',
 		backgroundColor: '#EF4444',
 		color: 'white',
 		borderRadius: '5px',

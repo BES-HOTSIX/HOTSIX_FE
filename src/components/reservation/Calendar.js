@@ -30,9 +30,10 @@ export default function CalendarCustom({
 	setStartDate,
 	setEndDate,
 }) {
-	const [maxEndDate, setMaxEndDate] = useState(null)
 	const { reservedDates, isLoading, isError, error } = useReservedDatesOfHotel(hotelId);
 	const [excludedDates, setExcludedDates] = useState([]);
+	const [minEndDate, setMinEndDate] = useState(endDate);
+	const [maxEndDate, setMaxEndDate] = useState(null)
 
 	useEffect(() => {
 		if (!isLoading && reservedDates) {
@@ -47,11 +48,21 @@ export default function CalendarCustom({
 		today.getMonth(),
 		today.getDate()
 	)
-	// const excludedDates = reservedDates.map(dateString => new Date(dateString));
 
 	// 체크인 날짜가 변경될 때 호출되는 함수
 	const handleStartDateChange = (date) => {
 		setStartDate(date)
+
+		// 체크아웃 날짜의 최소 선택 가능 날짜를 체크인 날짜의 다음 날로 설정
+		const nextDay = addDays(date, 1)
+		setMaxEndDate(twoYearsLater) // 체크아웃 날짜의 최대 선택 가능 날짜를 업데이트
+		setMinEndDate(nextDay) // 여기서 setMinEndDate는 체크아웃 날짜의 최소 선택 가능 날짜 상태를 업데이트하는 함수입니다.
+
+		// 체크아웃 날짜가 체크인 날짜보다 이전인 경우, 체크아웃 날짜를 체크인 날짜의 다음 날로 재설정
+		if (isBefore(endDate, nextDay)) {
+				setEndDate(nextDay);
+		}
+		
 		// 선택 불가능한 날짜 중 체크인 날짜 이후의 첫 번째 날짜를 찾음
 		const firstDisabledDateAfterStart = excludedDates.find((excludedDates) =>
 			isBefore(date, excludedDates)
@@ -139,7 +150,7 @@ export default function CalendarCustom({
 					onChange={handleStartDateChange}
 					selectsStart
 					startDate={startDate}
-					endDate={endDate}
+					endDate={startDate}
 				/>
 				<p className='wave'>&nbsp; &#126; &nbsp;</p>
 				<DatePicker
@@ -199,7 +210,7 @@ export default function CalendarCustom({
 					dateFormat='yyyy.MM.dd'
 					disabledKeyboardNavigation
 					locale='ko'
-					minDate={startDate}
+					minDate={minEndDate}
 					maxDate={maxEndDate}
 					excludeDates={excludedDates}
 					selected={endDate}
