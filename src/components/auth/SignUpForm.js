@@ -136,7 +136,7 @@ export default function SignUpForm() {
             fullWidth
             color='primary'
             size='sm'
-            placeholder='Username'
+            placeholder='유저네임'
             contentLeft={<FaUser />}
             name='username'
             value={signupForm.username}
@@ -151,7 +151,7 @@ export default function SignUpForm() {
             color='primary'
             size='sm'
             type='password'
-            placeholder='Password'
+            placeholder='패스워드'
             contentLeft={<FaLock />}
             name='password'
             value={signupForm.password}
@@ -169,7 +169,7 @@ export default function SignUpForm() {
             color='primary'
             size='sm'
             type='password'
-            placeholder='Confirm Password'
+            placeholder='패스워드 확인'
             contentLeft={<FaLock />}
             name='confirmPassword'
             value={signupForm.confirmPassword}
@@ -188,7 +188,7 @@ export default function SignUpForm() {
             fullWidth
             color='primary'
             size='sm'
-            placeholder='Nickname'
+            placeholder='닉네임'
             contentLeft={<FaPen />}
             name='nickname'
             value={signupForm.nickname}

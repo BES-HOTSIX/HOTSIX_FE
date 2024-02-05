@@ -47,7 +47,7 @@ export default function SignInForm() {
             fullWidth
             color='primary'
             size='sm'
-            placeholder='Username'
+            placeholder='유저네임'
             contentLeft={<FaUser />}
             name='username'
             value={loginForm.username}
@@ -62,7 +62,7 @@ export default function SignInForm() {
             color='primary'
             size='sm'
             type='password'
-            placeholder='Password'
+            placeholder='패스워드'
             contentLeft={<FaLock />}
             name='password'
             value={loginForm.password}
