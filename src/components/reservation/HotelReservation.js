@@ -1,24 +1,34 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHotelDetail } from '@/hooks/useHotel';
-import { Button, Spacer, Input, Select } from '@nextui-org/react';
+import { Button, Spacer, Input } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import 'react-datepicker/dist/react-datepicker.css';
 // import CalendarCustom from './Calendar';
 import CalendarCustom from './CalendarCustom';
 import axios from '@/config/axios-config'
-import { addDays } from 'date-fns';
+import { differenceInCalendarDays, addDays } from 'date-fns';
 
 export default function HotelReservation({ id }) {
 	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id);
 	const [guestCount, setGuestCount] = useState(1);
 
 	// CalendarCustom에 props로 전달
-	const [startDate, setStartDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(addDays(new Date(), 1));
+	const [startDate, setStartDate] = useState(new Date(new Date().setHours(0, 0, 0, 0)));
+	const [endDate, setEndDate] = useState(addDays(new Date(new Date().setHours(0, 0, 0, 0)), 1));
+	const [totalPrice, setTotalPrice] = useState(0); // 가격 상태 추가
 
 	const router = useRouter();
+	
+	useEffect(() => {
+		// 호텔 정보가 로딩된 후에 가격 계산
+		if (!isHotelLoading && hotel) {
+				const daysDiff = differenceInCalendarDays(endDate, startDate) || 1; // 최소 1일은 계산
+				const calculatedPrice = daysDiff * hotel.price;
+				setTotalPrice(calculatedPrice);
+		}
+	}, [startDate, endDate, hotel, isHotelLoading]);
 
 	if (isHotelLoading) {
 		return <div>loading</div>
@@ -47,24 +57,22 @@ export default function HotelReservation({ id }) {
 		});
 	};
 
-
 	// Submit the reservation
 	const handleSubmit = async () => {
-		// 시작 날짜와 종료 날짜의 시간을 자정으로 설정
-		const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-		const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-
 		// 날짜 차이 계산
-		const timeDiff = end - start;
-		const daysDiff = timeDiff / (1000 * 3600 * 24);
+		const daysDiff = differenceInCalendarDays(endDate, startDate);
 
 		// 호텔 가격 계산
 		const calculatedPrice = daysDiff * hotel.price;
 
+		// 시작 날짜와 종료 날짜 설정
+		const formattedStartDate = new Date(startDate.getTime() + (24 * 60 * 60 * 1000)).toISOString().substring(0, 10);
+		const formattedEndDate = new Date(endDate.getTime() + (24 * 60 * 60 * 1000)).toISOString().substring(0, 10);
+
 		const reservationInfo = {
 			numOfGuests: guestCount,
-			checkInDate: startDate,
-			checkOutDate: endDate,
+			checkInDate: formattedStartDate,
+			checkOutDate: formattedEndDate,
 			price: calculatedPrice,
 			isPaid: false
 		};
@@ -83,7 +91,6 @@ export default function HotelReservation({ id }) {
 
 			// Redirect or show success message
 			const reserveId = response.data.objData.id;
-			console.log('reserveId: ', reserveId);
 			router.push(`/cashLog/payByCash/${reserveId}`);
 		} catch (error) {
 			console.error('Error making reservation:', error);
@@ -140,7 +147,7 @@ export default function HotelReservation({ id }) {
 
 					<div style={styles.paymentAmount}>
 						<h3 style={styles.paymentAmountTitle}>결제 금액</h3>
-						<p style={styles.paymentAmountValue}>{hotel.price}원</p>
+						<p style={styles.paymentAmountValue}>{totalPrice}원</p>
 					</div>
 					
 					<div style={styles.paymentDetails}>
