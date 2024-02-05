@@ -4,14 +4,17 @@ import React from 'react'
 import { Autocomplete, AutocompleteItem, Avatar } from '@nextui-org/react'
 import { FaCity } from 'react-icons/fa'
 
-export default function SearchCity() {
+export default function SearchCity({ city, setCity }) {
   return (
     <div>
       <div className='flex space-x-2 ml-2'>
         <FaCity className='text-black' /> {/* 달력 아이콘 */}
         <span className='text-black'>도시 선택</span> {/* 문구 */}
       </div>
-      <Autocomplete className='max-w-xs' label='도시'>
+      <Autocomplete
+        onSelectionChange={(e) => setCity(e)}
+        className='max-w-xs'
+        label='도시'>
         <AutocompleteItem
           key='서울'
           startContent={

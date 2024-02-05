@@ -1,5 +1,6 @@
 "use client"
 
+<<<<<<< HEAD
 import Link from "next/link"
 import CategoryMenu from "./ui/navbar-menu/CategoryMenu"
 import HotelIcon from "./ui/icon/HotelIcon"
@@ -7,6 +8,16 @@ import { useUser } from "@/hooks/useUser"
 import { useEffect } from "react"
 import axios from "@/config/axios-config"
 import { FiMenu } from "react-icons/fi"
+=======
+import Link from 'next/link'
+import CategoryMenu from './ui/navbar-menu/CategoryMenu'
+import HotelIcon from './ui/icon/HotelIcon'
+import { useUser } from '@/hooks/useUser'
+import { useEffect } from 'react'
+import { HTTP_STATUS_CODE, ERROR_CODE } from '@/constants/constants'
+import axios from '@/config/axios-config'
+import { FiMenu } from 'react-icons/fi'
+>>>>>>> a64c3527d25c6fbbcf2760193b7c27eb5ecc1d8d
 import {
   Dropdown as NextDropDown,
   DropdownTrigger,
@@ -27,19 +38,43 @@ export default function Navbar() {
       .delete("/user/logout", { ...axios.defaults, useAuth: true })
       .then((res) => {
         console.log(res)
+<<<<<<< HEAD
         sessionStorage.clear()
         window.location.href = "/"
+=======
+        sessionStorage.removeItem('ACCESS_TOKEN_KEY')
+        window.location.href = '/'
+>>>>>>> a64c3527d25c6fbbcf2760193b7c27eb5ecc1d8d
       })
       .catch((err) => {
-        console.log(err)
+        const { statusCode, code } = err ?? {}
+
+        if (
+          statusCode === HTTP_STATUS_CODE.BAD_REQUEST &&
+          code === ERROR_CODE.EXPIRED_ACCESS_TOKEN
+        ) {
+          sessionStorage.removeItem('ACCESS_TOKEN_KEY')
+          window.location.href = '/'
+        }
       })
   }
 
+<<<<<<< HEAD
   useEffect(() => {
     if (!isLoading && !user) {
       //refetch()
     }
   }, [user, isLoading, refetch]) // accessToken이 없는 경우, 새로운 accessToken으로 재요청 후 user를 다시 불러옵니다.
+=======
+  const { statusCode, code } = error ?? {}
+
+  if (
+    statusCode === HTTP_STATUS_CODE.BAD_REQUEST &&
+    code === ERROR_CODE.EXPIRED_ACCESS_TOKEN
+  ) {
+    refetch()
+  }
+>>>>>>> a64c3527d25c6fbbcf2760193b7c27eb5ecc1d8d
 
   return (
     <div className='navbar flex bg-transparent'>
