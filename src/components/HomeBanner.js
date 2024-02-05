@@ -1,11 +1,8 @@
 import React from 'react'
 import Image from 'next/image'
 import mainBannerImage from '@/../public/img/home_banner.jpg'
-import SearchCity from './hotel/search/SearchCity'
-import SearchDate from './hotel/search/SearchDate'
-import { FaSearch } from 'react-icons/fa'
-import { Button } from '@nextui-org/react'
 import '@/styles/banner.css'
+import SearchBar from './hotel/search/SearchBar'
 
 export default function HomeBanner() {
   return (
@@ -25,20 +22,9 @@ export default function HomeBanner() {
         </h1>
         {/* 메인 텍스트 */}
 
+        <SearchBar />
+
         {/* 탭 및 검색 바 추가 */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-4 w-[1/5] bg-white rounded-lg p-5 mb-6'>
-          <SearchCity />
-          <SearchDate />
-          <Button
-            size='lg'
-            color='primary'
-            variant='bordered'
-            aria-label='Search'
-            className='justify-self-center md:justify-self-center self-center mt-2 lg:mr-20'>
-            <FaSearch />
-            검색
-          </Button>
-        </div>
       </div>
     </section>
   )

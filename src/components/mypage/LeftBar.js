@@ -7,15 +7,20 @@ import Link from "next/link";
 import {usePathname} from "next/navigation";
 
 export default function LeftBar(props) {
+    const pathname = usePathname();
     const items = [
         {text: "예약 내역", link: "/mypage/reservations"},
         {text: "내 정보", link: "/mypage/info"},
-        {text: "환전하기", link: "/mypage/exchange"},
-        {text: "결제 내역", link: "/mypage/payments/history"},
+        {text: "캐시 사용 내역", link: "/cashLog/me"},
         {text: "내가 등록한 숙소", link: "/mypage/hotels"},
         {text: "내가 찜한 숙소", link: "/mypage/like"},
     ]
     const pathName = usePathname();
+
+    const [value, setValue] = React.useState(0);
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
 
     return (
         <div className='flex flex-col items-center w-1/4 bg-[#CECECE]'>

@@ -8,6 +8,7 @@ import axios, { fileApiAxios } from '@/config/axios-config'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { HTTP_STATUS_CODE, ERROR_CODE } from '@/constants/constants'
 
 /** 호텔 등록 */
 const fetchRegisterHotel = async (formData) => {
@@ -18,7 +19,6 @@ const fetchRegisterHotel = async (formData) => {
 }
 
 export const useRegisterHotel = () => {
-  const router = useRouter()
   const queryClient = useQueryClient()
   const {
     mutate: submitRegister,
@@ -33,24 +33,23 @@ export const useRegisterHotel = () => {
       return fetchRegisterHotel(formData)
     },
     onSuccess: (res) => {
-      console.log('호텔 등록 성공')
-      console.log(res)
-
-      if (!res.data.result) {
-        toast.error('호텔 등록에 실패했습니다 🥲')
-        return
-      }
-
       toast.success('호텔이 성공적으로 등록되었습니다!')
-
       queryClient.invalidateQueries({ queryKey: ['hotels'] })
     },
     onError: (err) => {
       console.log('호텔 등록 실패')
-      console.log(err)
 
-      toast.error('호텔 등록에 실패했습니다 🥲')
+      const { statusCode, code } = err ?? {}
 
+      if (
+        statusCode === HTTP_STATUS_CODE.BAD_REQUEST &&
+        code === ERROR_CODE.EXPIRED_ACCESS_TOKEN
+      ) {
+        toast.success('호텔이 성공적으로 등록되었습니다!')
+        queryClient.invalidateQueries({ queryKey: ['hotels'] })
+      } else {
+        toast.error('호텔 등록에 실패했습니다 🥲')
+      }
       return err
     },
   })
@@ -132,11 +131,6 @@ export const useModifyHotel = () => {
       console.log('호텔 수정 성공')
       console.log(res)
 
-      if (!res.result) {
-        toast.error('호텔 수정이 이루어지지 않았어요 🥲')
-        return
-      }
-
       toast.success('호텔 수정이 완료되었습니다!')
 
       queryClient.invalidateQueries({ queryKey: ['hotelDetail'] })
@@ -144,9 +138,19 @@ export const useModifyHotel = () => {
     },
     onError: (err) => {
       console.log('상품 수정 실패')
-      console.log(err)
 
-      toast.error('상품 수정이 이루어지지 않았어요 🥲')
+      const { statusCode, code } = err ?? {}
+
+      if (
+        statusCode === HTTP_STATUS_CODE.BAD_REQUEST &&
+        code === ERROR_CODE.EXPIRED_ACCESS_TOKEN
+      ) {
+        toast.success('호텔 수정이 완료되었습니다!')
+        queryClient.invalidateQueries({ queryKey: ['hotelDetail'] })
+        router.back()
+      } else {
+        toast.error('호텔 수정이 이루어지지 않았어요 🥲')
+      }
 
       return err
     },
@@ -179,13 +183,7 @@ export const useDeleteHotel = (hotelId) => {
       console.log('호텔 삭제 성공')
       console.log(res)
 
-      if (!res.result) {
-        toast.error('호텔이 삭제되지 않았어요 🥲')
-        return
-      }
-
       toast.success('호텔이 삭제되었습니다!')
-
       queryClient.invalidateQueries({ queryKey: ['hotels'] })
       router.replace('/hotel')
     },
@@ -193,11 +191,49 @@ export const useDeleteHotel = (hotelId) => {
       console.log('호텔 삭제 실패')
       console.log(err)
 
-      toast.error('호텔이 삭제되지 않았어요 🥲')
+      const { statusCode, code } = err ?? {}
+
+      if (
+        statusCode === HTTP_STATUS_CODE.BAD_REQUEST &&
+        code === ERROR_CODE.EXPIRED_ACCESS_TOKEN
+      ) {
+        toast.success('호텔이 삭제되었습니다!')
+        queryClient.invalidateQueries({ queryKey: ['hotels'] })
+        router.replace('/hotel')
+      } else {
+        toast.error('호텔 삭제가 이루어지지 않았어요 🥲')
+      }
 
       return err
     },
   })
 
   return { submitDelete, isPending, isError, error }
+}
+
+const fetchSearchHotels = async (page, district, startDate, endDate) => {
+  const { data } = await axios.get(
+    `/api/v1/hotels/search?page=${page}&district=${district}&startDate=${startDate}&endDate=${endDate}`
+  )
+
+  console.log('fetchSeartchHotels', data)
+
+  return data
+}
+
+export const useSearchHotels = (page, district, startDate, endDate) => {
+  const {
+    data: hotels,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    isPlaceholderData,
+  } = useQuery({
+    queryKey: ['searchHotels', district, startDate, endDate, page],
+    queryFn: () => fetchSearchHotels(page, district, startDate, endDate),
+    retry: 0,
+  })
+
+  return { hotels, isLoading, isFetching, isError, error, isPlaceholderData }
 }

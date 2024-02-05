@@ -5,6 +5,7 @@ import CategoryMenu from './ui/navbar-menu/CategoryMenu'
 import HotelIcon from './ui/icon/HotelIcon'
 import {useUser} from '@/hooks/useUser'
 import {useEffect} from 'react'
+import {ERROR_CODE, HTTP_STATUS_CODE} from '@/constants/constants'
 import axios from '@/config/axios-config'
 import {FiMenu} from 'react-icons/fi'
 import {Avatar, Button, Dropdown as NextDropDown, DropdownItem, DropdownMenu, DropdownTrigger,} from '@nextui-org/react'
@@ -19,12 +20,29 @@ export default function Navbar() {
             .delete('/user/logout', {...axios.defaults, useAuth: true})
             .then((res) => {
                 console.log(res)
-                sessionStorage.clear()
+                sessionStorage.removeItem('ACCESS_TOKEN_KEY')
                 window.location.href = '/'
             })
             .catch((err) => {
-                console.log(err)
+                const {statusCode, code} = err ?? {}
+
+                if (
+                    statusCode === HTTP_STATUS_CODE.BAD_REQUEST &&
+                    code === ERROR_CODE.EXPIRED_ACCESS_TOKEN
+                ) {
+                    sessionStorage.removeItem('ACCESS_TOKEN_KEY')
+                    window.location.href = '/'
+                }
             })
+    }
+
+    const {statusCode, code} = error ?? {}
+
+    if (
+        statusCode === HTTP_STATUS_CODE.BAD_REQUEST &&
+        code === ERROR_CODE.EXPIRED_ACCESS_TOKEN
+    ) {
+        refetch()
     }
 
     useEffect(() => {
