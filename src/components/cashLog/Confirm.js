@@ -22,10 +22,10 @@ export default function Confirm({ cashLogId }) {
   const cashLogData = cashLog.objData;
 
   const goHome = () => {
-    router.push("");
+    router.push("/");
   };
 
-  const payByCash = (e) => {
+  const goReserveDetail = (e) => {
     e.preventDefault();
     router.push(`/reserve/detail/${cashLogData.reserveId}`);
   };
@@ -144,7 +144,7 @@ export default function Confirm({ cashLogId }) {
           <Button onClick={goHome} className="mr-20" color="default">
             홈
           </Button>
-          <Button onClick={payByCash} color="primary">
+          <Button onClick={goReserveDetail} color="primary">
             예약 내역
           </Button>
         </div>

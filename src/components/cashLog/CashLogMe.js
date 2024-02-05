@@ -34,6 +34,21 @@ export default function CashLogMe() {
 
   console.log(cashLogPage);
 
+  cashLogPage.map((e) => {
+    e.createdAt = new Date(e.createdAt)
+      .toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
+      .replace(/\./g, "")
+      .split(" ")
+      .join(".");
+  });
+
   return (
     <div>
       <div className="flex justify-between mb-5 items-center">
@@ -64,9 +79,10 @@ export default function CashLogMe() {
         }}
       >
         <TableHeader>
+          <TableColumn key="createdAt">날짜</TableColumn>
+          <TableColumn key="cashLogId">식별번호</TableColumn>
           <TableColumn key="eventType">카테고리</TableColumn>
           <TableColumn key="price">금액</TableColumn>
-          <TableColumn key="cashLogId">식별번호</TableColumn>
         </TableHeader>
         <TableBody items={cashLogPage}>
           {(cashLog) => (

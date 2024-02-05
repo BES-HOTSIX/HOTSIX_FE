@@ -115,7 +115,10 @@ export const useReserveForCashPayment = () => {
 
 // 예약 완료창
 const fetchCashLogForConfirm = async (cashLogId) => {
-  const res = await axios.get(`api/v1/cashLog/${cashLogId}/confirm`);
+  const res = await axios.get(`api/v1/cashLog/${cashLogId}/confirm`, {
+    ...axios.defaults,
+    useAuth: true,
+  });
 
   console.log("fetchCashLogForConfirm");
 
@@ -140,24 +143,22 @@ export const useCashLogForConfirm = (cashLogId) => {
 };
 
 // TossPayments post 요청
-const fetchTossPayments = async (payment) => {
-  console.log(`fetchTossPayments ${payment}`);
-
-  return await axios.post(`/api/v1/cashLog/confirm`, payment);
+const fetchTossPayments = async ({ payment, reserveId }) => {
+  console.log(reserveId);
+  return await axios.post(`/api/v1/cashLog/payByToss/${reserveId}`, payment);
 };
 
 export const useTossPayments = () => {
   const queryClient = useQueryClient();
   const [response, setResponse] = useState(null);
-  console.log("detected event");
   const {
     mutate: submitTossPayments,
     isPending,
     isError,
     error,
   } = useMutation({
-    mutationFn: (payment) => {
-      return fetchTossPayments(payment);
+    mutationFn: ({ payment, reserveId }) => {
+      return fetchTossPayments({ payment, reserveId });
     },
     onSuccess: (res) => {
       console.log("토스페이먼트 결제 성공");
