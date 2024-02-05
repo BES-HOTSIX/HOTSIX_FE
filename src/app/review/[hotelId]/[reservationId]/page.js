@@ -1,4 +1,5 @@
-// src/app/review/register/page.js
+//src/app/review/[hotelId]/[reservationId]/page.js
+
 "use client"
 import { useParams } from "react-router-dom"
 import ReviewForm from "@/components/review/ReviewForm"
