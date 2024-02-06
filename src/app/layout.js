@@ -1,19 +1,19 @@
-import "@/styles/globals.css"
-import TanstackProvider from "@/context/TanstackProvider"
-import RecoilProvider from "@/context/RecoilProvider"
-import { ToastContainer } from "react-toastify"
-import Navbar from "@/components/NavBar"
-import Footer from "@/components/ui/Footer"
-import { Providers } from "@/app/providers"
-import Script from "next/script"
-import "react-toastify/dist/ReactToastify.css"
+import '@/styles/globals.css'
+import TanstackProvider from '@/context/TanstackProvider'
+import RecoilProvider from '@/context/RecoilProvider'
+import { ToastContainer } from 'react-toastify'
+import Navbar from '@/components/NavBar'
+import Footer from '@/components/ui/Footer'
+import { Providers } from '@/app/providers'
+import Script from 'next/script'
+import 'react-toastify/dist/ReactToastify.css'
 
 export const metadata = {
   title: {
-    default: "HOTSHARE",
-    template: "%s | HOTSHARE",
+    default: 'HOTSHARE',
+    template: '%s | HOTSHARE',
   },
-  description: "home",
+  description: 'home',
 }
 
 export default function RootLayout({ children }) {
