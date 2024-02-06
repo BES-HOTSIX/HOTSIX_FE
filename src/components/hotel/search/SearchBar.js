@@ -38,7 +38,7 @@ export default function SearchBar() {
   }
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-3 gap-4 w-[1/5] bg-white rounded-lg p-5 mb-6'>
+    <div className='grid grid-cols-1 md:grid-cols-3 gap-4 w-[1/5] bg-white rounded-lg p-5 '>
       <SearchCity city={city} setCity={setCity} />
       <SearchDate date={date} setDate={setDate} />
       <Button

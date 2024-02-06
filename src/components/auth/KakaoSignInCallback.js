@@ -12,8 +12,8 @@ export default function KakaoSignInCallback({ code }) {
   }, [])
 
   return (
-    <div>
-      <p>카카오 로그인 처리 중...</p>
+    <div className='h-[60vh]'>
+      <p className='mt-36'>카카오 로그인 처리 중...</p>
     </div>
   )
 }

@@ -9,15 +9,15 @@ export default function HomeBanner() {
     <section
       role='region'
       aria-label='상단 메인 비주얼'
-      className='relative w-full h-[400px]'>
+      className='relative w-full h-[500px]'>
       {' '}
       {/* 높이 설정 추가 */}
       <Image src={mainBannerImage} alt='상단 메인 이미지' fill />
       {/* 배경 이미지 */}
-      <div className='absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center mt-14'>
+      <div className='absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center mt-32'>
         {/* 배너 콘텐츠 */}
         <h1 className='text-white text-2xl text-shadow-sm shadow-black mb-2'>
-          <span>숙소를 검색해주세요. </span>
+          <span>숙소를 검색해주세요.</span>
           <br />
         </h1>
         {/* 메인 텍스트 */}

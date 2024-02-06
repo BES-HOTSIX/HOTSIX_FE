@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function Pagination({ page, setPage, totalPages }) {
   return (
-    <div className='flex flex-row items-center space-x-3 mt-6'>
+    <div className='flex flex-row items-center space-x-3'>
       <button
         onClick={() => setPage((p) => Math.max(p - 1, 0))}
         disabled={page <= 0}>
