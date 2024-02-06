@@ -92,7 +92,7 @@ export default function HotelLocationSearch() {
 
   return (
     <div>
-      <div className='mt-32'>
+      <div className='mt-36'>
         <div className='flex justify-center items-center'>
           <div className='flex flex-col space-y-4'>
             <p>주소를 검색해주세요.</p>

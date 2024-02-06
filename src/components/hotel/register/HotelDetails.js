@@ -43,7 +43,7 @@ export default function HotelDetails() {
   return (
     <div>
       <div
-        className={`flex flex-col mt-32 h-[42vh] items-center space-y-8 transition-all duration-1000 ease-in-out ${
+        className={`flex flex-col mt-32 h-[50vh] items-center space-y-8 transition-all duration-1000 ease-in-out ${
           isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'
         }`}>
         <p className='flex justify-center'>숙소 기본 정보를 입력해주세요.</p>

@@ -134,7 +134,7 @@ export default function HotelImage() {
 
   return (
     <div
-      className={`container mt-32 h-[50vh] mx-auto  p-4 space-y-8 transition-all duration-1000 ease-in-out ${
+      className={`container mt-32 h-[60vh] mx-auto  p-4 space-y-8 transition-all duration-1000 ease-in-out ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'
       }`}>
       <p className='flex justify-center mb-5'>
