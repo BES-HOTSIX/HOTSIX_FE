@@ -13,5 +13,5 @@ export default function GoogleSignInCallback({ code }) {
     submitGoogleLoginUser(code)
   }, [])
 
-  return <div>구글 로그인 중입니다...</div>
+  return <div className='h-[60vh] mt-36'>구글 로그인 중입니다...</div>
 }

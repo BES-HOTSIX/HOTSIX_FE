@@ -12,5 +12,5 @@ export default function NaverSignInCallback({ secret }) {
     submitNaverLoginUser(secret)
   }, [])
 
-  return <div>네이버 로그인 중입니다...</div>
+  return <div className='h-[60vh] mt-36'>네이버 로그인 중입니다...</div>
 }
