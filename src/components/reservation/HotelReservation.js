@@ -70,14 +70,24 @@ export default function HotelReservation({ id }) {
 		const calculatedPrice = daysDiff * hotel.price
 
 		// 시작 날짜와 종료 날짜 설정
-		const formattedStartDate = new Date(
-			startDate.getTime() + 24 * 60 * 60 * 1000
-		)
-			.toISOString()
-			.substring(0, 10)
-		const formattedEndDate = new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-			.toISOString()
-			.substring(0, 10)
+		const formattedStartDate = new Date(startDate)
+			.toLocaleDateString('ko-KR', {
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+			})
+			.replace(/\./g, '')
+			.split(' ')
+			.join('-')
+		const formattedEndDate = new Date(endDate)
+			.toLocaleDateString('ko-KR', {
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+			})
+			.replace(/\./g, '')
+			.split(' ')
+			.join('-')
 
 		const reservationInfo = {
 			numOfGuests: guestCount,

@@ -65,14 +65,23 @@ export default function ReservationDetail({ id }) {
     .split(' ')
     .join('.')
 
-  // 현재 날짜와 체크인 날짜 비교해서 체크인 날짜가 오늘 날짜보다 하루 이상 남았는지 확인
-  const today = new Date()
-  const isCancellationAllowed =
-    new Date(reservationData.checkInDate).getTime() - today.getTime() >
-    24 * 60 * 60 * 1000
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  };
+  
+  // 오늘 날짜와 체크인 날짜를 로컬 시간대 기준으로 'YYYY-MM-DD' 형식으로 변환
+  const todayStr = formatDate(new Date());
+  const checkInDateStr = formatDate(new Date(reservationData.checkInDate));
+  
   // 현재 날짜가 체크아웃 날짜보다 같거나 늦은 경우 리뷰 작성 가능
-  const isReviewAllowed =
-    today.getTime() >= new Date(reservationData.checkOutDate).getTime()
+  const isReviewAllowed = todayStr >= checkInDateStr;
+  
+  // 현재 날짜와 체크인 날짜 비교해서 체크인 날짜가 오늘 날짜보다 하루 이상 남았는지 확인
+  const isCancellationAllowed = new Date(checkInDateStr) - new Date(todayStr) > 24 * 60 * 60 * 1000;
 
   const staticImageUrl = '/tosspay.png'
 
