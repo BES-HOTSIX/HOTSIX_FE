@@ -3,22 +3,34 @@
 import { useTossPayments } from "@/hooks/useCashLog";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function Success({ payment }) {
+export default function Success({ payment, reserveId }) {
   const router = useRouter();
 
-  const { submitTossPayments, response, isPending, isError, error } =
+  const { submitTossPayments, response, isLoading, isError, error } =
     useTossPayments();
 
-  const button = () => {
-    console.log("before submitTossPayments");
-    submitTossPayments(payment);
-    console.log("after submitTossPayments");
+  if (isLoading) {
+    return (
+      <div> ✧*｡٩(ˊᗜˋ*)و✧*｡ ♡⸜(˶˃ ᵕ ˂˶)⸝♡ ✧*｡٩(ˊᗜˋ*)و✧*｡ ♡⸜(˶˃ ᵕ ˂˶)⸝♡</div>
+    );
+  }
+
+  if (response) {
+    const cashLogId = response.data.objData.cashLogId;
+    router.push(`/cashLog/${cashLogId}/confirm`);
+  }
+
+  const go = () => {
+    submitTossPayments({ payment, reserveId });
   };
+  // submitTossPayments({payment, reserveId })
 
   return (
     <div>
-      <button onClick={button}>ddd</button>
+      <button onClick={go}>TRY</button>
+      <h1></h1>
     </div>
   );
 }

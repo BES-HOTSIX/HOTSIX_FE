@@ -1,6 +1,6 @@
-import PayByCash from "@/components/cashLog/PayByCash";
+import Pay from "@/components/cashLog/Pay";
 import React from "react";
 
-export default function page({ params: { id } }) {
-  return <PayByCash reserveId={id} />;
+export default function page({ searchParams, params: { id } }) {
+  return <Pay fail={searchParams} reserveId={id} />;
 }
