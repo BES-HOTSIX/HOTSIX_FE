@@ -1,4 +1,4 @@
 cd ../
 mkdir output
-cp -R ./HOTSHARE/* ./output
-cp -R ./output ./HOTSHARE/
+cp -R ./HOTSHARE_FE/* ./output
+cp -R ./output ./HOTSHARE_FE/
