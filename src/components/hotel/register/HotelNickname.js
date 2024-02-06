@@ -42,7 +42,7 @@ export default function HotelNickname() {
   return (
     <div>
       <div
-        className={`flex flex-col mt-32 h-[42vh] space-y-6 items-center transition-all duration-1000 ease-in-out ${
+        className={`flex flex-col mt-32 h-[50vh] space-y-6 items-center transition-all duration-1000 ease-in-out ${
           isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'
         }`}>
         <p>숙소의 이름과 설명을 입력해주세요.</p>

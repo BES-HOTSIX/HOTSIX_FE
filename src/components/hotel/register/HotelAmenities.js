@@ -65,7 +65,7 @@ export default function HotelAmenities() {
   return (
     <div>
       <div
-        className={`flex flex-col mt-32 h-[42vh] space-y-6 justify-center items-center transition-all duration-1000 ease-in-out ${
+        className={`flex flex-col mt-32 h-[50vh] space-y-6 justify-center items-center transition-all duration-1000 ease-in-out ${
           isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'
         }`}>
         <p>숙소의 편의 시설을 선택해주세요.</p>
