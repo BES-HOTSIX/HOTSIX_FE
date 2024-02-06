@@ -30,8 +30,6 @@ export default function Confirm({ cashLogId }) {
     router.push(`/reserve/detail/${cashLogData.reserveId}`);
   };
 
-  console.log(cashLog);
-
   // createdAt 날짜 형식을 'nnnn.nn.nn' 형태로 포맷
   const formattedCreatedAt = new Date(cashLogData.createdAt)
     .toLocaleDateString("ko-KR", {
@@ -67,7 +65,7 @@ export default function Confirm({ cashLogId }) {
 
   return (
     <div>
-      <div>
+      <div className="h-[50vh] mt-32">
         <div className="flex justify-center mb-5" style={{ fontSize: "20px" }}>
           예약이 완료되었습니다
           <br />

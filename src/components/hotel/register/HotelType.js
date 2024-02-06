@@ -41,7 +41,7 @@ export default function HotelType() {
       className={`flex flex-col justify-center items-center transition-all duration-1000 ease-in-out ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'
       }`}>
-      <div className='flex flex-col'>
+      <div className='mt-32 h-[42vh] flex flex-col'>
         <div className='flex justify-center mb-5'>
           <p>숙소의 유형을 선택해주세요.</p>
         </div>

@@ -233,7 +233,7 @@ export default function HotelModify({ id }) {
   if (isHotelLoading) return <div></div>
 
   return user?.objData.nickname === hotel.host ? (
-    <div>
+    <div className='mt-32'>
       <h1 className='text-2xl text-center mb-12 text-stone-400'>
         숙소 정보 수정
       </h1>{' '}

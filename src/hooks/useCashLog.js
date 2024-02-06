@@ -110,6 +110,8 @@ const fetchCashLogForConfirm = async (cashLogId) => {
     useAuth: true,
   });
 
+  console.log("fetchCashLogForConfirm");
+
   return res.data;
 };
 
@@ -132,6 +134,7 @@ export const useCashLogForConfirm = (cashLogId) => {
 
 // TossPayments post 요청
 const fetchTossPayments = async ({ payment, reserveId }) => {
+  console.log(reserveId);
   return await axios.post(`/api/v1/cashLog/payByToss/${reserveId}`, payment);
 };
 

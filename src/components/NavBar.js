@@ -54,11 +54,11 @@ export default function Navbar() {
   }
 
   return (
-    <div className="navbar flex bg-transparent">
+    <div className="font-suite navbar flex bg-transparent p-[15px]">
       <div className="flex flex-1 gap-2">
         <Link
           href="/"
-          className="font-bold text-xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500"
+          className="font-pretendard font-extrabold text-2xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500"
         >
           HOTSHARE
         </Link>
@@ -74,7 +74,7 @@ export default function Navbar() {
           <div className="flex">
             {user ? (
               <div className="flex space-x-4">
-                <p className="text-sm flex items-center mr-3">
+                <p className="text-md flex items-center mr-3">
                   {user?.objData.nickname}님 환영합니다
                 </p>
                 <Link
@@ -82,29 +82,29 @@ export default function Navbar() {
                   className="text-sm flex items-center justify-center gap-1"
                 >
                   <HotelIcon />
-                  숙소 등록
+                  숙소등록
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  className="bg-sage-600 text-sm font-semibold py-3 px-4"
+                  className="text-sm py-3 px-4 rounded-full text-white bg-coral-400 hover:bg-coral-500"
                 >
                   로그아웃
                 </button>
               </div>
             ) : (
-              <>
+              <div className="space-x-3">
                 <Link href="/auth/signin">
-                  <button className="bg-sage-600 text-sm font-semibold py-4 px-4">
+                  <button className="bg-sage-600 hover:bg-sage-650 text-white rounded-full text-sm font-semibold py-4 px-4">
                     로그인
                   </button>
                 </Link>
                 <Link href="/auth/signup">
-                  <button className="bg-sage-600 text-sm font-semibold py-4 px-4">
+                  <button className="bg-sage-600 hover:bg-sage-650 text-white rounded-full text-sm font-semibold py-4 px-4">
                     회원가입
                   </button>
                 </Link>
-              </>
+              </div>
             )}
           </div>
         </div>
