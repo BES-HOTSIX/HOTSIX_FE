@@ -30,6 +30,8 @@ export default function Confirm({ cashLogId }) {
     router.push(`/reserve/detail/${cashLogData.reserveId}`);
   };
 
+  console.log(cashLog);
+
   // createdAt 날짜 형식을 'nnnn.nn.nn' 형태로 포맷
   const formattedCreatedAt = new Date(cashLogData.createdAt)
     .toLocaleDateString("ko-KR", {
