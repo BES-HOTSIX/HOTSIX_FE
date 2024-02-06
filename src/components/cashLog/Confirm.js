@@ -67,9 +67,9 @@ export default function Confirm({ cashLogId }) {
     <div>
       <div className="h-[50vh] mt-32">
         <div className="flex justify-center mb-5" style={{ fontSize: "20px" }}>
-          예약이 완료되었습니다
+          {cashLogData.eventType}이(가) 완료되었습니다
           <br />
-          예약번호 {cashLogData.reserveId}
+          예약코드 {cashLogData.orderId}
         </div>
         <div className="flex justify-center mb-5">
           <Card
@@ -129,9 +129,8 @@ export default function Confirm({ cashLogId }) {
                       <p className="text-large mt-1">
                         총 가격 : {cashLogData.price}원
                       </p>
-                      <p className="text-large mt-1">할인 금액 : 0원</p>
                       <p className="text-large mt-1">
-                        결제 금액 : {cashLogData.price}원
+                        {cashLogData.eventType} 금액 : {cashLogData.price}원
                       </p>
                     </div>
                   </div>

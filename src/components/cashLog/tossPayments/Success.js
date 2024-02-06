@@ -4,10 +4,6 @@ import { useTossPayments } from "@/hooks/useCashLog";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useTossPayments } from "@/hooks/useCashLog";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export default function Success({ payment, reserveId }) {
   const router = useRouter();

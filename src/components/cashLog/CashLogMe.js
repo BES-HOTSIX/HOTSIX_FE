@@ -10,7 +10,6 @@ import {
   TableCell,
   Pagination,
   getKeyValue,
-  card,
   Card,
   CardBody,
 } from "@nextui-org/react";
@@ -80,7 +79,7 @@ export default function CashLogMe() {
       >
         <TableHeader>
           <TableColumn key="createdAt">날짜</TableColumn>
-          <TableColumn key="cashLogId">식별번호</TableColumn>
+          <TableColumn key="orderId">식별코드</TableColumn>
           <TableColumn key="eventType">카테고리</TableColumn>
           <TableColumn key="price">금액</TableColumn>
         </TableHeader>
