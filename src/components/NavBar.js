@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
-import CategoryMenu from './ui/navbar-menu/CategoryMenu'
-import HotelIcon from './ui/icon/HotelIcon'
-import { useUser } from '@/hooks/useUser'
-import { useEffect } from 'react'
-import { HTTP_STATUS_CODE, ERROR_CODE } from '@/constants/constants'
-import axios from '@/config/axios-config'
-import { FiMenu } from 'react-icons/fi'
+import Link from "next/link"
+import CategoryMenu from "./ui/navbar-menu/CategoryMenu"
+import HotelIcon from "./ui/icon/HotelIcon"
+import { useUser } from "@/hooks/useUser"
+import { useEffect } from "react"
+import { HTTP_STATUS_CODE, ERROR_CODE } from "@/constants/constants"
+import axios from "@/config/axios-config"
+import { FiMenu } from "react-icons/fi"
 import {
   Dropdown as NextDropDown,
   DropdownTrigger,
@@ -16,7 +16,7 @@ import {
   Button,
   User,
   Avatar,
-} from '@nextui-org/react'
+} from "@nextui-org/react"
 
 export default function Navbar() {
   const { user, isLoading, isError, error, refetch } = useUser()
@@ -25,11 +25,11 @@ export default function Navbar() {
     e.preventDefault()
 
     const response = await axios
-      .delete('/user/logout', { ...axios.defaults, useAuth: true })
+      .delete("/user/logout", { ...axios.defaults, useAuth: true })
       .then((res) => {
         console.log(res)
-        sessionStorage.removeItem('ACCESS_TOKEN_KEY')
-        window.location.href = '/'
+        sessionStorage.removeItem("ACCESS_TOKEN_KEY")
+        window.location.href = "/"
       })
       .catch((err) => {
         const { statusCode, code } = err ?? {}
@@ -38,8 +38,8 @@ export default function Navbar() {
           statusCode === HTTP_STATUS_CODE.BAD_REQUEST &&
           code === ERROR_CODE.EXPIRED_ACCESS_TOKEN
         ) {
-          sessionStorage.removeItem('ACCESS_TOKEN_KEY')
-          window.location.href = '/'
+          sessionStorage.removeItem("ACCESS_TOKEN_KEY")
+          window.location.href = "/"
         }
       })
   }
@@ -58,7 +58,8 @@ export default function Navbar() {
       <div className='flex flex-1 gap-2'>
         <Link
           href='/'
-          className='font-pretendard font-extrabold text-2xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'>
+          className='font-pretendard font-extrabold text-2xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'
+        >
           HOTSHARE
         </Link>
         <div className='hidden lg:flex'>
@@ -78,14 +79,16 @@ export default function Navbar() {
                 </p>
                 <Link
                   href='/hotel/register'
-                  className='text-sm flex items-center justify-center gap-1'>
+                  className='text-sm flex items-center justify-center gap-1'
+                >
                   <HotelIcon />
                   숙소등록
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  className='text-sm py-3 px-4 rounded-full text-white bg-coral-400 hover:bg-coral-500'>
+                  className='text-sm py-3 px-4 rounded-full text-white bg-coral-400 hover:bg-coral-500'
+                >
                   로그아웃
                 </button>
               </div>
@@ -135,7 +138,8 @@ export default function Navbar() {
                     <DropdownItem
                       onClick={handleLogout}
                       key='logout'
-                      color='danger'>
+                      color='danger'
+                    >
                       로그아웃
                     </DropdownItem>
                   </DropdownMenu>
@@ -150,7 +154,8 @@ export default function Navbar() {
                     size='sm'
                     variant='light'
                     auto
-                    startContent={<FiMenu size={24} />}></Button>
+                    startContent={<FiMenu size={24} />}
+                  ></Button>
                 </DropdownTrigger>
                 <div className='md:flex lg:hidden mr-2'>
                   <DropdownMenu aria-label='Static Actions'>
