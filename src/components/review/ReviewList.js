@@ -138,13 +138,11 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
             // EditReviewForm을 렌더링하도록 변경
             <EditReviewForm
               reviewId={editingReviewId}
-              onClose={() => setIsEditing(false)} // 수정이 완료되면 isEditing을 false로 설정
+              onClose={() => setIsEditing(false)}
+              style={{ width: "300px" }} // 수정이 완료되면 isEditing을 false로 설정
             />
           ) : (
-            <Button
-              onClick={() => handleShowModal("xl")}
-              //style={{ backgroundColor: "#007bff", color: "#ffffff" }}
-            >
+            <Button onClick={() => handleShowModal("xl")}>
               전체 리뷰 보기
             </Button>
           )}
@@ -154,7 +152,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
         isOpen={showModal}
         onOpenChange={handleCloseModal}
         size={modalSize}
-        placement='bottom'
+        placement='auto'
       >
         <ModalContent
           style={{
@@ -162,13 +160,14 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
             maxHeight: "80vh",
             overflowY: "auto",
             maxWidth: "80vw",
-            width: "80%",
+            width: "50%",
           }}
         >
           {(onClose) => (
             <>
               {editingReviewId !== null ? ( // 수정 폼 렌더링을 위한 조건 추가
                 <EditReviewForm
+                  hotelId={hotelId}
                   reviewId={editingReviewId}
                   onClose={() => {
                     // 수정 폼에서 닫기 버튼을 눌렀을 때 호출되는 함수
