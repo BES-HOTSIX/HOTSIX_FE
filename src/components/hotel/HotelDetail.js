@@ -40,7 +40,7 @@ export default function HotelDetail({ id }) {
   if (isHotelLoading) return <div></div>
 
   return (
-    <div className='w-full mx-auto p-4'>
+    <div className='w-full mx-auto p-10'>
       <div className='flex justify-between'>
         <h1 className='text-2xl mb-3 '>{hotel.nickname}</h1>
         {user?.objData.nickname === hotel.host && (

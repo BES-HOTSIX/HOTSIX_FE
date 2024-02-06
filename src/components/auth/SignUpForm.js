@@ -29,7 +29,7 @@ export default function SignUpForm() {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center h-[70vh]'>
+    <div className='flex flex-col items-center justify-center h-[60vh]'>
       <form onSubmit={handleSubmit} className='p-6 bg-white rounded shadow-md'>
         <h2 className='flex justify-center text-lg font-semibold mb-4'>
           회원가입
