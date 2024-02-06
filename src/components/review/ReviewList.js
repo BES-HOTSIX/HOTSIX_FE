@@ -10,7 +10,7 @@ import {
   ModalFooter,
 } from "@nextui-org/react"
 
-const ReviewList = ({ hotelId }) => {
+const ReviewList = ({ hotelId, onEditReview }) => {
   const [recentReviews, setRecentReviews] = useState([])
   const [allReviews, setAllReviews] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -107,6 +107,12 @@ const ReviewList = ({ hotelId }) => {
         >
           삭제
         </Button>
+        <Button
+          onClick={() => onEditReview(review)} // 수정 버튼 클릭 시 새로운 콜백 호출
+          style={{ backgroundColor: "#orange", color: "#ffffff" }}
+        >
+          수정
+        </Button>
       </div>
     ))
   }
@@ -171,6 +177,15 @@ const ReviewList = ({ hotelId }) => {
                           style={{ backgroundColor: "red", color: "white" }}
                         >
                           삭제
+                        </Button>
+                        <Button
+                          onClick={() => onEditReview(review)} // 수정 버튼 클릭 시 새로운 콜백 호출
+                          style={{
+                            backgroundColor: "#007bff",
+                            color: "#ffffff",
+                          }}
+                        >
+                          수정
                         </Button>
                       </li>
                     ))}
