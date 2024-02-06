@@ -9,7 +9,7 @@ const ReviewRegisterPage = () => {
   const { hotelId, reservationId } = useParams()
 
   return (
-    <div>
+    <div className='mt-32'>
       <h1>리뷰 등록 페이지</h1>
       {/* 호텔 ID와 예약 ID를 전달 */}
       <ReviewForm hotelId={hotelId} reservationId={reservationId} />
