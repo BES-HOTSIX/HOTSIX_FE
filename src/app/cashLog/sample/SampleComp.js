@@ -6,20 +6,24 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function SampleComp({ reserveId }) {
+  // 훅
   const { submitReserveForCancel, res, isPending, isError, error } =
     useReserveForCancel();
 
-  const router = useRouter();
-
+  // res 테스트용 console.log
   if (res) {
     console.log(res);
   }
 
+  // router
+  const router = useRouter();
   if (res) {
+    // res에서 cashLogId를 추출
     cashLogId = res.data.objData.cashLogId;
     router.push(`/cashLog/${cashLogId}/confirm`);
   }
 
+  // 예약취소 버튼
   const run = async () => {
     console.log(reserveId);
     const id = reserveId;
