@@ -1,5 +1,5 @@
 #!/bin/sh
 cd ../
 mkdir output
-cp -R ./HOTSHARE_FE/* ./output
-cp -R ./output ./HOTSHARE_FE/
+cp -R ./HOTSIX_FE/* ./output
+cp -R ./output ./HOTSIX_FE/
