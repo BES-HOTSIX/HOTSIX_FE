@@ -1,3 +1,4 @@
+#!/bin/sh
 cd ../
 mkdir output
 cp -R ./HOTSHARE_FE/* ./output
