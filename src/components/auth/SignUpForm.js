@@ -29,7 +29,8 @@ export default function SignUpForm() {
 
   const [isUsernameEntered, setIsUsernameEntered] = useState(false)
   const [isPasswordEntered, setIsPasswordEntered] = useState(false)
-  const [isConfirmPasswordEntered, setIsConfirmPasswordEntered] = useState(false)
+  const [isConfirmPasswordEntered, setIsConfirmPasswordEntered] =
+    useState(false)
   const [isNicknameEntered, setIsNicknameEntered] = useState(false)
 
   const handleChange = (e) => {
@@ -68,7 +69,6 @@ export default function SignUpForm() {
     if (name === 'nickname') {
       setIsNicknameEntered(!!value)
     }
-
   }
 
   const handleImageUpload = (files) => {

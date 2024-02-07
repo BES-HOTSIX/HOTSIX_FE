@@ -5,7 +5,7 @@ import { useHotelDetail } from '@/hooks/useHotel'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FaBed, FaHome, FaKey, FaCalendarCheck } from 'react-icons/fa'
+import { FaBed, FaHome, FaKey, FaCalendarCheck, FaImages } from 'react-icons/fa'
 import {
   MdBathroom,
   MdFamilyRestroom,
@@ -26,6 +26,11 @@ export default function HotelDetail({ id }) {
     e.preventDefault()
 
     router.push(`/hotel/reserve/${id}`)
+  }
+
+  const handleAllPhotosButton = (e) => {
+    e.preventDefault()
+    router.push(`/hotel/${id}/photos`)
   }
 
   const { hotel, isHotelLoading, isFetching, isError, error } =
@@ -70,6 +75,14 @@ export default function HotelDetail({ id }) {
           <div className='absolute top-2 left-2'>
             {user && <LikeButton hotelId={id} />}
           </div>
+          <button
+            onClick={handleAllPhotosButton}
+            className='absolute right-2 bottom-2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 hover:text-gray-200 transition duration-150 ease-in-out'>
+            <div className='flex space-x-2 items-center'>
+              <FaImages className='text-lg' />
+              <p>모든 사진 보기</p>
+            </div>
+          </button>
         </div>
         <div className='grid grid-cols-2 gap-4 h-[600px]'>
           {' '}
