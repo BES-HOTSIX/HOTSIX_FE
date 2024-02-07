@@ -8,10 +8,10 @@ import { useEffect } from "react";
 export default function Success({ payment, reserveId }) {
   const router = useRouter();
 
-  const { submitTossPayments, response, isLoading, isError, error } =
+  const { submitTossPayments, response, isPending, isError, error } =
     useTossPayments();
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div> ✧*｡٩(ˊᗜˋ*)و✧*｡ ♡⸜(˶˃ ᵕ ˂˶)⸝♡ ✧*｡٩(ˊᗜˋ*)و✧*｡ ♡⸜(˶˃ ᵕ ˂˶)⸝♡</div>
     );
@@ -28,7 +28,7 @@ export default function Success({ payment, reserveId }) {
   // submitTossPayments({payment, reserveId })
 
   return (
-    <div className="h-[50vh] mt-32">
+    <div className="h-[60vh] mt-32">
       <button onClick={go}>TRY</button>
       <h1></h1>
     </div>

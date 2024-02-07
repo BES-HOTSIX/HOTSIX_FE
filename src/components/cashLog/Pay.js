@@ -149,7 +149,6 @@ export default function Pay({ fail, reserveId }) {
         successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}`,
         failUrl: `${window.location.origin}/cashLog/payByCash/${reserveId}`,
         _skipAuth: "FORCE_SUCCESS",
-        // _skipAuth: "FORCE_FAIL", // TODO 테스트용 설정
       });
     } catch (error) {}
   };

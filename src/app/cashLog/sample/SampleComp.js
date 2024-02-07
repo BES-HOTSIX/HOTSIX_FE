@@ -26,8 +26,7 @@ export default function SampleComp({ reserveId }) {
   // 예약취소 버튼
   const run = async () => {
     console.log(reserveId);
-    const id = reserveId;
-    submitReserveForCancel(id);
+    submitReserveForCancel(reserveId);
   };
 
   return <Button onClick={run}>run</Button>;
