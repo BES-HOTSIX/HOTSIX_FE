@@ -1,8 +1,8 @@
-import HomeBanner from "@/components/HomeBanner"
+import HomeBanner from '@/components/HomeBanner'
 
 export default function page() {
   return (
-    <section className='flex flex-col justify-center items-center max-w-[850px] mx-auto my-20 mt-10'>
+    <section className='flex h-[70vh] flex-col justify-center items-center max-w-[850px] mx-auto my-20 mt-10'>
       <div className='w-screen'>
         <HomeBanner />
       </div>

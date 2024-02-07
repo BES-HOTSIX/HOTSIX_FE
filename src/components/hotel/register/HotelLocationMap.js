@@ -99,7 +99,7 @@ export default function HotelLocationMap() {
 
   return (
     <div
-      className={`mt-32 flex flex-col justify-center space-y-5 transition-all duration-1000 ease-in-out ${
+      className={`mt-32 h-[60vh] flex flex-col justify-center space-y-5 transition-all duration-1000 ease-in-out ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'
       }`}>
       <p className='flex justify-center'>숙소 위치를 확인해주세요.</p>
