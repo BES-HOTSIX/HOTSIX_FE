@@ -29,7 +29,18 @@ export default function SearchPage({ city, startDate, endDate }) {
     error,
     refetch,
     isPlaceholderData,
-  } = useSearchHotels(page, city, startDate, endDate, kw)
+  } = useSearchHotels(
+    page,
+    city,
+    startDate,
+    endDate,
+    kw,
+    bedroomCount,
+    bedCount,
+    bathroomCount,
+    maxGuestCount,
+    price
+  )
 
   console.log(hotels)
 
@@ -39,7 +50,7 @@ export default function SearchPage({ city, startDate, endDate }) {
 
   const handleSearch = (e) => {
     e.preventDefault()
-    console.log(kw)
+    console.log(kw, bedroomCount, bedCount, bathroomCount, maxGuestCount, price)
     refetch()
   }
 
