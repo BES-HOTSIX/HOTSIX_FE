@@ -17,7 +17,11 @@ import { useMyCashLog } from "@/hooks/useCashLog";
 
 export default function CashLogMe() {
   const [page, setPage] = React.useState(1);
-  const { myCashLog, isLoading, isError, error } = useMyCashLog(page - 1);
+  const size = 5;
+  const { myCashLog, isLoading, isError, error } = useMyCashLog({
+    page: page - 1,
+    size,
+  });
 
   if (isLoading) return <div></div>;
 
@@ -46,6 +50,10 @@ export default function CashLogMe() {
       .replace(/\./g, "")
       .split(" ")
       .join(".");
+  });
+
+  cashLogPage.map((e) => {
+    e.orderId = e.orderId.substring(0, 4);
   });
 
   return (

@@ -9,7 +9,6 @@ import {
   Card,
   CardBody,
   Checkbox,
-  Image,
   Input,
   Modal,
   ModalBody,
@@ -25,6 +24,7 @@ import { CiImageOff } from "react-icons/ci";
 import { useAsync } from "react-use";
 import { nanoid } from "nanoid";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function Pay({ fail, reserveId }) {
   const paymentWidgetRef = useRef(null);
@@ -185,6 +185,7 @@ export default function Pay({ fail, reserveId }) {
   }
 
   console.log(reservation);
+  console.log(reservationData.hotelPhotoUrl);
 
   // 토스페이먼트
 

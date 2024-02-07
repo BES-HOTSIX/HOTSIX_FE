@@ -9,8 +9,8 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 
 // 나의 캐시 사용 내역
-const fetchMyCashLog = async (page) => {
-  const res = await axios.get(`api/v1/cashLog/me?page=${page}`, {
+const fetchMyCashLog = async ({ page, size }) => {
+  const res = await axios.get(`api/v1/cashLog/me?page=${page}&size=${size}`, {
     ...axios.defaults,
     useAuth: true,
   });
@@ -18,7 +18,7 @@ const fetchMyCashLog = async (page) => {
   return res.data;
 };
 
-export const useMyCashLog = (page) => {
+export const useMyCashLog = ({ page, size }) => {
   const {
     data: myCashLog,
     isLoading,
@@ -26,8 +26,8 @@ export const useMyCashLog = (page) => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["myCashLog", page],
-    queryFn: () => fetchMyCashLog(page),
+    queryKey: ["myCashLog", page, size],
+    queryFn: () => fetchMyCashLog({ page, size }),
     retry: 0,
     placeholderData: keepPreviousData,
   });
@@ -37,7 +37,7 @@ export const useMyCashLog = (page) => {
 
 /**  결제하기 창 */
 const fetchReservationForPay = async (reserveId) => {
-  const res = await axios.get(`api/v1/cashLog/payByCash/${reserveId}`, {
+  const res = await axios.get(`api/v1/cashLog/pay/${reserveId}`, {
     ...axios.defaults,
     useAuth: true,
   });
