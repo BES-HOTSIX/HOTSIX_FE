@@ -30,7 +30,7 @@ export default function MyReservations() {
         let now = new Date();
         let threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000); // 현재 시간에서 3일을 뺀 시간
 
-        return date >= threeDaysAgo;
+        return (date >= threeDaysAgo) && (date < now);
     }
 
     const pages = useMemo(
@@ -89,6 +89,7 @@ export default function MyReservations() {
                                             <Button
                                                 as={Link}
                                                 href={`/review/${reservation.hotelId}/${reservation.id}`}
+                                                isDisabled={!(isTimeBeforeNow(reservation.checkOutDate) && !reservation.cancelDate)}
                                             >
                                                 후기작성
                                             </Button>
