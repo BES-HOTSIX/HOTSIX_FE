@@ -11,16 +11,46 @@ import {
 } from "@nextui-org/react";
 import {useMutation} from "@tanstack/react-query";
 import {fileApiAxios} from "@/config/axios-config";
-import {Bounce, toast} from "react-toastify";
+
+import {Bounce} from "react-toastify";
 import {useState} from "react";
+import {useUser} from "@/hooks/useUser";
+
 
 export default function ImageChange() {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [selectedFile, setSelectedFile] = useState(null);
 
+    const {refetch, user} = useUser();
+
+
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
     };
+
+    const deleteImage = useMutation({
+        mutationFn: () => {
+            return fileApiAxios.delete(`/api/v1/images?imageUrl=${user.imageUrl}`, {
+                useAuth: true,
+            })
+        },
+        onSuccess: () => {
+            mutation.mutate(selectedFile);
+        },
+        onError: (error) => {
+            toast.error('문제가 생겼습니다 관리자에게 문의해주세요.', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+        }
+    })
 
     const mutation = useMutation({
         mutationFn: (selectedFile) => {
@@ -33,6 +63,9 @@ export default function ImageChange() {
         },
         onSuccess: () => {
             onOpenChange();
+
+            refetch();
+
             toast.success('이미지가 변경되었습니다', {
                 position: "top-center",
                 autoClose: 5000,
@@ -49,7 +82,11 @@ export default function ImageChange() {
 
     const handleUpload = (e) => {
         e.preventDefault();
-        mutation.mutate(selectedFile);
+        if (user.imageUrl) {
+            deleteImage.mutate()
+        } else {
+            mutation.mutate(selectedFile);
+        }
     }
 
     const [previewSrc, setPreviewSrc] = useState(null);

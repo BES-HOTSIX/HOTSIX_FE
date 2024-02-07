@@ -4,18 +4,16 @@ import Link from 'next/link'
 import CategoryMenu from './ui/navbar-menu/CategoryMenu'
 import HotelIcon from './ui/icon/HotelIcon'
 import { useUser } from '@/hooks/useUser'
-import { useEffect } from 'react'
-import { HTTP_STATUS_CODE, ERROR_CODE } from '@/constants/constants'
+import { ERROR_CODE, HTTP_STATUS_CODE } from '@/constants/constants'
 import axios from '@/config/axios-config'
 import { FiMenu } from 'react-icons/fi'
 import {
-  Dropdown as NextDropDown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-  User,
   Avatar,
+  Button,
+  Dropdown as NextDropDown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
 } from '@nextui-org/react'
 
 export default function Navbar() {
@@ -58,11 +56,11 @@ export default function Navbar() {
       <div className='flex flex-1 gap-2'>
         <Link
           href='/'
-          className='font-pretendard font-extrabold text-2xl flex justify-center items-center px-3 text-sage-750'>
+          className='font-pretendard font-extrabold text-2xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'>
           HOTSHARE
         </Link>
         <div className='hidden lg:flex'>
-          <ul className='flex items-center gap-2 px-1 text-sage-700 text-sm font-semibold tracking-widest'>
+          <ul className='flex items-center gap-2 px-1 text-sage-700 dark:text-cream text-sm font-semibold tracking-widest'>
             <CategoryMenu />
           </ul>
         </div>
