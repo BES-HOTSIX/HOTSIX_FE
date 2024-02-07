@@ -1,7 +1,7 @@
 'use client'
 import {useUser} from "@/hooks/useUser";
 import {FaUserCircle} from "react-icons/fa";
-import {Avatar, Spacer} from "@nextui-org/react";
+import {Avatar, Button, Spacer} from "@nextui-org/react";
 import PassChange from "@/components/mypage/PassChange";
 import NickNameChange from "@/components/mypage/NickNameChange";
 import ImageChange from "@/components/mypage/ImageChange";
@@ -35,12 +35,20 @@ export default function MyInfo() {
                         <NickNameChange/>
                     </div>
                 </div>
-                <div className={"w-full bg-[#D9D9D9] h-20 px-10 flex items-center"}>
+                <div className={"w-full bg-[#D9D9D9] h-20 px-10 flex items-center border-b-black border-b-1"}>
                     <div className={"w-1/12"}>비밀번호</div>
                     <Spacer x={16}/>
                     <div className={"flex items-center"}>*************</div>
                     <div className={"ml-auto"}>
                         <PassChange/>
+                    </div>
+                </div>
+                <div className={"w-full bg-[#D9D9D9] h-20 px-10 flex items-center "}>
+                    <div className={"w-1/12"}>포인트</div>
+                    <Spacer x={16}/>
+                    <div className={"flex items-center"}>{user?.objData.restCash}P</div>
+                    <div className={"ml-auto"}>
+                        <Button className={"bg-white"} isDisabled={user?.objData.restCash === 0}>환전하기</Button>
                     </div>
                 </div>
             </div>

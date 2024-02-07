@@ -4,18 +4,16 @@ import Link from "next/link";
 import CategoryMenu from "./ui/navbar-menu/CategoryMenu";
 import HotelIcon from "./ui/icon/HotelIcon";
 import { useUser } from "@/hooks/useUser";
-import { useEffect } from "react";
-import { HTTP_STATUS_CODE, ERROR_CODE } from "@/constants/constants";
+import { ERROR_CODE, HTTP_STATUS_CODE } from "@/constants/constants";
 import axios from "@/config/axios-config";
 import { FiMenu } from "react-icons/fi";
 import {
-  Dropdown as NextDropDown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-  User,
   Avatar,
+  Button,
+  Dropdown as NextDropDown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
 } from "@nextui-org/react";
 
 export default function Navbar() {

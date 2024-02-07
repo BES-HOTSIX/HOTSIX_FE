@@ -113,7 +113,7 @@ const ReviewList = ({ hotelId }) => {
 
   return (
     <div style={{ textAlign: 'left' }}>
-      <h2>최근 리뷰</h2>
+      <h2 className='mb-3'>최근 리뷰</h2>
       {renderRecentReviewsGrid()}
       {recentReviews.length > 0 && allReviews.length > 0 && (
         <Button
