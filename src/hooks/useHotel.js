@@ -211,17 +211,52 @@ export const useDeleteHotel = (hotelId) => {
   return { submitDelete, isPending, isError, error }
 }
 
-const fetchSearchHotels = async (page, district, startDate, endDate, kw) => {
-  const { data } = await axios.get(
-    `/api/v1/hotels/search?page=${page}&district=${district}&startDate=${startDate}&endDate=${endDate}&kw=${kw}`
-  )
+const fetchSearchHotels = async (
+  page,
+  district,
+  startDate,
+  endDate,
+  kw,
+  bedroomCount,
+  bedCount,
+  bathroomCount,
+  maxGuestCount,
+  price
+) => {
+  const queryParams = new URLSearchParams({
+    page,
+    district,
+    startDate,
+    endDate,
+    kw,
+    bedroomCount,
+    bedCount,
+    bathroomCount,
+    maxGuestCount,
+    price,
+  }).toString()
 
-  console.log('fetchSeartchHotels', data)
+  const { data } = await axios.get(`/api/v1/hotels/search?${queryParams}`)
+
+  console.log('fetchSearchHotels', data)
 
   return data
 }
 
-export const useSearchHotels = (page, district, startDate, endDate, kw) => {
+export const useSearchHotels = (
+  page,
+  district,
+  startDate,
+  endDate,
+  kw,
+  bedroomCount,
+  bedCount,
+  bathroomCount,
+  maxGuestCount,
+  price
+) => {
+  const queryKey = ['searchHotels', district, startDate, endDate, page]
+
   const {
     data: hotels,
     isLoading,
@@ -231,8 +266,20 @@ export const useSearchHotels = (page, district, startDate, endDate, kw) => {
     refetch,
     isPlaceholderData,
   } = useQuery({
-    queryKey: ['searchHotels', district, startDate, endDate, page],
-    queryFn: () => fetchSearchHotels(page, district, startDate, endDate, kw),
+    queryKey,
+    queryFn: () =>
+      fetchSearchHotels(
+        page,
+        district,
+        startDate,
+        endDate,
+        kw,
+        bedroomCount,
+        bedCount,
+        bathroomCount,
+        maxGuestCount,
+        price
+      ),
     retry: 0,
   })
 
