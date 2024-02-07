@@ -7,7 +7,7 @@ import { FaCity } from 'react-icons/fa'
 export default function SearchCity({ city, setCity }) {
   return (
     <div>
-      <div className='flex space-x-2 ml-2'>
+      <div className='flex space-x-2 mt-2 ml-2'>
         <FaCity className='text-black' /> {/* 달력 아이콘 */}
         <span className='text-black'>도시 선택</span> {/* 문구 */}
       </div>

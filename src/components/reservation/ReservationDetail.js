@@ -77,7 +77,7 @@ export default function ReservationDetail({ id }) {
   const staticImageUrl = '/tosspay.png'
 
   return (
-    <div className='mt-32'>
+    <div className='h-[60vh] mt-32'>
       <div style={styles.container}>
         <div style={styles.contentSection}>
           <div style={styles.reservationSection}>

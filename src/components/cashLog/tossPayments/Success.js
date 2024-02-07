@@ -26,7 +26,7 @@ export default function Success({ payment, reserveId }) {
   // submitTossPayments({payment, reserveId })
 
   return (
-    <div className='h-[50vh] mt-32'>
+    <div className='h-[60vh] mt-32'>
       <button onClick={go}>TRY</button>
       <h1></h1>
     </div>
