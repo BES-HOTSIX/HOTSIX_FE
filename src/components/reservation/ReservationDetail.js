@@ -1,17 +1,25 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useReservationDetail } from '@/hooks/useReservation'
 import { useReserveForCancel } from '@/hooks/useCashLog'
 import { Button } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
 import ReservationCancelDetail from '@/components/reservation/ReservationCancelDetail'
-import axios from 'axios'
 
 export default function ReservationDetail({ id }) {
 	const { reservation, isLoading, isError, error } = useReservationDetail(id)
 	const { submitReserveForCancel, res, isPending } = useReserveForCancel(id)
 	
+	const router = useRouter();
+	useEffect(() => {
+		if (res && res.data.objData.cashLogId) {
+			const cashLogId = res.data.objData.cashLogId;
+			console.log(cashLogId);
+			router.push(`/cashLog/${cashLogId}/confirm`);
+		}
+	}, [res, router]);
+
 	if (isLoading || isPending) {
 		return <div className='h-[60vh] mt-32'>loading</div>
 	}
@@ -19,13 +27,12 @@ export default function ReservationDetail({ id }) {
 	if (isError) {
 		return <div className='h-[60vh] mt-32'>Error: {error.message}</div>
 	}
+
+	const reservationData = reservation.objData;
 	
-	const router = useRouter()
-	if (res) {
-		// res에서 cashLogId를 추출
-		cashLogId = res.data.objData.cashLogId;
-		console.log(cashLogId)
-		router.push(`/cashLog/${cashLogId}/confirm`);
+	// cancelDate가 null이 아닌 경우 ReservationCancelDetail 컴포넌트를 렌더링
+	if (reservationData.cancelDate !== null) {
+		return <ReservationCancelDetail id={id} />
 	}
 	
 	const handleCancelClick = async () => {
@@ -35,13 +42,12 @@ export default function ReservationDetail({ id }) {
 			submitReserveForCancel(id)
 		}
 	}
-	
-	const reservationData = reservation.objData
 
-	// cancelDate가 null이 아닌 경우 ReservationCancelDetail 컴포넌트를 렌더링
-	if (reservationData.cancelDate !== null) {
-		return <ReservationCancelDetail id={id} />
-	}
+	const handleReviewClick = () => {
+		const hotelId = reservationData.hotelId;
+		
+		router.push(`/review/${hotelId}/${id}`);
+	};
 
 	// createdAt 날짜 형식을 'nnnn.nn.nn' 형태로 포맷
 	const formattedCreatedAt = new Date(reservationData.createdAt)
@@ -64,6 +70,7 @@ export default function ReservationDetail({ id }) {
 		.replace(/\./g, '')
 		.split(' ')
 		.join('.')
+
 	const formattedCheckOutDate = new Date(reservationData.checkOutDate)
 		.toLocaleDateString('ko-KR', {
 			year: 'numeric',
@@ -88,11 +95,10 @@ export default function ReservationDetail({ id }) {
 	
 	// 현재 날짜가 체크아웃 날짜보다 같거나 늦은 경우 리뷰 작성 가능
 	const isReviewAllowed = todayStr >= checkInDateStr;
-	
 	// 현재 날짜와 체크인 날짜 비교해서 체크인 날짜가 오늘 날짜보다 하루 이상 남았는지 확인
 	const isCancellationAllowed = new Date(checkInDateStr) - new Date(todayStr) > 24 * 60 * 60 * 1000;
 
-	const staticImageUrl = '/tosspay.png'
+	const staticImageUrl = '/tosspay.png';
 
   return (
     <div className='h-[60vh] mt-32'>
@@ -158,7 +164,7 @@ export default function ReservationDetail({ id }) {
             )}
             {!isCancellationAllowed && isReviewAllowed && (
               <div style={styles.actions}>
-                <Button style={styles.button} onClick={handleCancelClick}>
+                <Button style={styles.button} onClick={handleReviewClick}>
                   리뷰 작성
                 </Button>
               </div>
