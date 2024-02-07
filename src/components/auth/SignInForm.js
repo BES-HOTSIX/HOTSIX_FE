@@ -16,6 +16,10 @@ export default function SignInForm() {
     password: '',
   })
 
+    // 입력 여부를 추적할 State
+    const [isUsernameEntered, setIsUsernameEntered] = useState(false)
+    const [isPasswordEntered, setIsPasswordEntered] = useState(false)
+
   const handleChange = (e) => {
     e.preventDefault()
     const { name, value } = e.target
@@ -23,6 +27,15 @@ export default function SignInForm() {
       ...loginForm,
       [name]: value,
     })
+
+    // 입력 여부에 따라 State 업데이트
+    if (name === 'username') {
+      setIsUsernameEntered(!!value) // 값이 비어있지 않으면 true, 비어있으면 false
+    }
+
+    if (name === 'password') {
+      setIsPasswordEntered(!!value)
+    }
   }
 
   const handleSubmit = (e) => {
@@ -55,6 +68,7 @@ export default function SignInForm() {
               name='username'
               value={loginForm.username}
               onChange={handleChange}
+              style={{ opacity: isUsernameEntered ? 1 : 0.3 }}
             />
           </div>
           <div className='mb-4'>
@@ -70,6 +84,7 @@ export default function SignInForm() {
               name='password'
               value={loginForm.password}
               onChange={handleChange}
+              style={{ opacity: isPasswordEntered ? 1 : 0.3 }} //
             />
           </div>
           <Button fullWidth size='lg' type='submit'>

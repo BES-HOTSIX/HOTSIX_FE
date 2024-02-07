@@ -27,6 +27,11 @@ export default function SignUpForm() {
 
   const [selectedImage, setSelectedImage] = useState(null)
 
+  const [isUsernameEntered, setIsUsernameEntered] = useState(false)
+  const [isPasswordEntered, setIsPasswordEntered] = useState(false)
+  const [isConfirmPasswordEntered, setIsConfirmPasswordEntered] = useState(false)
+  const [isNicknameEntered, setIsNicknameEntered] = useState(false)
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setSignupForm({
@@ -46,6 +51,24 @@ export default function SignUpForm() {
         setConfirmPasswordMessage('')
       }
     }
+
+    // 입력 여부에 따라 State 업데이트
+    if (name === 'username') {
+      setIsUsernameEntered(!!value) // 값이 비어있지 않으면 true, 비어있으면 false
+    }
+
+    if (name === 'password') {
+      setIsPasswordEntered(!!value)
+    }
+
+    if (name === 'confirmPassword') {
+      setIsConfirmPasswordEntered(!!value)
+    }
+
+    if (name === 'nickname') {
+      setIsNicknameEntered(!!value)
+    }
+
   }
 
   const handleImageUpload = (files) => {
@@ -154,6 +177,7 @@ export default function SignUpForm() {
               name='username'
               value={signupForm.username}
               onChange={handleChange}
+              style={{ opacity: isUsernameEntered ? 1 : 0.3 }}
             />
           </div>
           <div className='mb-4'>
@@ -169,6 +193,7 @@ export default function SignUpForm() {
               name='password'
               value={signupForm.password}
               onChange={handleChange}
+              style={{ opacity: isPasswordEntered ? 1 : 0.3 }}
             />
             <div className='text-sm text-gray-500 mt-1'>
               {passwordStrength.message}
@@ -187,6 +212,7 @@ export default function SignUpForm() {
               name='confirmPassword'
               value={signupForm.confirmPassword}
               onChange={handleChange}
+              style={{ opacity: isConfirmPasswordEntered ? 1 : 0.3 }}
             />
             {!passwordMatch && (
               <div className='text-sm text-red-500 mt-1'>
@@ -206,6 +232,7 @@ export default function SignUpForm() {
               name='nickname'
               value={signupForm.nickname}
               onChange={handleChange}
+              style={{ opacity: isNicknameEntered ? 1 : 0.3 }}
             />
           </div>
           <Button fullWidth size='lg' type='submit'>
