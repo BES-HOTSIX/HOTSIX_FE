@@ -29,10 +29,11 @@ export const GoogleLogin = () => {
       onClick={handleLogin}
       className='flex items-center justify-center rounded'>
       <Image
-        src={googleLoginImage}
+        className='ml-0'
+        src="/img/google_login.png"  // 상대 경로로 이미지 지정
         alt='구글로 로그인'
-        height={30}
-        width={330}
+        height={50}
+        width={300}
       />
     </button>
   )

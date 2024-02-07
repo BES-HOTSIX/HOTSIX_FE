@@ -62,11 +62,14 @@ export default function NaverLogin() {
       <div ref={naverRef} id='naverIdLogin'></div>
       <button onClick={handleNaverLoginBtn}>
         <img
-          className='ml-4 w-[300px] h-12'
-          src='https://static.nid.naver.com/oauth/big_g.PNG?version=js-2.0.1'
+          className='ml-0'
+          src='/img/naver_login.png'  // 이미지의 상대 경로로 지정
           alt='naver'
+          width={300}  // 이미지 너비를 50으로 설정
+          height={50} // 이미지 높이를 50으로 설정
         />
       </button>
     </>
-  )
+  );
+  
 }
