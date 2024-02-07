@@ -13,11 +13,11 @@ export default function ReservationDetail({ id }) {
 	const { submitReserveForCancel, res, isPending } = useReserveForCancel(id)
 	
 	if (isLoading || isPending) {
-		return <div>loading</div>
+		return <div className='h-[60vh] mt-32'>loading</div>
 	}
 	
 	if (isError) {
-		return <div>Error: {error.message}</div>
+		return <div className='h-[60vh] mt-32'>Error: {error.message}</div>
 	}
 	
 	const router = useRouter()

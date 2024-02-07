@@ -35,11 +35,11 @@ export default function HotelReservation({ id }) {
 	}, [startDate, endDate, hotel, isHotelLoading])
 
 	if (isHotelLoading) {
-		return <div>loading</div>
+		return <div className='h-[60vh] mt-32'>loading</div>
 	}
 
 	if (isError) {
-		return <div>Error: {error.message}</div>
+		return <div className='h-[60vh] mt-32'>Error: {error.message}</div>
 	}
 
 	const mainImage = hotel.imagesResponse.imageUrl[0]
