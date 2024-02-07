@@ -10,7 +10,7 @@ import {
   ModalFooter,
 } from "@nextui-org/react"
 import EditReviewForm from "./EditReviewForm"
-import { size } from "lodash"
+import { margin } from "@mui/system"
 
 const ReviewList = ({ hotelId, onReviewEdit }) => {
   const [recentReviews, setRecentReviews] = useState([])
@@ -28,7 +28,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
       setAllReviews(response.data)
 
       // 최근 4개 리뷰
-      const recentReviewsData = response.data.slice(0, 4)
+      const recentReviewsData = response.data.slice(0, 3)
       setRecentReviews(recentReviewsData)
     } catch (error) {
       console.error("리뷰를 불러오는 중 에러 발생:", error)
@@ -95,7 +95,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
       <div key={review.id}>
         <p style={{ margin: "10px" }}>회원명: {review.member}</p>
         <p style={{ margin: "10px" }}>
-          평점: {renderStars(review.rating)} ({review.rating})
+          평점 {renderStars(review.rating)} ({review.rating})
         </p>
         <p
           style={{ textAlign: "left", whiteSpace: "pre-line", margin: "10px" }}
@@ -103,17 +103,21 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
           {review.body}
         </p>
         <p style={{ margin: "10px" }}>
-          편의시설: {renderStars(review.amenities)} ({review.amenities})
+          편의시설 {renderStars(review.amenities)} ({review.amenities})
         </p>
         <p style={{ margin: "10px" }}>
-          서비스: {renderStars(review.staffService)} ({review.staffService})
+          서비스 {renderStars(review.staffService)} ({review.staffService})
         </p>
         <p style={{ margin: "10px" }}>
-          청결도: {renderStars(review.cleanliness)} ({review.cleanliness})
+          청결 {renderStars(review.cleanliness)} ({review.cleanliness})
         </p>
         <Button
           onClick={() => handleEditReview(review.id)}
-          style={{ backgroundColor: "orange", color: "white" }}
+          style={{
+            backgroundColor: "orange",
+            color: "white",
+            marginBottom: "25px",
+          }}
         >
           수정
         </Button>
@@ -130,141 +134,141 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   return (
     <div style={{ textAlign: "left" }}>
       <h2 className='text-xl font-semibold mb-4 mt-5'>이용 후기</h2>
-      <div className='w-[55vw]'>
-        <div className='w-[40vw]'>
-          <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
-        </div>
+      <div className='w-[40vw]'>
+        <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
+      </div>
 
-        {renderRecentReviewsGrid()}
-        {recentReviews.length > 0 && allReviews.length > 0 && (
-          <>
-            {isEditing ? (
-              // EditReviewForm을 렌더링하도록 변경
-              <EditReviewForm
-                reviewId={editingReviewId}
-                onClose={() => setIsEditing(false)} // 수정이 완료되면 isEditing을 false로 설정
-              />
-            ) : (
-              <Button onClick={() => handleShowModal("xl")}>
-                전체 리뷰 보기
-              </Button>
-            )}
-          </>
-        )}
-        <Modal
-          isOpen={showModal}
-          onOpenChange={handleCloseModal}
-          size={modalSize}
-          placement='auto'
+      {renderRecentReviewsGrid()}
+      {recentReviews.length > 0 && allReviews.length > 0 && (
+        <>
+          {isEditing ? (
+            // EditReviewForm을 렌더링하도록 변경
+            <EditReviewForm
+              reviewId={editingReviewId}
+              onClose={() => setIsEditing(false)} // 수정이 완료되면 isEditing을 false로 설정
+            />
+          ) : (
+            <Button onClick={() => handleShowModal("xl")}>
+              전체 리뷰 보기
+            </Button>
+          )}
+        </>
+      )}
+      <Modal
+        isOpen={showModal}
+        onOpenChange={handleCloseModal}
+        size={modalSize}
+        placement='auto'
+      >
+        <ModalContent
+          style={{
+            top: "10vh",
+            maxHeight: "80vh",
+            overflowY: "auto",
+            maxWidth: "80vw",
+            width: "50%",
+          }}
         >
-          <ModalContent
-            style={{
-              top: "10vh",
-              maxHeight: "80vh",
-              overflowY: "auto",
-              maxWidth: "80vw",
-              width: "50%",
-            }}
-          >
-            {(onClose) => (
-              <>
-                {editingReviewId !== null ? ( // 수정 폼 렌더링을 위한 조건 추가
-                  <EditReviewForm
-                    hotelId={hotelId}
-                    reviewId={editingReviewId}
-                    onClose={() => {
-                      // 수정 폼에서 닫기 버튼을 눌렀을 때 호출되는 함수
-                      handleCloseModal()
-                      // 추가적인 처리가 필요하다면 onReviewEdit를 호출하여 처리할 수 있음
-                      if (onReviewEdit) {
-                        onReviewEdit()
-                      }
+          {(onClose) => (
+            <>
+              {editingReviewId !== null ? ( // 수정 폼 렌더링을 위한 조건 추가
+                <EditReviewForm
+                  hotelId={hotelId}
+                  reviewId={editingReviewId}
+                  onClose={() => {
+                    // 수정 폼에서 닫기 버튼을 눌렀을 때 호출되는 함수
+                    handleCloseModal()
+                    // 추가적인 처리가 필요하다면 onReviewEdit를 호출하여 처리할 수 있음
+                    if (onReviewEdit) {
+                      onReviewEdit()
+                    }
+                  }}
+                />
+              ) : (
+                <>
+                  <h4
+                    style={{
+                      margin: "30px",
+                      fontSize: "25px",
                     }}
-                  />
-                ) : (
-                  <>
-                    <h4
-                      style={{
-                        margin: "30px",
-                        fontSize: "25px",
-                      }}
-                    >
-                      전체 리뷰
-                    </h4>
-                    <ModalBody>
-                      {Array.isArray(allReviews) && allReviews.length > 0 ? (
-                        <ul
-                          style={{
-                            listStyleType: "none",
-                            paddingLeft: "40px",
-                            paddingRight: "40px",
-                          }}
-                        >
-                          {allReviews.map((review) => (
-                            <li key={review.id}>
-                              <p style={{ margin: "10px" }}>
-                                회원명: {review.member}
-                              </p>
-                              <p style={{ margin: "10px" }}>
-                                평점: {renderStars(review.rating)} (
-                                {review.rating})
-                              </p>
-                              <p style={{ margin: "10px" }}>{review.body}</p>
-                              <p style={{ margin: "10px" }}>
-                                편의시설: {renderStars(review.amenities)} (
-                                {review.amenities})
-                              </p>
-                              <p style={{ margin: "10px" }}>
-                                서비스: {renderStars(review.staffService)} (
-                                {review.staffService})
-                              </p>
-                              <p style={{ margin: "10px" }}>
-                                청결도: {renderStars(review.cleanliness)} (
-                                {review.cleanliness})
-                              </p>
-                              <Button
-                                onClick={() => handleEditReview(review.id)}
-                                style={{
-                                  backgroundColor: "orange",
-                                  color: "white",
-                                }}
-                              >
-                                수정
-                              </Button>
-                              <Button
-                                onClick={() => handleDeleteReview(review.id)}
-                                style={{
-                                  backgroundColor: "red",
-                                  color: "white",
-                                }}
-                              >
-                                삭제
-                              </Button>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p>리뷰가 없습니다</p>
-                      )}
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button
-                        onPress={() => {
-                          if (onReviewEdit) {
-                            onReviewEdit()
-                          }
+                  >
+                    전체 리뷰
+                  </h4>
+                  <ModalBody>
+                    {Array.isArray(allReviews) && allReviews.length > 0 ? (
+                      <ul
+                        style={{
+                          listStyleType: "none",
+                          paddingLeft: "40px",
+                          paddingRight: "40px",
                         }}
                       >
-                        닫기
-                      </Button>
-                    </ModalFooter>
-                  </>
-                )}
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      </div>
+                        {allReviews.map((review) => (
+                          <li key={review.id}>
+                            <p style={{ margin: "10px" }}>
+                              회원명: {review.member}
+                            </p>
+                            <p style={{ margin: "10px" }}>
+                              평점 {renderStars(review.rating)} ({review.rating}
+                              )
+                            </p>
+                            <p style={{ margin: "10px" }}>{review.body}</p>
+                            <p style={{ margin: "10px" }}>
+                              편의시설 {renderStars(review.amenities)} (
+                              {review.amenities})
+                            </p>
+                            <p style={{ margin: "10px" }}>
+                              서비스 {renderStars(review.staffService)} (
+                              {review.staffService})
+                            </p>
+                            <p style={{ margin: "10px" }}>
+                              청결 {renderStars(review.cleanliness)} (
+                              {review.cleanliness})
+                            </p>
+                            <Button
+                              onClick={() => handleEditReview(review.id)}
+                              style={{
+                                backgroundColor: "orange",
+                                color: "white",
+                              }}
+                            >
+                              수정
+                            </Button>
+                            <Button
+                              onClick={() => handleDeleteReview(review.id)}
+                              style={{
+                                backgroundColor: "red",
+                                color: "white",
+                                marginBottom: "25px",
+                              }}
+                            >
+                              삭제
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>리뷰가 없습니다</p>
+                    )}
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      onPress={() => {
+                        if (onReviewEdit) {
+                          onReviewEdit()
+                        }
+                      }}
+                      style={{ paddingRight: "15px" }}
+                    >
+                      닫기
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   )
 }

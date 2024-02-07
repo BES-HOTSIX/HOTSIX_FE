@@ -78,7 +78,7 @@ const EditReviewForm = ({ hotelId, reviewId, onClose }) => {
         onChange={(e) => handleInputChange("body", e.target.value)}
       />
       <div style={{ marginTop: "10px" }}>
-        <label style={{ margin: "10px" }}>편의시설 평가</label>
+        <label style={{ margin: "10px" }}>편의시설 만족도</label>
         {[1, 2, 3, 4, 5].map((value) => (
           <span
             key={value}
@@ -97,7 +97,7 @@ const EditReviewForm = ({ hotelId, reviewId, onClose }) => {
       <br />
       <div style={{ marginTop: "10px" }}>
         <label style={{ margin: "10px", marginRight: "26px" }}>
-          서비스 평가
+          서비스 만족도
         </label>
         {[1, 2, 3, 4, 5].map((value) => (
           <span
@@ -117,7 +117,7 @@ const EditReviewForm = ({ hotelId, reviewId, onClose }) => {
       <br />
       <div style={{ marginTop: "10px" }}>
         <label style={{ margin: "10px", marginRight: "26px" }}>
-          청결도 평가
+          청결 만족도
         </label>
         {[1, 2, 3, 4, 5].map((value) => (
           <span
