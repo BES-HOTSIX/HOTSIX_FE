@@ -52,7 +52,7 @@ export default function CashLogMe() {
   return (
     <div className='mt-32 min-h-screen'>
       <div className='flex justify-between mb-5 items-center'>
-        <p className='text-4xl ml-10'>캐시 사용 내역</p>
+        <p className='text-4xl ml-10'>결제 내역</p>
         <Card className='py-4 w-2/4 right-0 top-0'>
           <CardBody className='overflow-visible py-2'>
             <p className='text-2xl'>보유 캐시 : {restCash}</p>

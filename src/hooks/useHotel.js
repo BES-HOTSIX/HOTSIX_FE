@@ -57,15 +57,15 @@ export const useRegisterHotel = () => {
   return { submitRegister, isPending, isError, error }
 }
 
-const fetchHotels = async (page) => {
-  const { data } = await axios.get(`/api/v1/hotels?page=${page}`)
+const fetchHotels = async (page, size) => {
+  const { data } = await axios.get(`/api/v1/hotels?page=${page}&size=${size}`)
 
   console.log('fetchHotels')
 
   return data
 }
 
-export const useHotels = (page) => {
+export const useHotels = (page, size) => {
   const {
     data: hotels,
     isLoading,
@@ -74,8 +74,8 @@ export const useHotels = (page) => {
     error,
     isPlaceholderData,
   } = useQuery({
-    queryKey: ['hotels', page],
-    queryFn: () => fetchHotels(page),
+    queryKey: ['hotels', page, size],
+    queryFn: () => fetchHotels(page, size),
     retry: 0,
     placeholderData: keepPreviousData,
   })
