@@ -40,10 +40,16 @@ export default function KakaoLogin() {
   }
 
   return (
-    <button
-      onClick={handleKaKaoLoginButton}
-      className='flex items-center justify-center w-full py-2 rounded mt-5'>
-      <Image src={kakaoLoginImage} alt='Kakao로 로그인' />
-    </button>
-  )
+  <button
+    onClick={handleKaKaoLoginButton}
+    className='flex items-center justify-center rounded'>
+    <Image
+      className='ml-0'
+      src={kakaoLoginImage}
+      alt='Kakao로 로그인'
+      width={300}
+      height={50}
+    />
+  </button>
+)
 }
