@@ -3,9 +3,8 @@
 import React, { useState } from "react"
 import axios from "axios"
 import { useRouter } from "next/navigation"
-import RightAngleBracket from "../ui/icon/RightAngleBracket"
 
-const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
+const ReviewForm = ({ reservationId, hotelId, username, onReviewSubmit }) => {
   const [body, setBody] = useState("")
   const [ratings, setRatings] = useState({
     amenities: 0,
@@ -24,6 +23,7 @@ const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    console.log("un:", username)
 
     try {
       await axios.post(
@@ -33,6 +33,7 @@ const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
           amenities: ratings.amenities,
           staffService: ratings.staffService,
           cleanliness: ratings.cleanliness,
+          username,
         }
       )
 
