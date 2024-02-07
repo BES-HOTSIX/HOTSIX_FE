@@ -64,7 +64,7 @@ export default function Confirm({ cashLogId }) {
 
   return (
     <div>
-      <div className='h-[50vh] mt-32'>
+      <div className='h-[60vh] mt-32'>
         <div className='flex justify-center mb-5' style={{ fontSize: '20px' }}>
           예약이 완료되었습니다
           <br />

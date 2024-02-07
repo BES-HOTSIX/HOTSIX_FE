@@ -40,13 +40,15 @@ export default function SearchBar() {
   return (
     <div className='grid grid-cols-1 md:grid-cols-3 gap-4 w-[1/5] bg-white rounded-lg p-5 '>
       <SearchCity city={city} setCity={setCity} />
+
       <SearchDate date={date} setDate={setDate} />
+
       <Button
         size='lg'
         color='primary'
         variant='bordered'
         aria-label='Search'
-        className='justify-self-center md:justify-self-center self-center mt-2 lg:mr-20'
+        className='justify-self-center md:justify-self-center self-center mt-7 lg:mr-20'
         onClick={handleSearchClick}>
         <FaSearch />
         검색

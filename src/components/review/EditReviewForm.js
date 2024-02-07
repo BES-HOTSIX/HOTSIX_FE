@@ -5,7 +5,7 @@ import { Button, Input, Textarea } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
 //import { useRouter } from "next/router"
 
-const EditReviewForm = ({ hotelId, reviewId, onClose, style }) => {
+const EditReviewForm = ({ hotelId, reviewId, onClose }) => {
   const [editedReview, setEditedReview] = useState({
     member: "",
     body: "",
@@ -71,23 +71,21 @@ const EditReviewForm = ({ hotelId, reviewId, onClose, style }) => {
   }
 
   return (
-    <div style={{ padding: "30px", maxWidth: "400px", margin: "auto", style }}>
-      <h4>리뷰 수정</h4>
-
-      <label></label>
+    <div style={{ padding: "50px" }}>
+      <h4 style={{ marginBottom: "20px", fontSize: "25px" }}>리뷰 수정</h4>
       <Textarea
         value={editedReview.body}
         onChange={(e) => handleInputChange("body", e.target.value)}
       />
       <div style={{ marginTop: "10px" }}>
-        <label>편의시설 평가</label>
+        <label style={{ margin: "10px" }}>편의시설 평가</label>
         {[1, 2, 3, 4, 5].map((value) => (
           <span
             key={value}
             style={{
               cursor: "pointer",
               fontSize: "24px",
-              marginRight: "8px",
+              marginRight: "18px",
               color: value <= editedReview.amenities ? "gold" : "lightgray",
             }}
             onClick={() => handleStarClick("amenities", value)}
@@ -98,14 +96,16 @@ const EditReviewForm = ({ hotelId, reviewId, onClose, style }) => {
       </div>
       <br />
       <div style={{ marginTop: "10px" }}>
-        <label>서비스 평가</label>
+        <label style={{ margin: "10px", marginRight: "26px" }}>
+          서비스 평가
+        </label>
         {[1, 2, 3, 4, 5].map((value) => (
           <span
             key={value}
             style={{
               cursor: "pointer",
               fontSize: "24px",
-              marginRight: "8px",
+              marginRight: "18px",
               color: value <= editedReview.staffService ? "gold" : "lightgray",
             }}
             onClick={() => handleStarClick("staffService", value)}
@@ -116,14 +116,16 @@ const EditReviewForm = ({ hotelId, reviewId, onClose, style }) => {
       </div>
       <br />
       <div style={{ marginTop: "10px" }}>
-        <label>청결도 평가</label>
+        <label style={{ margin: "10px", marginRight: "26px" }}>
+          청결도 평가
+        </label>
         {[1, 2, 3, 4, 5].map((value) => (
           <span
             key={value}
             style={{
               cursor: "pointer",
               fontSize: "24px",
-              marginRight: "8px",
+              marginRight: "18px",
               color: value <= editedReview.cleanliness ? "gold" : "lightgray",
             }}
             onClick={() => handleStarClick("cleanliness", value)}
@@ -139,6 +141,7 @@ const EditReviewForm = ({ hotelId, reviewId, onClose, style }) => {
       >
         수정 완료
       </Button>
+      <Button onClick={onClose}>닫기</Button>
     </div>
   )
 }

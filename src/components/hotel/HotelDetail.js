@@ -1,24 +1,24 @@
-"use client"
+'use client'
 
-import React, { useState } from "react"
-import { useHotelDetail } from "@/hooks/useHotel"
-import { useRouter } from "next/navigation"
-import Image from "next/image"
-import Link from "next/link"
-import { FaBed, FaHome, FaKey, FaCalendarCheck } from "react-icons/fa"
+import React, { useState } from 'react'
+import { useHotelDetail } from '@/hooks/useHotel'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import Link from 'next/link'
+import { FaBed, FaHome, FaKey, FaCalendarCheck } from 'react-icons/fa'
 import {
   MdBathroom,
   MdFamilyRestroom,
   MdLocationOn,
   MdPerson4,
-} from "react-icons/md"
-import ConfirmAlert from "../ui/modal/ConfirmAlert"
-import { amenitiesOptions } from "@/constants/hotel"
-import { useDeleteHotel } from "@/hooks/useHotel"
-import { formatPrice } from "@/constants/hotel"
-import { useUser } from "@/hooks/useUser"
-import LikeButton from "@/app/hotel/like/LikeButton"
-import ReviewList from "@/components/review/ReviewList"
+} from 'react-icons/md'
+import ConfirmAlert from '../ui/modal/ConfirmAlert'
+import { amenitiesOptions } from '@/constants/hotel'
+import { useDeleteHotel } from '@/hooks/useHotel'
+import { formatPrice } from '@/constants/hotel'
+import { useUser } from '@/hooks/useUser'
+import LikeButton from '@/app/hotel/like/LikeButton'
+import ReviewList from '@/components/review/ReviewList'
 
 export default function HotelDetail({ id }) {
   const router = useRouter()
@@ -72,12 +72,12 @@ export default function HotelDetail({ id }) {
           </div>
         </div>
         <div className='grid grid-cols-2 gap-4 h-[600px]'>
-          {" "}
+          {' '}
           {/* Adjust height as needed */}
           {/* 작은 이미지들 */}
           {otherImages.map((image, index) => (
             <div key={index} className='relative w-full h-[295px]'>
-              {" "}
+              {' '}
               {/* Adjust height as needed */}
               <Image
                 src={image}
@@ -90,7 +90,7 @@ export default function HotelDetail({ id }) {
           ))}
         </div>
       </div>
-      <div className='grid grid-cols-3'>
+      <div className='grid grid-cols-subgrid sm:grid-cols-3'>
         <div className='col-span-3 sm:col-span-2'>
           <h2 className='text-xl font-semibold mb-4 mt-5'>기본 정보</h2>
           <div className='w-[55vw]'>
@@ -134,7 +134,7 @@ export default function HotelDetail({ id }) {
               <div className='w-[40vw]'>
                 <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
               </div>
-              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 {amenitiesOptions
                   .filter((amenity) => hotel.facility.includes(amenity.type))
                   .map((filteredAmenity, index) => (
@@ -158,7 +158,7 @@ export default function HotelDetail({ id }) {
             </div>
           </div>
         </div>
-        <div className='bg-gray-100 rounded-lg shadow-md p-4 mt-4'>
+        <div className='bg-gray-100 w-full rounded-lg shadow-md p-4 mt-4'>
           <div>
             <div>
               <h3 className='text-lg font-semibold mb-2'>
@@ -179,8 +179,7 @@ export default function HotelDetail({ id }) {
               </div>
               <button
                 onClick={handleReservationButton}
-                className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'
-              >
+                className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'>
                 <FaCalendarCheck className='mr-2' />
                 예약하기
               </button>
@@ -189,14 +188,15 @@ export default function HotelDetail({ id }) {
         </div>
       </div>
 
-      <ReviewList hotelId={id} />
+      <div className='mt-10'>
+        <ReviewList hotelId={id} />
+      </div>
 
       {isConfirmOpen && (
         <ConfirmAlert
           isOpen={isConfirmOpen}
           onClose={() => setIsConfirmOpen(false)}
-          onSubmit={submitDelete}
-        >
+          onSubmit={submitDelete}>
           삭제시 복구가 불가능합니다. <br /> 정말로 삭제하시겠어요?
         </ConfirmAlert>
       )}
