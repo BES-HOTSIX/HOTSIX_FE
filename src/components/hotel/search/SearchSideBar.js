@@ -4,20 +4,23 @@ import React, { useState } from 'react'
 import { FiMenu, FiX } from 'react-icons/fi' // 메뉴 열기/닫기 아이콘
 import { MdRemove, MdAdd } from 'react-icons/md'
 
-export default function SearchSideBar() {
-  const [isOpen, setIsOpen] = useState(false)
-
-  const [bedroomCount, setBedroomCount] = useState(1)
-  const [bedCount, setBedCount] = useState(1)
-  const [bathroomCount, setBathroomCount] = useState(1)
-  const [maxGuestCount, setMaxGuestCount] = useState(1)
-  const [price, setPrice] = useState('')
-
+export default function SearchSideBar({
+  isOpen,
+  toggleSidebar,
+  bedroomCount,
+  setBedroomCount,
+  bedCount,
+  setBedCount,
+  bathroomCount,
+  setBathroomCount,
+  maxGuestCount,
+  setMaxGuestCount,
+  price,
+  setPrice,
+}) {
   const handleIncrement = (setter) => () => setter((prev) => prev + 1)
   const handleDecrement = (setter) => () =>
     setter((prev) => (prev > 1 ? prev - 1 : 1))
-
-  const toggleSidebar = () => setIsOpen(!isOpen)
 
   return (
     <>

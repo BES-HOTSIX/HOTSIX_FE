@@ -12,6 +12,15 @@ export default function SearchPage({ city, startDate, endDate }) {
   const [page, setPage] = useState(0)
   const [kw, setKw] = useState('')
 
+  const [isOpen, setIsOpen] = useState(false)
+  const [bedroomCount, setBedroomCount] = useState(1)
+  const [bedCount, setBedCount] = useState(1)
+  const [bathroomCount, setBathroomCount] = useState(1)
+  const [maxGuestCount, setMaxGuestCount] = useState(1)
+  const [price, setPrice] = useState('')
+
+  const toggleSidebar = () => setIsOpen(!isOpen)
+
   const {
     hotels,
     isLoading,
@@ -37,7 +46,20 @@ export default function SearchPage({ city, startDate, endDate }) {
   return (
     <div>
       <div className='w-full text-center px-5 py-10 max-[280px]:px-0 max-[280px]:pt-0'>
-        <SearchSideBar />
+        <SearchSideBar
+          isOpen={isOpen}
+          toggleSidebar={toggleSidebar}
+          bedroomCount={bedroomCount}
+          setBedroomCount={setBedroomCount}
+          bedCount={bedCount}
+          setBedCount={setBedCount}
+          bathroomCount={bathroomCount}
+          setBathroomCount={setBathroomCount}
+          maxGuestCount={maxGuestCount}
+          setMaxGuestCount={setMaxGuestCount}
+          price={price}
+          setPrice={setPrice}
+        />
         <p className='p-5 text-start'>
           총 {hotels?.objData?.totalElements}개의 숙소가 검색되었습니다.
         </p>
