@@ -190,7 +190,7 @@ export default function Pay({ fail, reserveId }) {
 
   return (
     <div>
-      <div className='mt-32'>
+      <div className='h-[55vh] mt-32'>
         <div className='flex justify-center mb-5' style={{ fontSize: '40px' }}>
           예약하기
         </div>

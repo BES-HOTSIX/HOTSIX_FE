@@ -53,7 +53,7 @@ const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
   }
 
   return (
-    <div className='mt-32'>
+    <div className='h-[50vh] mt-32'>
       <form onSubmit={handleSubmit}>
         <label>
           리뷰를 작성해주세요:
