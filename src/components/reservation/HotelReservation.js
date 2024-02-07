@@ -9,10 +9,13 @@ import CalendarCustom from './CalendarCustom'
 import axios from '@/config/axios-config'
 import { differenceInCalendarDays, addDays } from 'date-fns'
 import Image from "next/image"
+import { useSetRecoilState } from 'recoil';
+import { reserveIdState } from '@/store/reservationState'
 
 export default function HotelReservation({ id }) {
-	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id)
-	const [guestCount, setGuestCount] = useState(1)
+	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id);
+	const [guestCount, setGuestCount] = useState(1);
+  // const setReserveId = useSetRecoilState(reserveIdState); // Recoil 상태 설정 함수
 
 	// CalendarCustom에 props로 전달
 	const [startDate, setStartDate] = useState(
@@ -96,7 +99,6 @@ export default function HotelReservation({ id }) {
 			price: calculatedPrice,
 			isPaid: false,
 		}
-		console.log(reservationInfo)
 
 		try {
 			const response = await axios.post(
@@ -115,7 +117,8 @@ export default function HotelReservation({ id }) {
 
 			// Redirect or show success message
 			const reserveId = response.data.objData.id
-			router.push(`/cashLog/payByCash/${reserveId}`)
+			// setReserveId(reserveId)
+			router.push(`/cashLog/pay/${reserveId}`)
 		} catch (error) {
 			console.error('Error making reservation:', error)
 		}

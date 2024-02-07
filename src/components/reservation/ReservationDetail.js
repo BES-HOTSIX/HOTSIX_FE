@@ -15,7 +15,7 @@ export default function ReservationDetail({ id }) {
 	useEffect(() => {
 		if (res && res.data.objData.cashLogId) {
 			const cashLogId = res.data.objData.cashLogId;
-			console.log(cashLogId);
+			console.log('cashLogId: ', cashLogId);
 			router.push(`/cashLog/${cashLogId}/confirm`);
 		}
 	}, [res, router]);

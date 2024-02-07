@@ -194,7 +194,8 @@ export const useTossPayments = () => {
 // 예약 취소
 const fetchReserveForCancel = async (reserveId) => {
   console.log(`/api/v1/cashLog/${reserveId}/cancel`);
-  return await axios.patch(`/api/v1/cashLog/${reserveId}/cancel`, {
+  return await axios.patch(`/api/v1/cashLog/${reserveId}/cancel`, {},
+  {
     ...axios.defaults,
     useAuth: true,
   });
