@@ -19,7 +19,7 @@ export default function SampleComp({ reserveId }) {
   const router = useRouter();
   if (res) {
     // res에서 cashLogId를 추출
-    cashLogId = res.data.objData.cashLogId;
+    const cashLogId = res.data.objData.cashLogId;
     router.push(`/cashLog/${cashLogId}/confirm`);
   }
 
