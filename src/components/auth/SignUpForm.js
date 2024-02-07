@@ -118,107 +118,106 @@ export default function SignUpForm() {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center'>
-      <div className=' mt-32 min-h-[55vh]'>
-        <form
-          onSubmit={handleSubmit}
-          className='p-6 bg-white rounded shadow-md'>
-          <h2 className='flex justify-center text-lg font-semibold mb-4'>
-            회원가입
-          </h2>
-          <div className='mb-4 flex items-center justify-center'>
-            <label htmlFor='profileImage' className='cursor-pointer'>
-              <Avatar
-                src={selectedImage ? URL.createObjectURL(selectedImage) : null}
-                size='xl'
-                alt='프로필 이미지'
-              />
-              <input
-                type='file'
-                accept='image/*'
-                id='profileImage'
-                className='hidden'
-                onChange={(e) => handleImageUpload(e.target.files)}
-              />
-            </label>
-          </div>
-          <div className='mb-4'>
-            <Input
-              clearable
-              bordered
-              fullWidth
-              color='primary'
-              size='sm'
-              placeholder='유저네임'
-              contentLeft={<FaUser />}
-              name='username'
-              value={signupForm.username}
-              onChange={handleChange}
+    <div className='flex flex-col items-center justify-center h-[70vh]'>
+      <form
+        onSubmit={handleSubmit}
+        className='p-6 bg-white rounded shadow-md'
+        style={{ maxWidth: '350px', width: '100%' }}>
+        <h2 className='flex justify-center text-lg font-semibold mb-4'>
+          회원가입
+        </h2>
+        <div className='mb-4 flex items-center justify-center'>
+          <label htmlFor='profileImage' className='cursor-pointer'>
+            <Avatar
+              src={selectedImage ? URL.createObjectURL(selectedImage) : null}
+              size='xl'
+              alt='프로필 이미지'
             />
-          </div>
-          <div className='mb-4'>
-            <Input
-              clearable
-              bordered
-              fullWidth
-              color='primary'
-              size='sm'
-              type='password'
-              placeholder='패스워드'
-              contentLeft={<FaLock />}
-              name='password'
-              value={signupForm.password}
-              onChange={handleChange}
+            <input
+              type='file'
+              accept='image/*'
+              id='profileImage'
+              className='hidden'
+              onChange={(e) => handleImageUpload(e.target.files)}
             />
-            <div className='text-sm text-gray-500 mt-1'>
-              {passwordStrength.message}
+          </label>
+        </div>
+        <div className='mb-4'>
+          <Input
+            clearable
+            bordered
+            fullWidth
+            color='primary'
+            size='sm'
+            placeholder='유저네임'
+            contentLeft={<FaUser />}
+            name='username'
+            value={signupForm.username}
+            onChange={handleChange}
+          />
+        </div>
+        <div className='mb-4'>
+          <Input
+            clearable
+            bordered
+            fullWidth
+            color='primary'
+            size='sm'
+            type='password'
+            placeholder='패스워드'
+            contentLeft={<FaLock />}
+            name='password'
+            value={signupForm.password}
+            onChange={handleChange}
+          />
+          <div className='text-sm text-gray-500 mt-1'>
+            {passwordStrength.message}
+          </div>
+        </div>
+        <div className='mb-4'>
+          <Input
+            clearable
+            bordered
+            fullWidth
+            color='primary'
+            size='sm'
+            type='password'
+            placeholder='패스워드 확인'
+            contentLeft={<FaLock />}
+            name='confirmPassword'
+            value={signupForm.confirmPassword}
+            onChange={handleChange}
+          />
+          {!passwordMatch && (
+            <div className='text-sm text-red-500 mt-1'>
+              {confirmPasswordMessage}
             </div>
-          </div>
-          <div className='mb-4'>
-            <Input
-              clearable
-              bordered
-              fullWidth
-              color='primary'
-              size='sm'
-              type='password'
-              placeholder='패스워드 확인'
-              contentLeft={<FaLock />}
-              name='confirmPassword'
-              value={signupForm.confirmPassword}
-              onChange={handleChange}
-            />
-            {!passwordMatch && (
-              <div className='text-sm text-red-500 mt-1'>
-                {confirmPasswordMessage}
-              </div>
-            )}
-          </div>
-          <div className='mb-6'>
-            <Input
-              clearable
-              bordered
-              fullWidth
-              color='primary'
-              size='sm'
-              placeholder='닉네임'
-              contentLeft={<FaPen />}
-              name='nickname'
-              value={signupForm.nickname}
-              onChange={handleChange}
-            />
-          </div>
-          <Button fullWidth size='lg' type='submit'>
-            가입하기
-          </Button>
-          {/* 로그인 바로가기 */}
-          <p
-            className='mt-4 text-sm text-gray-600 cursor-pointer text-blue-500 text-center' // text-center 추가
-            onClick={goToSignIn}>
-            로그인 바로가기
-          </p>
-        </form>
-      </div>
+          )}
+        </div>
+        <div className='mb-6'>
+          <Input
+            clearable
+            bordered
+            fullWidth
+            color='primary'
+            size='sm'
+            placeholder='닉네임'
+            contentLeft={<FaPen />}
+            name='nickname'
+            value={signupForm.nickname}
+            onChange={handleChange}
+          />
+        </div>
+        <Button fullWidth size='lg' type='submit'>
+          가입하기
+        </Button>
+        {/* 로그인 바로가기 */}
+        <p
+          className='mt-4 text-sm text-gray-600 cursor-pointer text-blue-500 text-center' // text-center 추가
+          onClick={goToSignIn}>
+          로그인 바로가기
+        </p>
+      </form>
     </div>
   )
 }
