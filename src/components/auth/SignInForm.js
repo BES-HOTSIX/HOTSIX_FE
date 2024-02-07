@@ -30,6 +30,9 @@ export default function SignInForm() {
 
     submitLoginUser(loginForm)
   }
+  const goToSignUp = () => {
+    window.location.href = '/auth/signup'
+  }
 
   return (
     <div className='flex flex-col items-center justify-center'>
@@ -47,7 +50,7 @@ export default function SignInForm() {
               fullWidth
               color='primary'
               size='sm'
-              placeholder='Username'
+              placeholder='유저네임'
               contentLeft={<FaUser />}
               name='username'
               value={loginForm.username}
@@ -62,7 +65,7 @@ export default function SignInForm() {
               color='primary'
               size='sm'
               type='password'
-              placeholder='Password'
+              placeholder='패스워드'
               contentLeft={<FaLock />}
               name='password'
               value={loginForm.password}
@@ -73,9 +76,33 @@ export default function SignInForm() {
             로그인
           </Button>
 
-          <KakaoLogin />
-          <NaverLogin />
-          <GoogleLogin />
+          {/* 쇼셜 로그인 구분선 */}
+          <div className='w-full my-4 flex items-center'>
+            <div className='border-t border-gray-300 flex-grow'></div>
+            <p className='mx-2 text-sm text-gray-600'>쇼셜 로그인</p>
+            <div className='border-t border-gray-300 flex-grow'></div>
+          </div>
+
+          {/* 쇼셜 로그인 버튼과 문구 */}
+          <div className='flex flex-col items-center'>
+            <div className='flex flex-col gap-4'>
+              <div className='hover:bg-gray-100 p-2 rounded-md cursor-pointer flex items-center justify-center transition-all duration-300 transform hover:border'>
+                <KakaoLogin />
+              </div>
+              <div className='hover:bg-gray-100 p-2 rounded-md cursor-pointer flex items-center justify-center transition-all duration-300 transform hover:border'>
+                <NaverLogin />
+              </div>
+              <div className='hover:bg-gray-100 p-2 rounded-md cursor-pointer flex items-center justify-center transition-all duration-300 transform hover:border'>
+                <GoogleLogin />
+              </div>
+            </div>
+          </div>
+          {/* 회원가입 바로가기 */}
+          <p
+            className='mt-4 text-sm text-gray-600 cursor-pointer text-blue-500 text-center' // text-center 추가
+            onClick={goToSignUp}>
+            회원가입 바로가기
+          </p>
         </form>
       </div>
     </div>
