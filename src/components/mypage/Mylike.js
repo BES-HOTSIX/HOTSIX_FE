@@ -1,10 +1,15 @@
 'use client'
 import {useMemo, useState} from "react";
-import {keepPreviousData, useQuery} from "@tanstack/react-query";
+
+import {keepPreviousData, useMutation, useQuery} from "@tanstack/react-query";
+
 import instance from "@/config/axios-config";
 import axios from "axios";
 import {Button, Card, CardBody, Image, Link, Pagination, Skeleton} from "@nextui-org/react";
 import formatToKRW from "@/util/formatToKRW";
+
+import {Bounce, toast} from "react-toastify";
+
 
 export default function MyLike() {
     const [page, setPage] = useState(1);
@@ -18,7 +23,32 @@ export default function MyLike() {
         placeholderData: keepPreviousData
     })
 
+
+    const cancelLike = useMutation({
+        mutationFn: (hotelId) => instance.post(`api/v1/likes/toggle`, {
+            hotelId: hotelId
+        }, {
+            ...axios.defaults,
+            useAuth: true,
+        }).then((res) => res.data),
+        onSuccess: () => {
+            likesHotelsQuery.refetch()
+            toast.success('찜이 취소되었습니다.', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+        }
+    })
+
     const pages = useMemo(() => likesHotelsQuery.data?.objData.totalPages ?? 0, [likesHotelsQuery.data?.objData.totalPages])
+
     return (
         <div className='flex h-screen'>
             <div className={"flex flex-col w-full gap-5 px-5"}>
@@ -47,7 +77,9 @@ export default function MyLike() {
                                     </div>
 
                                     <div className={"flex flex-col ml-auto justify-between"}>
-                                        <Button>찜 취소</Button>
+
+                                        <Button onClick={() => cancelLike.mutate(hotel.id)}>찜 취소</Button>
+
                                         <Button as={Link} href={`/hotel/${hotel.id}`}>상세보기</Button>
                                     </div>
                                 </div>

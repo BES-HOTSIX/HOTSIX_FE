@@ -1,21 +1,21 @@
 'use client'
 
 import {Avatar, Spacer} from "@nextui-org/react";
-import {FaUserCircle} from "react-icons/fa";
+import {FaArrowRight, FaUserCircle} from "react-icons/fa";
 import React from "react";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 
 export default function LeftBar(props) {
+    const pathName = usePathname();
+
     const items = [
         {text: "예약 내역", link: "/mypage/reservations"},
         {text: "내 정보", link: "/mypage/info"},
-        {text: "환전하기", link: "/mypage/exchange"},
-        {text: "결제 내역", link: "/mypage/payments/history"},
+        {text: "캐시 사용 내역", link: "/cashLog/me"},
         {text: "내가 등록한 숙소", link: "/mypage/hotels"},
         {text: "내가 찜한 숙소", link: "/mypage/like"},
     ]
-    const pathName = usePathname();
 
     return (
         <div className='flex flex-col items-center w-1/4 bg-[#CECECE]'>
@@ -31,12 +31,12 @@ export default function LeftBar(props) {
             <Spacer y={10}/>
             <ul className={"flex flex-col w-full"}>
                 {items.map((item, index) => (
-                    <li className={`w-full h-15 p-5 flex items-center  ${pathName === item.link ? 'bg-white' : 'hover:cursor-pointer bg-[#898989]'}`}
-                        key={index}>
-                        <Link
-                            href={item.link}>{item.text}
-                        </Link>
-                    </li>
+                    <Link href={item.link} key={`l-${index}`}>
+                        <li className={`w-full h-15 p-5 flex items-center  ${pathName === item.link ? 'bg-white' : 'hover:cursor-pointer bg-[#898989]'}`}>
+                            {item.text}
+                            {item.text === "캐시 사용 내역" && <div className={"ml-auto"}><FaArrowRight/></div>}
+                        </li>
+                    </Link>
                 ))}
             </ul>
         </div>
