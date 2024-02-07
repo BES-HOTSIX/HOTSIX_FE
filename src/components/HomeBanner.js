@@ -10,7 +10,7 @@ export default function HomeBanner() {
       <section
         role='region'
         aria-label='상단 메인 비주얼'
-        className='relative w-full min-h-[500px] bg-slate-200'>
+        className='relative w-full min-h-[550px] bg-slate-200'>
         {/* 높이 설정 추가 */}
         <Image src={mainBannerImage} alt='상단 메인 이미지' fill />
         {/* 배경 이미지 */}
