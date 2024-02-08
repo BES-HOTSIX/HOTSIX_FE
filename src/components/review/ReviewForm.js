@@ -1,10 +1,10 @@
 // src/components/review/ReviewForm.js
 
 import React, { useState } from "react"
-import axios from "axios"
+import axios from "@/config/axios-config"
 import { useRouter } from "next/navigation"
 
-const ReviewForm = ({ reservationId, hotelId, username, onReviewSubmit }) => {
+const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
   const [body, setBody] = useState("")
   const [ratings, setRatings] = useState({
     amenities: 0,
@@ -23,7 +23,6 @@ const ReviewForm = ({ reservationId, hotelId, username, onReviewSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log("un:", username)
 
     try {
       await axios.post(
@@ -33,7 +32,10 @@ const ReviewForm = ({ reservationId, hotelId, username, onReviewSubmit }) => {
           amenities: ratings.amenities,
           staffService: ratings.staffService,
           cleanliness: ratings.cleanliness,
-          username,
+        },
+        {
+          ...axios.defaults,
+          useAuth: true,
         }
       )
 
@@ -53,7 +55,7 @@ const ReviewForm = ({ reservationId, hotelId, username, onReviewSubmit }) => {
   }
 
   return (
-    <div className='h-[50vh] mt-32' style={{ padding: "5px" }}>
+    <div className='h-[50vh] mt-32'>
       <form onSubmit={handleSubmit}>
         <label>
           <h4 style={{ fontSize: "25px" }}>리뷰를 작성해주세요</h4>
@@ -72,7 +74,7 @@ const ReviewForm = ({ reservationId, hotelId, username, onReviewSubmit }) => {
         </label>
         <br />
         <label>
-          <p marginRight='10px'>편의시설 만족도</p>
+          <p marginTop='10px'>편의시설 만족도</p>
           {[1, 2, 3, 4, 5].map((value) => (
             <span
               key={value}
@@ -89,8 +91,8 @@ const ReviewForm = ({ reservationId, hotelId, username, onReviewSubmit }) => {
           ))}
         </label>
         <br />
-        <label style={{ margin: "10px", marginLeft: "26px" }}>
-          <p marginRight='10px'>서비스 만족도</p>
+        <label style={{ margin: "10px" }}>
+          <p marginTop='10px'>서비스 만족도</p>
           {[1, 2, 3, 4, 5].map((value) => (
             <span
               key={value}
@@ -107,8 +109,8 @@ const ReviewForm = ({ reservationId, hotelId, username, onReviewSubmit }) => {
           ))}
         </label>
         <br />
-        <label style={{ margin: "10px", marginLeft: "26px" }}>
-          <p marginRight='10px'>청결 만족도</p>
+        <label style={{ margin: "10px" }}>
+          <p marginTop='10px'>청결 만족도</p>
           {[1, 2, 3, 4, 5].map((value) => (
             <span
               key={value}

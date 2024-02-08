@@ -1,6 +1,6 @@
 // src/components/review/ReviewList.js
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import axios from "@/config/axios-config"
 import {
   Button,
   Modal,
@@ -10,7 +10,6 @@ import {
   ModalFooter,
 } from "@nextui-org/react"
 import EditReviewForm from "./EditReviewForm"
-import { margin } from "@mui/system"
 
 const ReviewList = ({ hotelId, onReviewEdit }) => {
   const [recentReviews, setRecentReviews] = useState([])
@@ -28,10 +27,11 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
       setAllReviews(response.data)
 
       // 최근 4개 리뷰
-      const recentReviewsData = response.data.slice(0, 3)
+      const recentReviewsData = response.data.slice(0, 4)
       setRecentReviews(recentReviewsData)
     } catch (error) {
       console.error("리뷰를 불러오는 중 에러 발생:", error)
+      console.log("Recent Reviews:", recentReviews)
     }
   }
 
@@ -91,44 +91,59 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
       return <p>등록된 리뷰가 없습니다.</p>
     }
 
-    return recentReviews.map((review) => (
-      <div key={review.id}>
-        <p style={{ margin: "10px" }}>회원명: {review.member}</p>
-        <p style={{ margin: "10px" }}>
-          평점 {renderStars(review.rating)} ({review.rating})
-        </p>
-        <p
-          style={{ textAlign: "left", whiteSpace: "pre-line", margin: "10px" }}
-        >
-          {review.body}
-        </p>
-        <p style={{ margin: "10px" }}>
-          편의시설 {renderStars(review.amenities)} ({review.amenities})
-        </p>
-        <p style={{ margin: "10px" }}>
-          서비스 {renderStars(review.staffService)} ({review.staffService})
-        </p>
-        <p style={{ margin: "10px" }}>
-          청결 {renderStars(review.cleanliness)} ({review.cleanliness})
-        </p>
-        <Button
-          onClick={() => handleEditReview(review.id)}
-          style={{
-            backgroundColor: "orange",
-            color: "white",
-            marginBottom: "25px",
-          }}
-        >
-          수정
-        </Button>
-        <Button
-          onClick={() => handleDeleteReview(review.id)}
-          style={{ backgroundColor: "red", color: "white" }}
-        >
-          삭제
-        </Button>
+    return (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: "20px",
+        }}
+      >
+        {recentReviews.map((review) => (
+          <div key={review.id} style={{ padding: "10px" }}>
+            <p style={{ margin: "10px" }}> {review.member.username}</p>
+            {/* <p style={{ margin: "10px" }}>이미지 URL: {review.member.imageUrl}</p> */}
+            <p style={{ margin: "10px" }}>
+              평점 {renderStars(review.rating)} ({review.rating})
+            </p>
+            <p
+              style={{
+                textAlign: "left",
+                whiteSpace: "pre-line",
+                margin: "10px",
+              }}
+            >
+              {review.body}
+            </p>
+            <p style={{ margin: "10px" }}>
+              편의시설 {renderStars(review.amenities)} ({review.amenities})
+            </p>
+            <p style={{ margin: "10px" }}>
+              서비스 {renderStars(review.staffService)} ({review.staffService})
+            </p>
+            <p style={{ margin: "10px" }}>
+              청결 {renderStars(review.cleanliness)} ({review.cleanliness})
+            </p>
+            <Button
+              onClick={() => handleEditReview(review.id)}
+              style={{
+                backgroundColor: "orange",
+                color: "white",
+                marginBottom: "25px",
+              }}
+            >
+              수정
+            </Button>
+            <Button
+              onClick={() => handleDeleteReview(review.id)}
+              style={{ backgroundColor: "red", color: "white" }}
+            >
+              삭제
+            </Button>
+          </div>
+        ))}
       </div>
-    ))
+    )
   }
 
   return (
