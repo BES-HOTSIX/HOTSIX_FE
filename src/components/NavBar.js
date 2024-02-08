@@ -56,11 +56,11 @@ export default function Navbar() {
       <div className='flex flex-1 gap-2'>
         <Link
           href='/'
-          className='font-pretendard font-extrabold text-2xl flex justify-center items-center px-3 text-sage-750 dark:text-coral-500'>
+          className='font-pretendard font-extrabold text-2xl flex justify-center items-center px-3 text-sage-700'>
           HOTSHARE
         </Link>
         <div className='hidden lg:flex'>
-          <ul className='flex items-center gap-2 px-1 text-sage-700 dark:text-cream text-sm font-semibold tracking-widest'>
+          <ul className='flex items-center gap-2 px-1 text-sage-700  text-sm font-semibold tracking-widest'>
             <CategoryMenu />
           </ul>
         </div>

@@ -51,15 +51,15 @@ export default function HotelOrderByReservationCnt() {
         modules={[Navigation, Grid]}
         breakpoints={{
           780: {
-            slidesPerView: 4,
-            slidesPerGroup: 4,
+            slidesPerView: 3,
+            slidesPerGroup: 3,
             grid: {
               rows: 1,
             },
           },
           1024: {
-            slidesPerView: 5,
-            slidesPerGroup: 5,
+            slidesPerView: 4,
+            slidesPerGroup: 4,
             spaceBetween: 20,
             grid: {
               rows: 1,
@@ -68,24 +68,26 @@ export default function HotelOrderByReservationCnt() {
         }}>
         {content.map((hotel) => (
           <SwiperSlide key={hotel.id}>
-            <div>
+            <div className='flex flex-col'>
               <Link
                 href={`/hotel/${hotel.id}`}
-                className='flex flex-col  w-full h-full mt-10'>
-                <Image
-                  src={hotel.imagesResponse.imageUrl[0]}
-                  alt={hotel.nickname}
-                  width={1000}
-                  height={1000}
-                  objectFit='cover'
-                  layout='responsive'
-                />
+                className='flex flex-col justify-center w-full h-full mt-10'>
+                {/* 이미지 컨테이너에 relative 클래스 추가 및 높이 설정 */}
+                <div className='relative sm:text-lg md:max-w-[76.8rem] h-64'>
+                  <Image
+                    src={hotel.imagesResponse.imageUrl[0]}
+                    alt={hotel.nickname}
+                    objectFit='cover'
+                    fill
+                    className='rounded-md'
+                  />
+                </div>
+
                 <div className='flex flex-col'>
                   <p className='text-xs text-gray-500 mt-2'>
                     {hotel?.hotelType}
                   </p>
-                  {/* nickname과 price를 같은 크기로 설정하고 검정색으로 설정 */}
-                  <p className='text-md font-sm text-black '>
+                  <p className='text-md font-sm text-black'>
                     {hotel?.nickname}
                   </p>
                   <p className='text-xs text-gray-500 mt-1'>
