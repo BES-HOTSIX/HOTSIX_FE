@@ -12,7 +12,6 @@ import 'swiper/css/pagination'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Scrollbar, Autoplay, Grid } from 'swiper/modules'
-import SwiperCore from 'swiper'
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md'
 import { AiFillFire } from 'react-icons/ai'
 
@@ -33,8 +32,6 @@ export default function HotelOrderByReservationCnt() {
   const { content, totalPages } = hotelsSortedByReservation.objData
 
   console.log(content)
-
-  SwiperCore.use([Navigation, Scrollbar, Autoplay])
 
   return (
     <div className='swiper-container h-auto w-[80vw] mx-auto mt-16 relative'>

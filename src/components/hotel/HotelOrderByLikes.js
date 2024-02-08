@@ -12,7 +12,6 @@ import 'swiper/css/pagination'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Scrollbar, Autoplay, Grid } from 'swiper/modules'
-import SwiperCore from 'swiper'
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md'
 import { AiFillHeart } from 'react-icons/ai'
 import { FaSpinner } from 'react-icons/fa'
@@ -36,8 +35,6 @@ export default function HotelOrderByLikes() {
   }
 
   const { content, totalPages } = hotelsSortedByLikes.objData
-
-  SwiperCore.use([Navigation, Scrollbar, Autoplay])
 
   return (
     <div className='swiper-container h-auto w-[80vw] mx-auto mt-16 relative'>

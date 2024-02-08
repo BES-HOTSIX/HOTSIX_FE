@@ -12,7 +12,6 @@ import 'swiper/css/pagination'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Scrollbar, Autoplay, Grid } from 'swiper/modules'
-import SwiperCore from 'swiper'
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md'
 
 export default function RecentHotels() {
@@ -25,7 +24,6 @@ export default function RecentHotels() {
 
   const { content, totalPages } = hotels.objData
 
-  SwiperCore.use([Navigation, Scrollbar, Autoplay])
   return (
     <div className='swiper-container h-auto w-[80vw] mx-auto mt-16 relative'>
       <h1 className='text-xl font-bold'># 최근 등록된 숙소</h1>
@@ -68,7 +66,7 @@ export default function RecentHotels() {
                     src={hotel.imagesResponse.imageUrl[0]}
                     alt={hotel.nickname}
                     objectFit='cover'
-                    fill // fill 대신 responsive를 사용하는 것을 고려해 볼 수도 있음
+                    fill
                     className='rounded-md'
                   />
                 </div>
