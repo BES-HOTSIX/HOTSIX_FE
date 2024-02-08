@@ -1,6 +1,8 @@
 import React from 'react'
 import HomeBanner from './HomeBanner'
 import RecentHotels from './hotel/RecentHotels'
+import HotelOrderByLikes from './hotel/HotelOrderByLikes'
+import HotelOrderByReservationCnt from './hotel/HotelOrderByReservationCnt'
 
 export default function Main() {
   return (
@@ -10,6 +12,8 @@ export default function Main() {
       </div>
       <div className='min-h-[30vh]'>
         <RecentHotels />
+        <HotelOrderByLikes />
+        <HotelOrderByReservationCnt />
       </div>
     </section>
   )

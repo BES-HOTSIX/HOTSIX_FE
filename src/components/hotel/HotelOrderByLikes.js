@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { useHotels } from '@/hooks/useHotel'
+import { useHotelsSortedByLikes } from '@/hooks/useHotel'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -14,29 +14,42 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Scrollbar, Autoplay, Grid } from 'swiper/modules'
 import SwiperCore from 'swiper'
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md'
+import { AiFillHeart } from 'react-icons/ai'
+import { FaSpinner } from 'react-icons/fa'
 
-export default function RecentHotels() {
-  const { hotels, isLoading, isFetching, isError, error, isPlaceholderData } =
-    useHotels(0, 20)
+export default function HotelOrderByLikes() {
+  const {
+    hotelsSortedByLikes,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    isPlaceholderData,
+  } = useHotelsSortedByLikes(0, 20)
 
   if (isLoading || isFetching) {
-    return <div></div>
+    return (
+      <div className='flex mt-48 text-coral-500 justify-center items-center'>
+        <FaSpinner className='animate-spin' size='2em' />
+      </div>
+    )
   }
 
-  const { content, totalPages } = hotels.objData
+  const { content, totalPages } = hotelsSortedByLikes.objData
 
   SwiperCore.use([Navigation, Scrollbar, Autoplay])
+
   return (
     <div className='swiper-container h-auto w-[80vw] mx-auto mt-16 relative'>
-      <h1 className='text-xl font-bold'># 최근 등록된 숙소</h1>
+      <h1 className='text-xl font-bold'># 인기 추천 숙소</h1>
       <Swiper
         slidesPerView={2}
         slidesPerGroup={2}
         grid={{ rows: 2, fill: 'row' }}
         spaceBetween={10}
         navigation={{
-          nextEl: '.next-slide-button1',
-          prevEl: '.prev-slide-button1',
+          nextEl: '.next-slide-button2',
+          prevEl: '.prev-slide-button2',
         }}
         modules={[Navigation, Grid]}
         breakpoints={{
@@ -84,6 +97,10 @@ export default function RecentHotels() {
                   <p className='text-md font-sm text-black mt-1'>
                     {hotel?.price} 원
                   </p>
+                  <div className='flex items-center bg-pink-200 w-2/3 text-white p-1 rounded-lg'>
+                    <AiFillHeart className='mr-1' size='1.5em' />찜{' '}
+                    {hotel?.likesCount}
+                  </div>
                 </div>
               </Link>
             </div>
@@ -91,11 +108,11 @@ export default function RecentHotels() {
         ))}
       </Swiper>
       {/* 이전 슬라이드 버튼 */}
-      <div className='prev-slide-button1 absolute left-[-30px] top-1/2 -translate-y-1/2 z-10 flex items-center justify-center bg-white rounded-full p-1 shadow-lg border border-gray-200'>
+      <div className='prev-slide-button2 absolute left-[-30px] top-1/2 -translate-y-1/2 z-10 flex items-center justify-center bg-white rounded-full p-1 shadow-lg border border-gray-200'>
         <MdChevronLeft size='2em' className='text-gray-600' />
       </div>
 
-      <div className='next-slide-button1 absolute right-[-30px] top-1/2 -translate-y-1/2 z-10 flex items-center justify-center bg-white rounded-full p-1 shadow-lg border border-gray-200'>
+      <div className='next-slide-button2 absolute right-[-30px] top-1/2 -translate-y-1/2 z-10 flex items-center justify-center bg-white rounded-full p-1 shadow-lg border border-gray-200'>
         <MdChevronRight size='2em' className='text-gray-600' />
       </div>
     </div>
