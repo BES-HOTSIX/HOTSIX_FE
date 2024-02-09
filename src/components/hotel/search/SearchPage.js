@@ -56,7 +56,7 @@ export default function SearchPage({ city, startDate, endDate }) {
 
   return (
     <div>
-      <div className='w-full h-[60vh] text-center px-5 py-10 max-[280px]:px-0 max-[280px]:pt-0'>
+      <div className='w-full text-center px-5 py-10 max-[280px]:px-0 max-[280px]:pt-0'>
         <SearchSideBar
           isOpen={isOpen}
           toggleSidebar={toggleSidebar}
@@ -100,7 +100,7 @@ export default function SearchPage({ city, startDate, endDate }) {
           ))}
         </ul>
       </div>
-      <div className='flex justify-center my-4'>
+      <div className='flex h-[40vh] justify-center my-4'>
         <Pagination
           page={page}
           setPage={setPage}
