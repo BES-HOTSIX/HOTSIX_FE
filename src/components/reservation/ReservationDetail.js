@@ -100,80 +100,84 @@ export default function ReservationDetail({ id }) {
 
 	const staticImageUrl = '/tosspay.png';
 
-  return (
-    <div className='h-[60vh] mt-32'>
-      <div style={styles.container}>
-        <div style={styles.contentSection}>
-          <div style={styles.reservationSection}>
-            <div style={styles.header}>
-              <h1 style={styles.title}>예약 상세</h1>
-              <span style={styles.date}>{formattedCreatedAt} 결제</span>
-            </div>
-            <div style={styles.hotelInfo}>
-              <img
-                src={reservationData.hotelPhotoUrl}
-                alt='숙소 대표 이미지'
-                style={styles.image}
-              />
-              <div style={styles.hotelTextContainer}>
-                <h2 style={styles.hotelName}>
-                  {reservationData.hotelNickname}
-                </h2>
-                <p style={styles.hotelDesc}>
-                  {reservationData.hotelDescription}
-                </p>
-                <p style={styles.hotelHost}>
-                  호스트 : {reservationData.hotelHost}
-                </p>
-              </div>
-            </div>
-            <div style={styles.reservationDetails}>
-              <div style={styles.detailsRow}>
-                <span>예약 날짜</span>
-                <span>{`${formattedCheckInDate} ~ ${formattedCheckOutDate}`}</span>
-              </div>
-              <div style={styles.detailsRow}>
-                <span>예약 인원</span>
-                <span>{`${reservationData.numOfGuests} 명`}</span>
-              </div>
-            </div>
-          </div>
-          <div style={styles.divider}></div>
-          <div style={styles.paymentSection}>
-            <span style={styles.paymentTitle}>결제 정보</span>
-            <div style={styles.paymentMethod}>
-              <span style={styles.paymentMethodTitle}>결제 수단</span>
-              <img
-                src={staticImageUrl}
-                alt='결제 수단 이미지'
-                style={styles.paymentMethodImage}
-              />
-            </div>
-            <div style={styles.paymentInfo}>
-              <div style={styles.detailsRow}>
-                <span>결제 금액</span>
-                <span>{`${reservationData.paidPrice}원`}</span>
-              </div>
-            </div>
-            {isCancellationAllowed && (
-              <div style={styles.actions}>
-                <Button style={styles.button} onClick={handleCancelClick}>
-                  예약 취소
-                </Button>
-              </div>
-            )}
-            {!isCancellationAllowed && isReviewAllowed && (
-              <div style={styles.actions}>
-                <Button style={styles.button} onClick={handleReviewClick}>
-                  리뷰 작성
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+	return (
+		<div className='h-[60vh] mt-32'>
+			<div style={styles.container}>
+				<div style={styles.contentSection}>
+					<div style={styles.reservationSection}>
+						<div style={styles.header}>
+							<h1 style={styles.title}>예약 상세</h1>
+							<span style={styles.date}>{formattedCreatedAt} 결제</span>
+						</div>
+						<div style={styles.hotelInfo}>
+							<a href={`/hotel/${reservationData.hotelId}`}>
+								<img
+									src={reservationData.hotelPhotoUrl}
+									alt='숙소 대표 이미지'
+									style={styles.image}
+								/>
+							</a>
+							<div style={styles.hotelTextContainer}>
+								<h2 style={styles.hotelName}>
+									<a href={`/hotel/${reservationData.hotelId}`} style={styles.hotelNameLink}>
+										{reservationData.hotelNickname}
+									</a>
+								</h2>
+								<p style={styles.hotelDesc}>
+									{reservationData.hotelDescription}
+								</p>
+								<p style={styles.hotelHost}>
+									호스트 : {reservationData.hotelHost}
+								</p>
+							</div>
+						</div>
+						<div style={styles.reservationDetails}>
+							<div style={styles.detailsRow}>
+								<span>예약 날짜</span>
+								<span>{`${formattedCheckInDate} ~ ${formattedCheckOutDate}`}</span>
+							</div>
+							<div style={styles.detailsRow}>
+								<span>예약 인원</span>
+								<span>{`${reservationData.numOfGuests} 명`}</span>
+							</div>
+						</div>
+					</div>
+					<div style={styles.divider}></div>
+					<div style={styles.paymentSection}>
+						<span style={styles.paymentTitle}>결제 정보</span>
+						<div style={styles.paymentMethod}>
+							<span style={styles.paymentMethodTitle}>결제 수단</span>
+							<img
+								src={staticImageUrl}
+								alt='결제 수단 이미지'
+								style={styles.paymentMethodImage}
+							/>
+						</div>
+						<div style={styles.paymentInfo}>
+							<div style={styles.detailsRow}>
+								<span>결제 금액</span>
+								<span>{`${reservationData.paidPrice}원`}</span>
+							</div>
+						</div>
+						{isCancellationAllowed && (
+							<div style={styles.actions}>
+								<Button style={styles.button} onClick={handleCancelClick}>
+									예약 취소
+								</Button>
+							</div>
+						)}
+						{!isCancellationAllowed && isReviewAllowed && (
+							<div style={styles.actions}>
+								<Button style={styles.button} onClick={handleReviewClick}>
+									리뷰 작성
+								</Button>
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
+		</div>
+	)
 }
 
 const styles = {
@@ -262,6 +266,10 @@ const styles = {
 		justifyContent: 'space-between',
 		flex: 1,
 	},
+	hotelNameLink: {
+		display: 'inline-block', // 또는 'inline-block'을 사용할 수 있습니다.
+		color: '#000000',
+	},	
 	hotelName: {
 		flex: 1,
 		marginBottom: '20px',
