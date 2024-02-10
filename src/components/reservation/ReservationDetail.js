@@ -94,7 +94,7 @@ export default function ReservationDetail({ id }) {
 	const checkInDateStr = formatDate(new Date(reservationData.checkInDate));
 	
 	// 현재 날짜가 체크아웃 날짜보다 같거나 늦은 경우 리뷰 작성 가능
-	const isReviewAllowed = todayStr >= checkInDateStr;
+	const isReviewAllowed = todayStr >= checkInDateStr && reservationData.reviewId == 0;
 	// 현재 날짜와 체크인 날짜 비교해서 체크인 날짜가 오늘 날짜보다 하루 이상 남았는지 확인
 	const isCancellationAllowed = new Date(checkInDateStr) - new Date(todayStr) > 24 * 60 * 60 * 1000;
 
