@@ -1,6 +1,6 @@
 // src/components/review/EditReviewForm.js
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import axios from "@/config/axios-config"
 import { Button, Input, Textarea } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
 //import { useRouter } from "next/router"
@@ -56,7 +56,11 @@ const EditReviewForm = ({ hotelId, reviewId, onClose }) => {
     try {
       await axios.put(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/review/modify/${reviewId}`,
-        editedReview
+        editedReview,
+        {
+          ...axios.defaults,
+          useAuth: true,
+        }
       )
       alert("리뷰가 성공적으로 수정되었습니다.")
 

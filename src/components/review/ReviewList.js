@@ -1,6 +1,7 @@
 // src/components/review/ReviewList.js
 import React, { useState, useEffect } from "react"
 import axios from "@/config/axios-config"
+import { useUser } from "@/hooks/useUser"
 import {
   Button,
   Modal,
@@ -18,6 +19,8 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   const [modalSize, setModalSize] = useState()
   const [editingReviewId, setEditingReviewId] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
+
+  const { user } = useUser()
 
   const fetchReviews = async () => {
     try {
@@ -69,7 +72,11 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   const handleDeleteReview = async (id) => {
     try {
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/review/delete/${id}`
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/review/delete/${id}`,
+        {
+          ...axios.defaults,
+          useAuth: true,
+        }
       )
       console.log("리뷰가 성공적으로 삭제되었습니다.")
       fetchReviews()
@@ -96,12 +103,11 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
-          gap: "20px",
         }}
       >
         {recentReviews.map((review) => (
-          <div key={review.id} style={{ padding: "10px" }}>
-            <p style={{ margin: "10px" }}> {review.member.username}</p>
+          <div key={review.id}>
+            <p style={{ marginTop: "10px" }}> {review.member.nickname}</p>
             {/* <p style={{ margin: "10px" }}>이미지 URL: {review.member.imageUrl}</p> */}
             <p style={{ margin: "10px" }}>
               평점 {renderStars(review.rating)} ({review.rating})
@@ -124,22 +130,26 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
             <p style={{ margin: "10px" }}>
               청결 {renderStars(review.cleanliness)} ({review.cleanliness})
             </p>
-            <Button
-              onClick={() => handleEditReview(review.id)}
-              style={{
-                backgroundColor: "orange",
-                color: "white",
-                marginBottom: "25px",
-              }}
-            >
-              수정
-            </Button>
-            <Button
-              onClick={() => handleDeleteReview(review.id)}
-              style={{ backgroundColor: "red", color: "white" }}
-            >
-              삭제
-            </Button>
+            {user?.objData.nickname === review.member.nickname && (
+              <>
+                <Button
+                  onClick={() => handleEditReview(review.id)}
+                  style={{
+                    backgroundColor: "orange",
+                    color: "white",
+                    marginBottom: "25px",
+                  }}
+                >
+                  수정
+                </Button>
+                <Button
+                  onClick={() => handleDeleteReview(review.id)}
+                  style={{ backgroundColor: "red", color: "white" }}
+                >
+                  삭제
+                </Button>
+              </>
+            )}
           </div>
         ))}
       </div>
@@ -221,7 +231,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                         {allReviews.map((review) => (
                           <li key={review.id}>
                             <p style={{ margin: "10px" }}>
-                              회원명: {review.member}
+                              회원명: {review.member.nickname}
                             </p>
                             <p style={{ margin: "10px" }}>
                               평점 {renderStars(review.rating)} ({review.rating}
