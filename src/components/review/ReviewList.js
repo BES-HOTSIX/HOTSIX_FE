@@ -130,6 +130,23 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
             <p style={{ margin: "10px" }}>
               청결 {renderStars(review.cleanliness)} ({review.cleanliness})
             </p>
+            <p style={{ fontSize: "12px", margin: "10px" }}>
+              {review.updatedAt
+                ? `${new Intl.DateTimeFormat("ko-KR", {
+                    year: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  }).format(new Date(review.updatedAt))} 수정`
+                : `${new Intl.DateTimeFormat("ko-KR", {
+                    year: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  }).format(new Date(review.createdAt))}등록`}
+            </p>
             {user?.objData.nickname === review.member.nickname && (
               <>
                 <Button
@@ -230,8 +247,12 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                       >
                         {allReviews.map((review) => (
                           <li key={review.id}>
-                            <p style={{ margin: "10px" }}>
-                              회원명: {review.member.nickname}
+                            <p
+                              style={{
+                                marginTop: "10px",
+                              }}
+                            >
+                              {review.member.nickname}
                             </p>
                             <p style={{ margin: "10px" }}>
                               평점 {renderStars(review.rating)} ({review.rating}
@@ -246,29 +267,51 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                               서비스 {renderStars(review.staffService)} (
                               {review.staffService})
                             </p>
-                            <p style={{ margin: "10px" }}>
+                            <p style={{ margin: "10px", marginBottom: "10px" }}>
                               청결 {renderStars(review.cleanliness)} (
                               {review.cleanliness})
                             </p>
-                            <Button
-                              onClick={() => handleEditReview(review.id)}
-                              style={{
-                                backgroundColor: "orange",
-                                color: "white",
-                              }}
-                            >
-                              수정
-                            </Button>
-                            <Button
-                              onClick={() => handleDeleteReview(review.id)}
-                              style={{
-                                backgroundColor: "red",
-                                color: "white",
-                                marginBottom: "25px",
-                              }}
-                            >
-                              삭제
-                            </Button>
+                            <p style={{ fontSize: "12px", margin: "10px" }}>
+                              {review.updatedAt
+                                ? `${new Intl.DateTimeFormat("ko-KR", {
+                                    year: "numeric",
+                                    month: "numeric",
+                                    day: "numeric",
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                  }).format(new Date(review.updatedAt))} 수정`
+                                : `${new Intl.DateTimeFormat("ko-KR", {
+                                    year: "numeric",
+                                    month: "numeric",
+                                    day: "numeric",
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                  }).format(new Date(review.createdAt))}등록`}
+                            </p>
+                            {user?.objData.nickname ===
+                              review.member.nickname && (
+                              <>
+                                <Button
+                                  onClick={() => handleEditReview(review.id)}
+                                  style={{
+                                    backgroundColor: "orange",
+                                    color: "white",
+                                  }}
+                                >
+                                  수정
+                                </Button>
+                                <Button
+                                  onClick={() => handleDeleteReview(review.id)}
+                                  style={{
+                                    backgroundColor: "red",
+                                    color: "white",
+                                    marginBottom: "20px",
+                                  }}
+                                >
+                                  삭제
+                                </Button>
+                              </>
+                            )}
                           </li>
                         ))}
                       </ul>
