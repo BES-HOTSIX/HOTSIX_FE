@@ -1,20 +1,23 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Input, Button, Avatar } from '@nextui-org/react'
+import { Input, Button, Avatar, FaEnvelope } from '@nextui-org/react'
 import { FaUser, FaLock, FaPen } from 'react-icons/fa'
 import { useRegisterUser } from '@/hooks/useUser'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import axios from 'axios'
 
 export default function SignUpForm() {
   const { submitRegisterUser } = useRegisterUser()
 
   const [signupForm, setSignupForm] = useState({
+    imageUrl: '',
     username: '',
     password: '',
     confirmPassword: '',
     nickname: '',
+    email: '',
   })
 
   const [passwordStrength, setPasswordStrength] = useState({
@@ -32,6 +35,32 @@ export default function SignUpForm() {
   const [isConfirmPasswordEntered, setIsConfirmPasswordEntered] =
     useState(false)
   const [isNicknameEntered, setIsNicknameEntered] = useState(false)
+  const [isEmailEntered, setIsEmailEntered] = useState(false)
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+    }
+  }
+
+  const uploadImageToCloudinary = async (imageFile) => {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    formData.append('upload_preset', 'ejnekuco'); // 업로드 프리셋을 설정하세요
+  
+    try {
+      const response = await axios.post('https://api.cloudinary.com/v1_1/dlfl2w8hk/image/upload', formData);
+      if (response.status === 200) {
+        return response.data.secure_url; // 업로드된 이미지의 URL 반환
+      } else {
+        throw new Error('이미지 업로드 실패');
+      }
+    } catch (error) {
+      console.error('이미지 업로드 오류:', error);
+      throw error;
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -69,16 +98,10 @@ export default function SignUpForm() {
     if (name === 'nickname') {
       setIsNicknameEntered(!!value)
     }
-  }
 
-  const handleImageUpload = (files) => {
-    const selectedFile = files[0]
-    setSelectedImage(selectedFile)
-    toast.success(
-      selectedFile
-        ? '프로필 이미지가 등록되었습니다.'
-        : '프로필 이미지를 선택해주세요.'
-    )
+    if (name === 'email') {
+      setIsEmailEntered(!!value)
+    }
   }
 
   const checkPasswordStrength = (password) => {
@@ -102,7 +125,7 @@ export default function SignUpForm() {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (signupForm.password !== signupForm.confirmPassword) {
@@ -113,7 +136,8 @@ export default function SignUpForm() {
     if (
       signupForm.username.trim() === '' ||
       signupForm.password.trim() === '' ||
-      signupForm.nickname.trim() === ''
+      signupForm.nickname.trim() === '' ||
+      signupForm.email.trim() === ''
     ) {
       toast.error('모든 필수 항목을 입력하세요.')
       return
@@ -124,16 +148,21 @@ export default function SignUpForm() {
       return
     }
 
-    // 이미지 업로드 함수 호출
-    if (!selectedImage) {
-      // 이미지가 선택되지 않은 경우 알림 표시
-      toast.error('프로필 이미지를 선택해주세요.')
+    try {
+      if (!selectedImage) {
+        toast.error('프로필 이미지를 등록하세요.')
+      }
+
+      const imageUrl = await uploadImageToCloudinary(selectedImage);
+      const formData = {
+        ...signupForm,
+        imageUrl: imageUrl,
+      };
+      // 서버로 formData를 전송하는 로직
+      await submitRegisterUser(formData); // 백엔드로 전송
+    } catch (error) {
       return
     }
-
-    handleImageUpload(selectedImage)
-
-    submitRegisterUser(signupForm)
   }
 
   const goToSignIn = () => {
@@ -149,21 +178,8 @@ export default function SignUpForm() {
           <h2 className='flex justify-center text-lg font-semibold mb-4'>
             회원가입
           </h2>
-          <div className='mb-4 flex items-center justify-center'>
-            <label htmlFor='profileImage' className='cursor-pointer'>
-              <Avatar
-                src={selectedImage ? URL.createObjectURL(selectedImage) : null}
-                size='xl'
-                alt='프로필 이미지'
-              />
-              <input
-                type='file'
-                accept='image/*'
-                id='profileImage'
-                className='hidden'
-                onChange={(e) => handleImageUpload(e.target.files)}
-              />
-            </label>
+          <div className='mb-4'>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
           </div>
           <div className='mb-4'>
             <Input
@@ -233,6 +249,21 @@ export default function SignUpForm() {
               value={signupForm.nickname}
               onChange={handleChange}
               style={{ opacity: isNicknameEntered ? 1 : 0.3 }}
+            />
+          </div>
+          <div className='mb-4'>
+            <Input
+              clearable
+              bordered
+              fullWidth
+              color='primary'
+              size='sm'
+              placeholder='이메일'
+              contentLeft={<FaEnvelope />}
+              name='email'
+              value={signupForm.email}
+              onChange={handleChange}
+              style={{ opacity: isEmailEntered ? 1 : 0.3 }}
             />
           </div>
           <Button fullWidth size='lg' type='submit'>
