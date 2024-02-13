@@ -1,6 +1,6 @@
-import Success from "@/components/cashLog/tossPayments/Success";
+import PaySuccess from "@/components/cashLog/tossPayments/PaySuccess";
 import React from "react";
 
 export default function page({ searchParams, params: { id } }) {
-  return <Success payment={searchParams} reserveId={id} />;
+  return <PaySuccess payment={searchParams} reserveId={id} />;
 }
