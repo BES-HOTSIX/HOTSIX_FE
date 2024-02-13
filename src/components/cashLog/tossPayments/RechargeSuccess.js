@@ -1,19 +1,15 @@
 "use client";
 
 import { useTossPaymentsForRecharge } from "@/hooks/useCashLog";
-import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useState } from "react";
 
 export default function RechargeSuccess({ payment }) {
   const router = useRouter();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const { submitTossPaymentsForRecharge, response, isPending, isError, error } =
     useTossPaymentsForRecharge();
-
-  // useEffect(() => {
-  //   if (submitTossPaymentsForRecharge) submitTossPaymentsForRecharge(payment);
-  // }, [submitTossPaymentsForRecharge]);
 
   if (isPending) {
     return (
@@ -21,17 +17,12 @@ export default function RechargeSuccess({ payment }) {
     );
   }
 
-  if (response) {
-    router.push(`/cashLog/me`);
+  if (!isSubmitted) {
+    submitTossPaymentsForRecharge(payment);
+    setIsSubmitted(true);
   }
 
-  const goTry = () => {
-    submitTossPaymentsForRecharge(payment);
-  };
+  if (response) router.push(`/cashLog/me`);
 
-  return (
-    <div>
-      <Button onClick={goTry}>TRY</Button>
-    </div>
-  );
+  return;
 }

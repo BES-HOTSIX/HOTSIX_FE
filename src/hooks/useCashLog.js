@@ -280,6 +280,8 @@ export const useTossPaymentsForRecharge = () => {
     onSuccess: (res) => {
       console.log("충전 신청 성공");
 
+      console.log(res);
+
       if (!res.data.result) {
         toast.error("충전 신청에 실패했습니다 🥲");
         return;
@@ -294,13 +296,21 @@ export const useTossPaymentsForRecharge = () => {
     onError: (err) => {
       console.log("충전 신청 실패");
 
+      console.log(err);
+
       toast.error("충전 신청에 실패했습니다 🥲");
 
       return err;
     },
   });
 
-  return { submitTossPaymentsForRecharge, res, isPending, isError, error };
+  return {
+    submitTossPaymentsForRecharge,
+    response: res,
+    isPending,
+    isError,
+    error,
+  };
 };
 
 const fetchReserveForCancel = async (reserveId) => {
