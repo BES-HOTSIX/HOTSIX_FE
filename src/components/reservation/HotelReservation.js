@@ -5,14 +5,18 @@ import { useHotelDetail } from "@/hooks/useHotel";
 import { Button, Spacer, Input } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import "react-datepicker/dist/react-datepicker.css";
-// import CalendarCustom from './Calendar';
 import CalendarCustom from "./CalendarCustom";
 import axios from "@/config/axios-config";
 import { differenceInCalendarDays, addDays } from "date-fns";
+import Image from "next/image";
+import { useRecoilState } from "recoil";
+import { reserveIdState } from "@/store/reservationState";
+import { FaCalendarCheck } from "react-icons/fa";
 
 export default function HotelReservation({ id }) {
   const { hotel, isHotelLoading, isError, error } = useHotelDetail(id);
   const [guestCount, setGuestCount] = useState(1);
+  const [reserveId, setReserveId] = useRecoilState(reserveIdState);
 
   // CalendarCustom에 props로 전달
   const [startDate, setStartDate] = useState(
@@ -35,11 +39,11 @@ export default function HotelReservation({ id }) {
   }, [startDate, endDate, hotel, isHotelLoading]);
 
   if (isHotelLoading) {
-    return <div>loading</div>;
+    return <div className="h-[60vh] mt-32">loading</div>;
   }
 
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    return <div className="h-[60vh] mt-32">Error: {error.message}</div>;
   }
 
   const mainImage = hotel.imagesResponse.imageUrl[0];
@@ -70,14 +74,24 @@ export default function HotelReservation({ id }) {
     const calculatedPrice = daysDiff * hotel.price;
 
     // 시작 날짜와 종료 날짜 설정
-    const formattedStartDate = new Date(
-      startDate.getTime() + 24 * 60 * 60 * 1000
-    )
-      .toISOString()
-      .substring(0, 10);
-    const formattedEndDate = new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-      .toISOString()
-      .substring(0, 10);
+    const formattedStartDate = new Date(startDate)
+      .toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\./g, "")
+      .split(" ")
+      .join("-");
+    const formattedEndDate = new Date(endDate)
+      .toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\./g, "")
+      .split(" ")
+      .join("-");
 
     const reservationInfo = {
       numOfGuests: guestCount,
@@ -86,26 +100,44 @@ export default function HotelReservation({ id }) {
       price: calculatedPrice,
       isPaid: false,
     };
-    console.log(reservationInfo);
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`,
-        reservationInfo,
-        {
-          ...axios.defaults,
-          useAuth: true,
+      if (reserveId) {
+        const response = await axios.put(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}/${reserveId}`,
+          reservationInfo,
+          {
+            ...axios.defaults,
+            useAuth: true,
+          }
+        );
+
+        console.log("PUT response: ", response);
+        if (response.status >= 400) {
+          throw new Error("Network response was not ok");
         }
-      );
 
-      console.log("response: ", response);
-      if (response.status >= 400) {
-        throw new Error("Network response was not ok");
+        router.push(`/cashLog/payByCash/${reserveId}`);
+      } else {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`,
+          reservationInfo,
+          {
+            ...axios.defaults,
+            useAuth: true,
+          }
+        );
+
+        console.log("POST response: ", response);
+        if (response.status >= 400) {
+          throw new Error("Network response was not ok");
+        }
+
+        const newReserveId = response.data.objData.id;
+        setReserveId(newReserveId);
+
+        router.push(`/cashLog/payByCash/${newReserveId}`);
       }
-
-      // Redirect or show success message
-      const reserveId = response.data.objData.id;
-      router.push(`/cashLog/pay/${reserveId}`);
     } catch (error) {
       console.error("Error making reservation:", error);
     }
@@ -136,7 +168,7 @@ export default function HotelReservation({ id }) {
                 <Button
                   auto
                   flat
-                  color="error"
+                  color="default"
                   onClick={() => handleGuestCountChange(-1)}
                   style={styles.guestCountButton}
                 >
@@ -144,13 +176,14 @@ export default function HotelReservation({ id }) {
                 </Button>
                 <Input
                   readOnly
+                  variant="bordered"
                   value={guestCount.toString()}
                   style={styles.guestCountNumber}
                 />
                 <Button
                   auto
                   flat
-                  color="success"
+                  color="primary"
                   onClick={() => handleGuestCountChange(1)}
                   style={styles.guestCountButton}
                 >
@@ -162,7 +195,10 @@ export default function HotelReservation({ id }) {
 
             <div style={styles.refundPolicy}>
               <h3>환불 정책</h3>
-              <p>...환불 정책 내용...</p>
+              <p style={styles.refundPolicyContent}>
+                체크인 전날까지 예약 취소가 가능합니다.<br></br>
+                예약 취소 시 결제 금액의 100% 환불됩니다.
+              </p>
             </div>
           </div>
 
@@ -170,11 +206,21 @@ export default function HotelReservation({ id }) {
 
           <div style={styles.paymentSection}>
             <div style={styles.hotelInfo}>
-              <img
-                src={mainImage}
-                alt="숙소 대표 이미지"
-                style={styles.image}
-              />
+              <div
+                style={{
+                  width: "200px",
+                  height: "200px",
+                  position: "relative",
+                }}
+              >
+                <Image
+                  src={mainImage}
+                  alt="숙소 대표 이미지"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-md"
+                />
+              </div>
               <div style={styles.hotelTextContainer}>
                 <h3 style={styles.hotelName}>{hotel.nickname}</h3>
                 <p style={styles.hotelDesc}>{hotel.description}</p>
@@ -195,11 +241,13 @@ export default function HotelReservation({ id }) {
                 style={styles.paymentMethodImage}
               />
             </div>
-            <div style={styles.actions}>
-              <Button style={styles.button} onClick={handleSubmit}>
-                예약하기
-              </Button>
-            </div>
+            <button
+              onClick={handleSubmit}
+              className=" w-full px-6 py-3 bg-red-500 text-white text-xl font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center"
+            >
+              <FaCalendarCheck className="mr-2" />
+              예약하기
+            </button>
           </div>
         </div>
       </div>
@@ -258,23 +306,22 @@ const styles = {
   refundPolicy: {
     margin: "20px 0",
   },
+  refundPolicyContent: {
+    fontSize: "0.85rem",
+    color: "grey",
+  },
   hotelInfo: {
     display: "flex",
     alignItems: "stretch",
     marginBottom: "40px",
-  },
-  image: {
-    width: "200px",
-    height: "200px",
-    objectFit: "cover",
-    marginRight: "20px",
-    borderRadius: "8px",
+    minHeight: "200px",
   },
   hotelTextContainer: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     flex: 1,
+    margin: "0 20px",
   },
   hotelName: {
     flex: 1,
@@ -298,13 +345,13 @@ const styles = {
     alignSelf: "flex-start",
   },
   paymentAmount: {
-    marginBottom: "40px",
+    marginBottom: "50px",
   },
   paymentAmountTitle: {
     marginBottom: "10px",
   },
   paymentDetails: {
-    marginBottom: "40px",
+    marginBottom: "50px",
   },
   paymentMethodTitle: {
     fontWeight: "bold",
@@ -316,16 +363,6 @@ const styles = {
     border: "1px solid #eaeaea",
     borderRadius: "8px",
     objectFit: "cover", // 이미지가 컨테이너를 채우도록 설정
-  },
-  actions: {
-    display: "flex",
-    alignSelf: "flex-start",
-  },
-  button: {
-    backgroundColor: "#EF4444",
-    color: "white",
-    borderRadius: "5px",
-    cursor: "pointer",
   },
   divider: {
     alignSelf: "stretch",
