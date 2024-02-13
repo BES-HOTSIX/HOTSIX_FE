@@ -16,9 +16,9 @@ export default function SignInForm() {
     password: '',
   })
 
-    // 입력 여부를 추적할 State
-    const [isUsernameEntered, setIsUsernameEntered] = useState(false)
-    const [isPasswordEntered, setIsPasswordEntered] = useState(false)
+  // 입력 여부를 추적할 State
+  const [isUsernameEntered, setIsUsernameEntered] = useState(false)
+  const [isPasswordEntered, setIsPasswordEntered] = useState(false)
 
   const handleChange = (e) => {
     e.preventDefault()
