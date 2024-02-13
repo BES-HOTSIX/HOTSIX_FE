@@ -11,6 +11,7 @@ import { differenceInCalendarDays, addDays } from 'date-fns'
 import Image from "next/image"
 import { useRecoilState } from 'recoil';
 import { reserveIdState } from '@/store/reservationState'
+import { FaCalendarCheck } from 'react-icons/fa'
 
 export default function HotelReservation({ id }) {
 	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id);
@@ -134,7 +135,7 @@ export default function HotelReservation({ id }) {
 				
 				const newReserveId = response.data.objData.id
 				setReserveId(newReserveId)
-				
+
 				router.push(`/cashLog/payByCash/${newReserveId}`)
 			}
 		} catch (error) {
@@ -167,20 +168,21 @@ export default function HotelReservation({ id }) {
 								<Button
 									auto
 									flat
-									color='error'
+									color='default'
 									onClick={() => handleGuestCountChange(-1)}
 									style={styles.guestCountButton}>
 									-
 								</Button>
 								<Input
 									readOnly
+									variant='bordered'
 									value={guestCount.toString()}
 									style={styles.guestCountNumber}
 								/>
 								<Button
 									auto
 									flat
-									color='success'
+									color='primary'
 									onClick={() => handleGuestCountChange(1)}
 									style={styles.guestCountButton}>
 									+
@@ -202,14 +204,15 @@ export default function HotelReservation({ id }) {
 
 					<div style={styles.paymentSection}>
 						<div style={styles.hotelInfo}>
-							<Image
-								src={mainImage}
-								alt='숙소 대표 이미지'
-								width={200}
-								height={200}
-								layout='fixed'
-								className='rounded-md'
-							/>
+							<div style={{ width: '200px', height: '200px', position: 'relative' }}>
+								<Image
+									src={mainImage}
+									alt='숙소 대표 이미지'
+									layout='fill'
+									objectFit='cover'
+									className='rounded-md'
+								/>
+							</div>
 							<div style={styles.hotelTextContainer}>
 								<h3 style={styles.hotelName}>{hotel.nickname}</h3>
 								<p style={styles.hotelDesc}>{hotel.description}</p>
@@ -230,11 +233,12 @@ export default function HotelReservation({ id }) {
 								style={styles.paymentMethodImage}
 							/>
 						</div>
-						<div style={styles.actions}>
-							<Button style={styles.button} onClick={handleSubmit}>
-								예약하기
-							</Button>
-						</div>
+						<button
+							onClick={handleSubmit}
+							className=' w-full px-6 py-3 bg-red-500 text-white text-xl font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'>
+							<FaCalendarCheck className='mr-2' />
+							예약하기
+						</button>
 					</div>
 				</div>
 			</div>
@@ -301,6 +305,7 @@ const styles = {
 		display: 'flex',
 		alignItems: 'stretch',
 		marginBottom: '40px',
+		minHeight: '200px',
 	},
 	hotelTextContainer: {
 		display: 'flex',
@@ -331,13 +336,13 @@ const styles = {
 		alignSelf: 'flex-start',
 	},
 	paymentAmount: {
-		marginBottom: '40px',
+		marginBottom: '50px',
 	},
 	paymentAmountTitle: {
 		marginBottom: '10px',
 	},
 	paymentDetails: {
-		marginBottom: '40px',
+		marginBottom: '50px',
 	},
 	paymentMethodTitle: {
 		fontWeight: 'bold',
@@ -349,16 +354,6 @@ const styles = {
 		border: '1px solid #eaeaea',
 		borderRadius: '8px',
 		objectFit: 'cover', // 이미지가 컨테이너를 채우도록 설정
-	},
-	actions: {
-		display: 'flex',
-		alignSelf: 'flex-start',
-	},
-	button: {
-		backgroundColor: '#EF4444',
-		color: 'white',
-		borderRadius: '5px',
-		cursor: 'pointer',
 	},
 	divider: {
 		alignSelf: 'stretch',
