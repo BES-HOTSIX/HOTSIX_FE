@@ -47,11 +47,14 @@ export default function SignUpForm() {
   const uploadImageToCloudinary = async (imageFile) => {
     const formData = new FormData()
     formData.append('file', imageFile)
-    formData.append('upload_preset', 'ejnekuco') // 업로드 프리셋을 설정하세요
+    formData.append(
+      'upload_preset',
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+    ) // 업로드 프리셋을 설정하세요
 
     try {
       const response = await axios.post(
-        'https://api.cloudinary.com/v1_1/dlfl2w8hk/image/upload',
+        process.env.NEXT_PUBLIC_CLOUDINARY_API_URL,
         formData
       )
       if (response.status === 200) {
