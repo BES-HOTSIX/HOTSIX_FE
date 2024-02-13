@@ -174,12 +174,25 @@ export default function SignUpForm() {
       <div className=' mt-32 min-h-[55vh]'>
         <form
           onSubmit={handleSubmit}
-          className='p-6 bg-white rounded shadow-md'>
+          className='p-6 bg-white rounded shadow-md max-w-full mx-auto'
+          style={{ width: '30vw' }}>
           <h2 className='flex justify-center text-lg font-semibold mb-4'>
             회원가입
           </h2>
-          <div className='mb-4'>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
+          <div className='mb-4 flex justify-center'>
+            <label htmlFor="profileImage" className="cursor-pointer flex items-center space-x-2">
+              <span className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                {selectedImage ? (
+                  <img src={URL.createObjectURL(selectedImage)} alt="Profile" className="w-full h-full rounded-full" />
+                ) : (
+                  <svg className="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                )}
+              </span>
+              <span className="text-sm text-gray-600">프로필 이미지 선택</span>
+            </label>
+            <input type="file" id="profileImage" accept="image/*" className="hidden" onChange={handleImageChange} />
           </div>
           <div className='mb-4'>
             <Input
