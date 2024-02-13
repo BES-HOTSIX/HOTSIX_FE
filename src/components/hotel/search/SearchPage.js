@@ -100,7 +100,7 @@ export default function SearchPage({ city, startDate, endDate }) {
           ))}
         </ul>
       </div>
-      <div className='flex justify-center my-4'>
+      <div className='flex h-[40vh] justify-center my-4'>
         <Pagination
           page={page}
           setPage={setPage}

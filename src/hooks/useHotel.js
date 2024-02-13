@@ -57,15 +57,15 @@ export const useRegisterHotel = () => {
   return { submitRegister, isPending, isError, error }
 }
 
-const fetchHotels = async (page) => {
-  const { data } = await axios.get(`/api/v1/hotels?page=${page}`)
+const fetchHotels = async (page, size) => {
+  const { data } = await axios.get(`/api/v1/hotels?page=${page}&size=${size}`)
 
   console.log('fetchHotels')
 
   return data
 }
 
-export const useHotels = (page) => {
+export const useHotels = (page, size) => {
   const {
     data: hotels,
     isLoading,
@@ -74,8 +74,8 @@ export const useHotels = (page) => {
     error,
     isPlaceholderData,
   } = useQuery({
-    queryKey: ['hotels', page],
-    queryFn: () => fetchHotels(page),
+    queryKey: ['hotels', page, size],
+    queryFn: () => fetchHotels(page, size),
     retry: 0,
     placeholderData: keepPreviousData,
   })
@@ -290,6 +290,76 @@ export const useSearchHotels = (
     isError,
     error,
     refetch,
+    isPlaceholderData,
+  }
+}
+
+const fetchHotelsSortedByLikes = async (page, size) => {
+  const { data } = await axios.get(
+    `/api/v1/hotels/likes-sorted?page=${page}&size=${size}`
+  )
+
+  console.log('fetchHotelsSortedByLikes')
+
+  return data
+}
+
+export const useHotelsSortedByLikes = (page, size) => {
+  const {
+    data: hotelsSortedByLikes,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    isPlaceholderData,
+  } = useQuery({
+    queryKey: ['hotelsSortedByLikes', page, size],
+    queryFn: () => fetchHotelsSortedByLikes(page, size),
+    retry: 0,
+    placeholderData: keepPreviousData,
+  })
+
+  return {
+    hotelsSortedByLikes,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    isPlaceholderData,
+  }
+}
+
+const fetchHotelsSortedByReservation = async (page, size) => {
+  const { data } = await axios.get(
+    `/api/v1/hotels/reservation-sorted?page=${page}&size=${size}`
+  )
+
+  console.log('fetchHotelsSortedByReservation')
+
+  return data
+}
+
+export const useHotelsSortedByReservation = (page, size) => {
+  const {
+    data: hotelsSortedByReservation,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    isPlaceholderData,
+  } = useQuery({
+    queryKey: ['hotelsSortedByReservation', page, size],
+    queryFn: () => fetchHotelsSortedByReservation(page, size),
+    retry: 0,
+    placeholderData: keepPreviousData,
+  })
+
+  return {
+    hotelsSortedByReservation,
+    isLoading,
+    isFetching,
+    isError,
+    error,
     isPlaceholderData,
   }
 }
