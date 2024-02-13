@@ -25,6 +25,8 @@ import { CiImageOff } from 'react-icons/ci'
 import { useAsync } from 'react-use'
 import { nanoid } from 'nanoid'
 import { toast } from 'react-toastify'
+import { useSetRecoilState } from 'recoil';
+import { reserveIdState } from '@/store/reservationState';
 
 export default function Pay({ fail, reserveId }) {
   const paymentWidgetRef = useRef(null)
@@ -38,6 +40,8 @@ export default function Pay({ fail, reserveId }) {
   // 리렌더링되더라도 실패 사유는 한번만 뜨게 하기 위한 useState
   const [isToasted, setIsToasted] = useState(false)
   console.log(isToasted)
+
+  const setReserveId = useSetRecoilState(reserveIdState);
 
   useAsync(async () => {
     if (isOpen) {
@@ -157,6 +161,8 @@ export default function Pay({ fail, reserveId }) {
   // goPay에서 만약 submitReservation이 호출될 경우 결제 확인 페이지로 이동
   if (cashLogConfirm) {
     const cashLogId = cashLogConfirm.data.objData.cashLogId
+
+    setReserveId(null);
 
     router.push(`/cashLog/${cashLogId}/confirm`)
   }
