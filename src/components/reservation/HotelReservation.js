@@ -9,13 +9,13 @@ import CalendarCustom from './CalendarCustom'
 import axios from '@/config/axios-config'
 import { differenceInCalendarDays, addDays } from 'date-fns'
 import Image from "next/image"
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { reserveIdState } from '@/store/reservationState'
 
 export default function HotelReservation({ id }) {
 	const { hotel, isHotelLoading, isError, error } = useHotelDetail(id);
 	const [guestCount, setGuestCount] = useState(1);
-  // const setReserveId = useSetRecoilState(reserveIdState); // Recoil 상태 설정 함수
+  const [reserveId, setReserveId] = useRecoilState(reserveIdState);
 
 	// CalendarCustom에 props로 전달
 	const [startDate, setStartDate] = useState(
@@ -101,24 +101,39 @@ export default function HotelReservation({ id }) {
 		}
 
 		try {
-			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`,
-				reservationInfo,
-				{
-					...axios.defaults,
-					useAuth: true,
+			if (reserveId) {
+				const response = await axios.put(
+					`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}/${reserveId}`,
+					reservationInfo,
+					{
+						...axios.defaults,
+						useAuth: true,
+					}
+				)
+
+				console.log('response: ', response)
+				if (response.status >= 400) {
+					throw new Error('Network response was not ok')
 				}
-			)
+			} else {
+				const response = await axios.post(
+					`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`,
+					reservationInfo,
+					{
+						...axios.defaults,
+						useAuth: true,
+					}
+				)
 
-			console.log('response: ', response)
-			if (response.status >= 400) {
-				throw new Error('Network response was not ok')
+				console.log('response: ', response)
+				if (response.status >= 400) {
+					throw new Error('Network response was not ok')
+				}
+				
+				const newReserveId = response.data.objData.id
+				setReserveId(newReserveId)
 			}
-
-			// Redirect or show success message
-			const reserveId = response.data.objData.id
-			// setReserveId(reserveId)
-			router.push(`/cashLog/pay/${reserveId}`)
+			router.push(`/cashLog/pay/${reserveId || newReserveId}`)
 		} catch (error) {
 			console.error('Error making reservation:', error)
 		}
