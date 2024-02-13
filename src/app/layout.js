@@ -19,6 +19,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang='ko'>
+      <head>
+        <link
+          rel='icon'
+          type='image/png'
+          sizes='128x128'
+          href='/hotshare_icon.png'
+        />
+      </head>
       <body className='font-jalnan w-full h-screen overflow-auto flex flex-col justify-between'>
         <Script
           strategy='beforeInteractive'
