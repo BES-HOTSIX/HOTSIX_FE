@@ -4,6 +4,8 @@ import axios from "@/config/axios-config"
 import { Button, Input, Textarea } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
 //import { useRouter } from "next/router"
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const EditReviewForm = ({ hotelId, reviewId, onClose }) => {
   const [editedReview, setEditedReview] = useState({
@@ -62,7 +64,7 @@ const EditReviewForm = ({ hotelId, reviewId, onClose }) => {
           useAuth: true,
         }
       )
-      alert("리뷰가 성공적으로 수정되었습니다.")
+      toast.success("리뷰가 수정되었습니다.")
 
       if (onClose) {
         onClose()
@@ -70,7 +72,7 @@ const EditReviewForm = ({ hotelId, reviewId, onClose }) => {
       }
     } catch (error) {
       console.error("리뷰 수정 중 오류 발생:", error)
-      alert("리뷰 수정에 실패했습니다. 다시 시도해주세요.")
+      toast.error("리뷰 수정에 실패했습니다. 다시 시도해주세요.")
     }
   }
 

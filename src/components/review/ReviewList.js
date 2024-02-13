@@ -2,11 +2,12 @@
 import React, { useState, useEffect } from "react"
 import axios from "@/config/axios-config"
 import { useUser } from "@/hooks/useUser"
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 import {
   Button,
   Modal,
   ModalContent,
-  ModalHeader,
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react"
@@ -19,6 +20,10 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   const [modalSize, setModalSize] = useState()
   const [editingReviewId, setEditingReviewId] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
+  const [averageAmenities, setAverageAmenities] = useState(0)
+  const [averageCleanliness, setAverageCleanliness] = useState(0)
+  const [averageStaffService, setAverageStaffService] = useState(0)
+  const [totalRating, setTotalRating] = useState(0)
 
   const { user } = useUser()
 
@@ -27,15 +32,38 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/review/${hotelId}`
       )
+      console.log("Server Response:", response.data)
       setAllReviews(response.data)
 
       // 최근 4개 리뷰
       const recentReviewsData = response.data.slice(0, 4)
       setRecentReviews(recentReviewsData)
+      const amenitiesAvg = calculateAverage(response.data, "amenities")
+      const cleanlinessAvg = calculateAverage(response.data, "cleanliness")
+      const staffServiceAvg = calculateAverage(response.data, "staffService")
+      const ratingAvg = calculateAverage(response.data, "rating")
+
+      const trimTrailingZeros = (num) => {
+        const str = num.toString()
+        if (str.includes(".")) {
+          return str.replace(/(?:\.0+|(\.\d+?)0+)$/, "$1")
+        }
+        return str
+      }
+
+      setAverageAmenities(trimTrailingZeros(amenitiesAvg.toFixed(2)))
+      setAverageCleanliness(trimTrailingZeros(cleanlinessAvg.toFixed(2)))
+      setAverageStaffService(trimTrailingZeros(staffServiceAvg.toFixed(2)))
+      setTotalRating(trimTrailingZeros(ratingAvg.toFixed(2)))
     } catch (error) {
       console.error("리뷰를 불러오는 중 에러 발생:", error)
       console.log("Recent Reviews:", recentReviews)
     }
+  }
+
+  const calculateAverage = (reviews, field) => {
+    const total = reviews.reduce((acc, review) => acc + review[field], 0)
+    return reviews.length > 0 ? total / reviews.length : 0
   }
 
   useEffect(() => {
@@ -52,21 +80,57 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
     setEditingReviewId(null)
   }
 
-  const renderStars = (rating) => {
-    const stars = []
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
+  const renderStarsWithScore = (rating) => {
+    const fullStars = Math.floor(rating)
+    const remainder = rating - fullStars
+
+    const stars = Array.from({ length: 5 }, (_, index) => {
+      const starValue = index + 1
+      let starColor = "lightgray"
+
+      if (starValue <= fullStars) {
+        starColor = "gold"
+      } else if (starValue === fullStars + 1 && remainder > 0) {
+        const gradientColor = `linear-gradient(to right, gold ${
+          remainder * 100
+        }%, lightgray ${remainder * 100}%)`
+        return (
+          <span
+            key={starValue}
+            style={{
+              background: gradientColor,
+              WebkitBackgroundClip: "text",
+              color: "transparent",
+              fontSize: "16px",
+              position: "relative",
+              marginRight: "-2px",
+            }}
+          >
+            ★
+          </span>
+        )
+      }
+
+      return (
         <span
-          key={i}
+          key={starValue}
           style={{
-            color: i <= rating ? "gold" : "lightgray",
+            color: starColor,
+            fontSize: "16px",
+            position: "relative",
           }}
         >
           ★
         </span>
       )
-    }
-    return stars
+    })
+
+    return (
+      <>
+        {stars}
+        {` (${rating})`}
+      </>
+    )
   }
 
   const handleDeleteReview = async (id) => {
@@ -78,12 +142,12 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
           useAuth: true,
         }
       )
-      console.log("리뷰가 성공적으로 삭제되었습니다.")
+      console.log("리뷰가 삭제되었습니다.")
       fetchReviews()
-      alert("리뷰가 성공적으로 삭제되었습니다.")
+      toast.success("리뷰가 삭제되었습니다.")
     } catch (error) {
       console.error("리뷰 삭제 중 오류 발생:", error)
-      alert("리뷰 삭제에 실패했습니다. 다시 시도해주세요.")
+      toast.error("리뷰 삭제에 실패했습니다. 다시 시도해주세요.")
     }
   }
 
@@ -93,83 +157,114 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
     setShowModal(true)
   }
 
+  const renderTopBox = () => {
+    return (
+      <div
+        style={{
+          marginBottom: "20px",
+          padding: "10px",
+          border: "2px solid #ddd",
+          borderRadius: "5px",
+          width: "50%",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <p style={{ fontSize: "35px", marginLeft: "50px" }}>{totalRating}</p>
+        </div>
+        <div style={{ flex: 1, marginLeft: "20px" }}>
+          <p style={{ marginTop: "5px", marginBottom: "5px" }}>
+            편의시설 {renderStarsWithScore(averageAmenities)}
+          </p>
+          <p style={{ marginBottom: "5px" }}>
+            서비스 {renderStarsWithScore(averageStaffService)}
+          </p>
+          <p style={{ marginBottom: "5px" }}>
+            청결 {renderStarsWithScore(averageCleanliness)}
+          </p>
+        </div>
+      </div>
+    )
+  }
   const renderRecentReviewsGrid = () => {
     if (!Array.isArray(recentReviews) || recentReviews.length === 0) {
       return <p>등록된 리뷰가 없습니다.</p>
     }
 
     return (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-        }}
-      >
-        {recentReviews.map((review) => (
-          <div key={review.id}>
-            <p style={{ marginTop: "10px" }}> {review.member.nickname}</p>
-            {/* <p style={{ margin: "10px" }}>이미지 URL: {review.member.imageUrl}</p> */}
-            <p style={{ margin: "10px" }}>
-              평점 {renderStars(review.rating)} ({review.rating})
-            </p>
-            <p
-              style={{
-                textAlign: "left",
-                whiteSpace: "pre-line",
-                margin: "10px",
-              }}
-            >
-              {review.body}
-            </p>
-            <p style={{ margin: "10px" }}>
-              편의시설 {renderStars(review.amenities)} ({review.amenities})
-            </p>
-            <p style={{ margin: "10px" }}>
-              서비스 {renderStars(review.staffService)} ({review.staffService})
-            </p>
-            <p style={{ margin: "10px" }}>
-              청결 {renderStars(review.cleanliness)} ({review.cleanliness})
-            </p>
-            <p style={{ fontSize: "12px", margin: "10px" }}>
-              {review.updatedAt
-                ? `${new Intl.DateTimeFormat("ko-KR", {
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  }).format(new Date(review.updatedAt))} 수정`
-                : `${new Intl.DateTimeFormat("ko-KR", {
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  }).format(new Date(review.createdAt))}등록`}
-            </p>
-            {user?.objData.nickname === review.member.nickname && (
-              <>
-                <Button
-                  onClick={() => handleEditReview(review.id)}
-                  style={{
-                    backgroundColor: "orange",
-                    color: "white",
-                    marginBottom: "25px",
-                  }}
-                >
-                  수정
-                </Button>
-                <Button
-                  onClick={() => handleDeleteReview(review.id)}
-                  style={{ backgroundColor: "red", color: "white" }}
-                >
-                  삭제
-                </Button>
-              </>
-            )}
-          </div>
-        ))}
-      </div>
+      <>
+        {renderTopBox()}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+          }}
+        >
+          {recentReviews.map((review) => (
+            <div key={review.id}>
+              <p style={{ marginTop: "10px" }}> {review.member.nickname}</p>
+              {/* <p style={{ margin: "10px" }}>이미지 URL: {review.member.imageUrl}</p> */}
+              <p style={{ margin: "10px" }}>
+                평점 {renderStarsWithScore(review.rating)}
+              </p>
+              <p
+                style={{
+                  textAlign: "left",
+                  whiteSpace: "pre-line",
+                  margin: "10px",
+                }}
+              >
+                {review.body}
+              </p>
+              <p style={{ margin: "10px" }}>
+                편의시설 {renderStarsWithScore(review.amenities)}
+              </p>
+              <p style={{ margin: "10px" }}>
+                서비스 {renderStarsWithScore(review.staffService)}
+              </p>
+              <p style={{ margin: "10px" }}>
+                청결 {renderStarsWithScore(review.cleanliness)}
+              </p>
+              <p style={{ fontSize: "12px", margin: "10px" }}>
+                {review.updatedAt
+                  ? `${new Intl.DateTimeFormat("ko-KR", {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                    }).format(new Date(review.updatedAt))}`
+                  : `${new Intl.DateTimeFormat("ko-KR", {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                    }).format(new Date(review.createdAt))}`}
+              </p>
+              {user?.objData.nickname === review.member.nickname && (
+                <>
+                  <Button
+                    onClick={() => handleEditReview(review.id)}
+                    style={{
+                      backgroundColor: "orange",
+                      color: "white",
+                      marginBottom: "25px",
+                    }}
+                  >
+                    수정
+                  </Button>
+                  <Button
+                    onClick={() => handleDeleteReview(review.id)}
+                    style={{ backgroundColor: "red", color: "white" }}
+                  >
+                    삭제
+                  </Button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      </>
     )
   }
 
@@ -255,38 +350,36 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                               {review.member.nickname}
                             </p>
                             <p style={{ margin: "10px" }}>
-                              평점 {renderStars(review.rating)} ({review.rating}
-                              )
+                              평점 {renderStarsWithScore(review.rating)}
                             </p>
                             <p style={{ margin: "10px" }}>{review.body}</p>
                             <p style={{ margin: "10px" }}>
-                              편의시설 {renderStars(review.amenities)} (
-                              {review.amenities})
+                              편의시설 {renderStarsWithScore(review.amenities)}{" "}
                             </p>
                             <p style={{ margin: "10px" }}>
-                              서비스 {renderStars(review.staffService)} (
-                              {review.staffService})
+                              서비스 {renderStarsWithScore(review.staffService)}{" "}
                             </p>
                             <p style={{ margin: "10px", marginBottom: "10px" }}>
-                              청결 {renderStars(review.cleanliness)} (
-                              {review.cleanliness})
+                              청결 {renderStarsWithScore(review.cleanliness)}
                             </p>
-                            <p style={{ fontSize: "12px", margin: "10px" }}>
+                            <p
+                              style={{
+                                fontSize: "12px",
+                                margin: "10px",
+                                marginBottom: "15px",
+                              }}
+                            >
                               {review.updatedAt
                                 ? `${new Intl.DateTimeFormat("ko-KR", {
                                     year: "numeric",
                                     month: "numeric",
                                     day: "numeric",
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                  }).format(new Date(review.updatedAt))} 수정`
+                                  }).format(new Date(review.updatedAt))}`
                                 : `${new Intl.DateTimeFormat("ko-KR", {
                                     year: "numeric",
                                     month: "numeric",
                                     day: "numeric",
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                  }).format(new Date(review.createdAt))}등록`}
+                                  }).format(new Date(review.createdAt))}`}
                             </p>
                             {user?.objData.nickname ===
                               review.member.nickname && (

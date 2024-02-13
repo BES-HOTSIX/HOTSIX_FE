@@ -3,6 +3,8 @@
 import React, { useState } from "react"
 import axios from "@/config/axios-config"
 import { useRouter } from "next/navigation"
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
   const [body, setBody] = useState("")
@@ -44,13 +46,13 @@ const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
         onReviewSubmit()
       }
 
-      alert("리뷰가 등록되었습니다.")
+      toast.success("리뷰가 등록되었습니다.")
       router.push(`/hotel/${hotelId}`)
     } catch (error) {
       console.error("리뷰 등록 오류:", error)
       console.error("서버 응답 데이터:", error.response?.data)
 
-      alert("리뷰 등록에 실패했습니다. 다시 시도해주세요.")
+      toast.error("리뷰 등록에 실패했습니다. 다시 시도해주세요.")
     }
   }
 
