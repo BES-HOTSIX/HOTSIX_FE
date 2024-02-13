@@ -55,6 +55,11 @@ export default function HotelImage() {
 
   const router = useRouter()
   const [isVisible, setIsVisible] = useState(false)
+  const [totalSize, setTotalSize] = useState(0) // 전체 파일 크기를 관리할 state
+
+  const calculateSize = (files) => {
+    return files.reduce((total, file) => total + file.size, 0) / (1024 * 1024) // MB 단위로 변환
+  }
 
   useEffect(() => {
     setIsVisible(true)
@@ -81,6 +86,17 @@ export default function HotelImage() {
 
     if (images.length < 5) {
       toast.error('숙소 사진을 5장 이상 등록해주세요.')
+      return
+    }
+
+    // 이미지들의 총 크기 계산
+    const totalSizeMB =
+      images.reduce((total, img) => total + img.size, 0) / (1024 * 1024)
+
+    // 총 크기가 5MB를 초과하면
+    if (totalSizeMB > 5) {
+      // 토스트 메시지 띄우기
+      toast.error('파일의 총 크기가 5MB를 초과합니다.')
       return
     }
 
@@ -123,22 +139,35 @@ export default function HotelImage() {
   }
 
   const onDrop = useCallback((acceptedFiles) => {
-    setImages((prevImages) => [...prevImages, ...acceptedFiles])
+    setImages((prevImages) => {
+      const newImages = [...prevImages, ...acceptedFiles]
+      const totalSize = calculateSize(newImages)
+      if (totalSize > 5) {
+        // 총 크기가 5MB를 초과하면
+        toast.error('파일의 총 크기가 5MB를 초과합니다.')
+        return prevImages // 기존 이미지 목록을 그대로 유지
+      }
+      return newImages
+    })
   }, [])
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop })
 
   const removeImage = (index) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index))
+    setImages((prevImages) => {
+      const newImages = prevImages.filter((_, i) => i !== index)
+      setTotalSize(calculateSize(newImages)) // 총 파일 크기 계산
+      return newImages
+    })
   }
 
   return (
     <div
-      className={`container mt-32 h-[60vh] mx-auto  p-4 space-y-8 transition-all duration-1000 ease-in-out ${
+      className={`container mt-32 h-screen mx-auto  p-4 space-y-8 transition-all duration-1000 ease-in-out ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'
       }`}>
       <p className='flex justify-center mb-5'>
-        숙소의 사진을 첨부해주세요. (최소 5장)
+        숙소의 사진을 첨부해주세요. (최소 5장, 최대 5MB)
       </p>
       <div
         {...getRootProps()}
@@ -155,6 +184,9 @@ export default function HotelImage() {
                 alt={`미리보기 ${index}`}
                 className='w-full h-auto'
               />
+              <div className='absolute top-0 left-0 bg-white text-gray-700 text-xs font-bold p-1'>
+                {(file.size / 1024 / 1024).toFixed(2)} MB
+              </div>
               <Button
                 auto
                 flat
@@ -167,6 +199,15 @@ export default function HotelImage() {
           </div>
         ))}
       </div>
+      <div className='text-gray-700'>
+        총 파일 크기:{' '}
+        {(
+          images.reduce((total, img) => total + img.size, 0) /
+          (1024 * 1024)
+        ).toFixed(2)}{' '}
+        MB
+      </div>
+
       <div className='flex justify-around mt-20'>
         <Button
           className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-5'

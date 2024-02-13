@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React from "react";
 import {
   Table,
   TableHeader,
@@ -12,146 +12,26 @@ import {
   getKeyValue,
   Card,
   CardBody,
-  Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Input,
 } from "@nextui-org/react";
-import {
-  useCancelRecharge,
-  useMyCashLog,
-  useMyRecharge,
-} from "@/hooks/useCashLog";
-import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
-import { useAsync } from "react-use";
-import { nanoid } from "nanoid";
+import { useMyCashLog } from "@/hooks/useCashLog";
 
 export default function CashLogMe() {
-  // 토스페이먼츠 관련 훅
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const paymentWidgetRef = useRef(null);
-  const paymentMethodsWidgetRef = useRef(null);
-  const [price, setPrice] = useState(500000);
+  const [page, setPage] = React.useState(1);
+  const { myCashLog, isLoading, isError, error } = useMyCashLog(page - 1);
 
-  useAsync(async () => {
-    if (isOpen) {
-      const paymentWidget = await loadPaymentWidget(
-        process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY,
-        process.env.NEXT_PUBLIC_TOSS_CUSTOMER_KEY
-      );
+  if (isLoading) return <div></div>;
 
-      const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
-        "#payment-widget",
-        { value: price },
-        { variantKey: "DEFAULT" }
-      );
-
-      paymentWidget.renderAgreement("#agreement", { variantKey: "AGREEMENT" });
-
-      paymentWidgetRef.current = paymentWidget;
-      paymentMethodsWidgetRef.current = paymentMethodsWidget;
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    const paymentMethodsWidget = paymentMethodsWidgetRef.current;
-
-    if (paymentMethodsWidget == null) {
-      return;
-    }
-
-    paymentMethodsWidget.updateAmount(price);
-  }, [price]);
-
-  // 페이지네이션 관련
-  const [cashLogPage, setCashLogPage] = useState(1);
-  const cashLogPageSize = 5;
-  const {
-    myCashLog,
-    isLoading: cashLogIsLoading,
-    isError: cashLogIsError,
-    error: cashLogError,
-  } = useMyCashLog({
-    page: cashLogPage - 1,
-    size: cashLogPageSize,
-  });
-
-  const [rechargePage, setRechargePage] = useState(1);
-  const rechargePageSize = 5;
-  const {
-    myRecharge,
-    isLoading: rechargeIsLoading,
-    isError: rechargeIsError,
-    error: rechargeError,
-  } = useMyRecharge({
-    page: rechargePage - 1,
-    size: rechargePageSize,
-  });
-
-  const { submitCancelRecharge, isPending, isError, error } =
-    useCancelRecharge();
-
-  const doCancel = async (orderId) => {
-    console.log(`sumbitCancelRecharge`);
-    submitCancelRecharge(orderId);
-  };
-
-  const renderCell = useCallback((item, columnKey) => {
-    switch (columnKey) {
-      case "createdAt":
-        return <div>{item.createdAt}</div>;
-      case "orderId":
-        return <div>{item.orderId}</div>;
-      case "status":
-        return <div>{item.status}</div>;
-      case "virtualAccount":
-        return <div>{item.virtualAccount}</div>;
-      case "price":
-        return <div>{item.price}</div>;
-      case "cancel":
-        if (item.status == "입금 완료" || item.status == "입금 취소")
-          return (
-            <Button isDisabled color="default" size="sm">
-              취소하기
-            </Button>
-          );
-        return (
-          <Button
-            color="danger"
-            size="sm"
-            onClick={() => doCancel(item.orderId)}
-          >
-            취소하기
-          </Button>
-        );
-    }
-  }, []);
-
-  if (cashLogIsLoading || rechargeIsLoading) return <div></div>;
-
-  if (!myCashLog || !myRecharge) return <div>잘못된 접근입니다</div>;
+  if (!myCashLog) return <div>잘못된 접근입니다</div>;
 
   console.log(myCashLog);
-  console.log(myRecharge);
 
   const cashLogsData = myCashLog.objData;
 
-  const username = cashLogsData.username;
-  const restCash = cashLogsData.restCash;
+  const restCash = myCashLog.objData.restCash;
 
-  const { content: cashLogPages, totalPages: cashLogTotalPages } =
-    cashLogsData.cashLogConfirmPage;
+  const { content: cashLogPage, totalPages } = cashLogsData.cashLogConfirmPage;
 
-  const rechargeData = myRecharge.objData;
-
-  const { content: rechargePages, totalPages: rechargeTotalPages } =
-    rechargeData;
-
-  console.log(cashLogPages);
+  console.log(cashLogPage);
 
   cashLogPages.map((e) => {
     e.createdAt = new Date(e.createdAt)
@@ -186,80 +66,14 @@ export default function CashLogMe() {
       .split(" ")
       .join(".");
   });
-
-  rechargePages.map((e) => {
-    e.orderId = e.orderId.substring(0, 4);
-  });
-
-  const goTossPayments = async () => {
-    const paymentWidget = paymentWidgetRef.current;
-
-    await paymentWidget?.requestPayment({
-      orderId: nanoid(),
-      orderName: "캐시 충전",
-      customerName: username,
-      customerEmail: "hagd0520@gmail.com",
-      successUrl: `${window.location.origin}/cashLog/me/success`,
-      failUrl: `${window.location.origin}/fail`,
-      // _skipAuth: "FORCE_SUCCESS",
-    });
-  };
-
-  const cashHandler = (e) => {
-    const newCash = e.target.value;
-
-    if (!isNaN(newCash) && newCash != "0") setPrice(newCash);
-  };
 
   return (
-    <div>
+    <div className="mt-32 min-h-screen">
       <div className="flex justify-between mb-5 items-center">
         <p className="text-4xl ml-10">결제 내역</p>
         <Card className="py-4 w-2/4 right-0 top-0">
-          <CardBody className="overflow-visible py-2 flex flex-row justify-between">
+          <CardBody className="overflow-visible py-2">
             <p className="text-2xl">보유 캐시 : {restCash}</p>
-            <Button onClick={onOpen} color="primary">
-              충전하기
-            </Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-              <ModalContent>
-                {(onClose) => (
-                  <>
-                    <ModalHeader className="flex flex-col gap-1">
-                      Modal Title
-                    </ModalHeader>
-                    <ModalBody>
-                      <div id="payment-widget" />
-                      <div id="agreement" />
-                      <div className="flex justify-around items-center">
-                        <div>충전금액</div>
-                        <Input
-                          className="w-3/5"
-                          value={price}
-                          onChange={cashHandler}
-                          placeholder={0}
-                          endContent={
-                            <div className="pointer-events-none flex items-center">
-                              <span className="text-default-400 text-small">
-                                ₩
-                              </span>
-                            </div>
-                          }
-                        />
-                      </div>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button variant="light" onPress={onClose}>
-                        취소하기
-                      </Button>
-                      <Button color="primary" onPress={goTossPayments}>
-                        충전하기
-                      </Button>
-                    </ModalFooter>
-                  </>
-                )}
-              </ModalContent>
-            </Modal>
           </CardBody>
         </Card>
       </div>
@@ -272,9 +86,9 @@ export default function CashLogMe() {
               showControls
               showShadow
               color="secondary"
-              page={cashLogPage}
-              total={cashLogTotalPages}
-              onChange={(page) => setCashLogPage(page)}
+              page={page}
+              total={totalPages}
+              onChange={(page) => setPage(page)}
             />
           </div>
         }
@@ -284,7 +98,7 @@ export default function CashLogMe() {
       >
         <TableHeader>
           <TableColumn key="createdAt">날짜</TableColumn>
-          <TableColumn key="orderId">주문코드</TableColumn>
+          <TableColumn key="cashLogId">식별번호</TableColumn>
           <TableColumn key="eventType">카테고리</TableColumn>
           <TableColumn key="price">금액</TableColumn>
         </TableHeader>

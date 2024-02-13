@@ -16,7 +16,7 @@ module.exports = {
         cream: '#FCF8E8',
         lemon: '#FDFFAB',
         baige: {
-          300: '#FFFBE9',
+          300: 'FFF8E3',
           500: '#F4EAD5',
           700: '#F1E0AC',
         },
