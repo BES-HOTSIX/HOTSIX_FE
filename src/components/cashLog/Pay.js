@@ -52,6 +52,8 @@ export default function Pay({ fail, reserveId }) {
         { variantKey: "DEFAULT" }
       );
 
+      paymentWidget.renderAgreement("#agreement", { variantKey: "AGREEMENT" });
+
       paymentWidgetRef.current = paymentWidget;
       paymentMethodsWidgetRef.current = paymentMethodsWidget;
     }
@@ -167,7 +169,7 @@ export default function Pay({ fail, reserveId }) {
   const cashHandler = (e) => {
     const newCash = e.target.value;
 
-    if (!isNaN(newCash) && newCash != "00") setPayWithCash(newCash);
+    if (!isNaN(newCash) && newCash != "0") setPayWithCash(newCash);
     if (newCash >= usableCash) {
       setPayWithCash(usableCash);
       setIsChecked(true);
@@ -185,8 +187,6 @@ export default function Pay({ fail, reserveId }) {
 
   console.log(reservation);
   console.log(reservationData.hotelPhotoUrl);
-
-  // 토스페이먼트
 
   return (
     <div>
@@ -343,6 +343,7 @@ export default function Pay({ fail, reserveId }) {
                 </ModalHeader>
                 <ModalBody>
                   <div id="payment-widget" className="mt-5" />
+                  <div id="agreement"></div>
                 </ModalBody>
                 <ModalFooter>
                   <Button variant="light" onPress={onClose}>

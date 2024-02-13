@@ -1,15 +1,18 @@
 "use client";
 
 import { useTossPayments } from "@/hooks/useCashLog";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function Success({ payment, reserveId }) {
+export default function PaySuccess({ payment, reserveId }) {
   const router = useRouter();
 
   const { submitTossPayments, response, isPending, isError, error } =
     useTossPayments();
+
+  useEffect(() => {
+    if (submitTossPayments) submitTossPayments({ payment, reserveId });
+  }, [submitTossPayments]);
 
   if (isPending) {
     return (
@@ -22,15 +25,5 @@ export default function Success({ payment, reserveId }) {
     router.push(`/cashLog/${cashLogId}/confirm`);
   }
 
-  const go = () => {
-    submitTossPayments({ payment, reserveId });
-  };
-  // submitTossPayments({payment, reserveId })
-
-  return (
-    <div className="h-[60vh] mt-32">
-      <button onClick={go}>TRY</button>
-      <h1></h1>
-    </div>
-  );
+  return;
 }
