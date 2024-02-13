@@ -190,3 +190,51 @@ export const useTossPayments = () => {
 
   return { submitTossPayments, response, isPending, isError, error };
 };
+
+// 예약 취소
+const fetchReserveForCancel = async (reserveId) => {
+  console.log(`/api/v1/cashLog/${reserveId}/cancel`);
+  return await axios.patch(`/api/v1/cashLog/${reserveId}/cancel`, {},
+  {
+    ...axios.defaults,
+    useAuth: true,
+  });
+};
+
+export const useReserveForCancel = () => {
+  const queryClient = useQueryClient();
+  const [res, setRes] = useState(null);
+  const {
+    mutate: submitReserveForCancel,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: (reserveId) => {
+      return fetchReserveForCancel(reserveId);
+    },
+    onSuccess: (res) => {
+      console.log("예약 취소 성공");
+
+      if (!res.data.result) {
+        toast.error("예약 취소에 실패했습니다 🥲");
+        return;
+      }
+
+      toast.success("예약 취소가 완료되었습니다!");
+
+      setRes(res);
+
+      queryClient.invalidateQueries({ queryKey: ["reserve"] });
+    },
+    onError: (err) => {
+      console.log("예약 취소 실패");
+
+      toast.error("예약 취소에 실패했습니다 🥲");
+
+      return err;
+    },
+  });
+
+  return { submitReserveForCancel, res, isPending, isError, error };
+};

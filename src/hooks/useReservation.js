@@ -8,7 +8,7 @@ const fetchReservationDetail = async (reserveId) => {
 			...axios.defaults,
 			useAuth: true
 	});
-	console.log(res);
+
 	return res.data;
 };
 
@@ -24,8 +24,6 @@ export const useReservationDetail = (reserveId) => {
 		queryFn: () => fetchReservationDetail(reserveId),
 	});
 
-	console.log("reserverId = " + reserveId);
-
 	return { reservation, isLoading, isFetching, isError, error };
 };
 
@@ -33,7 +31,8 @@ export const useReservationDetail = (reserveId) => {
 const fetchReservedDatesOfHotel = async (hotelId) => {
 	const res = await axios.get(
 		`api/v1/reserve/reservedDates/${hotelId}`);
-	return res.data.objData.reservedDates;
+
+		return res.data.objData.reservedDates;
 };
 
 
@@ -48,8 +47,6 @@ export const useReservedDatesOfHotel = (hotelId) => {
 		queryKey: ["reservedDates", hotelId],
 		queryFn: () => fetchReservedDatesOfHotel(hotelId),
 	});
-
-	console.log("hotelId = " + hotelId);
 
 	return { reservedDates, isLoading, isFetching, isError, error };
 };
