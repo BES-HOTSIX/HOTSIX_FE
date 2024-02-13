@@ -12,9 +12,11 @@ import { useHotelDetail, useModifyHotel } from '@/hooks/useHotel'
 import { Input, Textarea } from '@nextui-org/react'
 import AddressInput from '@/components/hotel/register/ui/AddressInput'
 import { toast } from 'react-toastify'
+import { useUser } from '@/hooks/useUser'
 
 export default function HotelModify({ id }) {
-  const { hotel, isLoading, isError, error } = useHotelDetail(id)
+  const { hotel, isHotelLoading } = useHotelDetail(id)
+  const { user, isLoading } = useUser()
   const [images, setImages] = useState([])
   const [deletedImages, setDeletedImages] = useState([])
   const [newImages, setnewImages] = useState([])
@@ -68,6 +70,10 @@ export default function HotelModify({ id }) {
       price: hotel?.price,
     })
   }, [hotel])
+
+  const calculateSize = (files) => {
+    return files.reduce((total, file) => total + file.size, 0) / (1024 * 1024) // MB 단위로 변환
+  }
 
   const onDrop = useCallback((acceptedFiles) => {
     setImages((prevImages) => [...prevImages, ...acceptedFiles])
@@ -127,8 +133,19 @@ export default function HotelModify({ id }) {
   const modifySubmitHandler = (e) => {
     e.preventDefault()
 
-    if (images.length + newImages.length - deletedImages.length < 5) {
+    if (images.length < 5) {
       toast.error('숙소 사진은 최소 5장 이상이어야 합니다.')
+      return
+    }
+
+    // 이미지들의 총 크기 계산
+    const totalSizeMB =
+      newImages.reduce((total, img) => total + img.size, 0) / (1024 * 1024)
+
+    // 총 크기가 5MB를 초과하면
+    if (totalSizeMB > 5) {
+      // 토스트 메시지 띄우기
+      toast.error('파일의 총 크기가 5MB를 초과합니다.')
       return
     }
 
@@ -228,14 +245,15 @@ export default function HotelModify({ id }) {
   }
 
   if (isLoading) return <div></div>
+  if (isHotelLoading) return <div></div>
 
-  return (
-    <div>
+  return user?.objData.nickname === hotel.host ? (
+    <div className='mt-32'>
       <h1 className='text-2xl text-center mb-12 text-stone-400'>
         숙소 정보 수정
       </h1>{' '}
       <p className='flex justify-center text-lg'>
-        숙소 사진을 첨부해주세요. (최소 5장)
+        숙소 사진을 첨부해주세요. (최소 5장, 최대 5MB)
       </p>
       <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
       <div
@@ -253,6 +271,11 @@ export default function HotelModify({ id }) {
                 alt={`미리보기 ${index}`}
                 className='w-full h-auto'
               />
+              <div className='absolute top-0 left-0 bg-white text-gray-700 text-xs font-bold p-1'>
+                {isFile(image)
+                  ? (image.size / 1024 / 1024).toFixed(2) + ' MB'
+                  : ''}
+              </div>
               <Button
                 auto
                 flat
@@ -264,6 +287,14 @@ export default function HotelModify({ id }) {
             </div>
           </div>
         ))}
+      </div>
+      <div className='flex mt-4 justify-start text-lg mb-4'>
+        총 업로드 크기:{' '}
+        {(
+          newImages.reduce((total, img) => total + img.size, 0) /
+          (1024 * 1024)
+        ).toFixed(2)}{' '}
+        MB
       </div>
       <AddressInput
         address={roomDetails.address}
@@ -426,5 +457,7 @@ export default function HotelModify({ id }) {
         </Button>
       </div>
     </div>
+  ) : (
+    <p>잘못된 접근입니다.</p>
   )
 }

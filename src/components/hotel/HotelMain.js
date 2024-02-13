@@ -25,7 +25,7 @@ export default function HotelMain() {
           ))}
         </ul>
       </div>
-      <div className='flex justify-center my-4'>
+      <div className='flex justify-center'>
         <Pagination
           page={page}
           setPage={setPage}

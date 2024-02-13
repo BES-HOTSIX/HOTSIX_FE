@@ -5,12 +5,20 @@ import { useHotelDetail } from '@/hooks/useHotel'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FaBed, FaHome, FaKey, FaCalendarCheck } from 'react-icons/fa'
-import { MdBathroom, MdFamilyRestroom, MdLocationOn } from 'react-icons/md'
+import { FaBed, FaHome, FaKey, FaCalendarCheck, FaImages } from 'react-icons/fa'
+import {
+  MdBathroom,
+  MdFamilyRestroom,
+  MdLocationOn,
+  MdPerson4,
+} from 'react-icons/md'
 import ConfirmAlert from '../ui/modal/ConfirmAlert'
 import { amenitiesOptions } from '@/constants/hotel'
 import { useDeleteHotel } from '@/hooks/useHotel'
 import { formatPrice } from '@/constants/hotel'
+import { useUser } from '@/hooks/useUser'
+import LikeButton from '@/app/hotel/like/LikeButton'
+import ReviewList from '@/components/review/ReviewList'
 
 export default function HotelDetail({ id }) {
   const router = useRouter()
@@ -20,39 +28,43 @@ export default function HotelDetail({ id }) {
     router.push(`/hotel/reserve/${id}`)
   }
 
-  const { hotel, isLoading, isError, error } = useHotelDetail(id)
+  const handleAllPhotosButton = (e) => {
+    e.preventDefault()
+    router.push(`/hotel/${id}/photos`)
+  }
+
+  const { hotel, isHotelLoading, isFetching, isError, error } =
+    useHotelDetail(id)
+  const { user, isLoading } = useUser()
   const { submitDelete, isPending } = useDeleteHotel(id)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
+  const mainImage = hotel?.imagesResponse.imageUrl[0]
+  const otherImages = hotel?.imagesResponse.imageUrl.slice(1, 5)
+
   if (isLoading) return <div></div>
-  if (isError) return <div>Error: {error.message}</div>
-
-  const mainImage = hotel.imagesResponse.imageUrl[0]
-  const otherImages = hotel.imagesResponse.imageUrl.slice(1, 5)
-
-  console.log(hotel)
+  if (isHotelLoading) return <div></div>
 
   return (
-    <div className='w-full mx-auto p-4'>
+    <div className='w-full mx-auto p-10'>
       <div className='flex justify-between'>
         <h1 className='text-2xl mb-3 '>{hotel.nickname}</h1>
-        <div className='flex justify-end items-center gap-2 h-10 text-sm'>
-          <Link href={`/hotel/${id}/modify`}>
-            <span>수정</span>
-          </Link>
-          <button onClick={() => setIsConfirmOpen(true)}>
-            <span>삭제</span>
-          </button>
-        </div>
+        {user?.objData.nickname === hotel.host && (
+          <div className='flex justify-end items-center gap-2 h-10 text-sm'>
+            <Link href={`/hotel/${id}/modify`}>
+              <span>수정</span>
+            </Link>
+            <button onClick={() => setIsConfirmOpen(true)}>
+              <span>삭제</span>
+            </button>
+          </div>
+        )}
       </div>
 
       <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
 
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
         <div className='md:col-span-2 mb-4 relative h-[600px]'>
-          {' '}
-          {/* Adjust height as needed */}
-          {/* 큰 이미지 */}
           <Image
             src={mainImage}
             alt='Main Image'
@@ -60,6 +72,17 @@ export default function HotelDetail({ id }) {
             objectFit='cover'
             className='rounded-md'
           />
+          <div className='absolute top-2 left-2'>
+            {user && <LikeButton hotelId={id} />}
+          </div>
+          <button
+            onClick={handleAllPhotosButton}
+            className='absolute right-2 bottom-2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 hover:text-gray-200 transition duration-150 ease-in-out'>
+            <div className='flex space-x-2 items-center'>
+              <FaImages className='text-lg' />
+              <p>모든 사진 보기</p>
+            </div>
+          </button>
         </div>
         <div className='grid grid-cols-2 gap-4 h-[600px]'>
           {' '}
@@ -80,12 +103,17 @@ export default function HotelDetail({ id }) {
           ))}
         </div>
       </div>
-      <div className='grid grid-cols-3'>
+      <div className='grid grid-cols-subgrid sm:grid-cols-3'>
         <div className='col-span-3 sm:col-span-2'>
           <h2 className='text-xl font-semibold mb-4 mt-5'>기본 정보</h2>
           <div className='w-[55vw]'>
             <div className='w-[40vw]'>
               <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
+            </div>
+
+            <div className='flex items-center text-lg mb-2'>
+              <MdPerson4 className='text-xl mr-2' />
+              <p>호스트: {hotel.host}</p>
             </div>
             <div className='flex items-center text-lg mb-2'>
               <MdLocationOn className='text-xl mr-2' />
@@ -119,7 +147,7 @@ export default function HotelDetail({ id }) {
               <div className='w-[40vw]'>
                 <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
               </div>
-              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 {amenitiesOptions
                   .filter((amenity) => hotel.facility.includes(amenity.type))
                   .map((filteredAmenity, index) => (
@@ -143,7 +171,7 @@ export default function HotelDetail({ id }) {
             </div>
           </div>
         </div>
-        <div className='bg-gray-100 rounded-lg shadow-md p-4 mt-4'>
+        <div className='bg-gray-100 w-full rounded-lg shadow-md p-4 mt-4'>
           <div>
             <div>
               <h3 className='text-lg font-semibold mb-2'>
@@ -172,6 +200,11 @@ export default function HotelDetail({ id }) {
           </div>
         </div>
       </div>
+
+      <div className='mt-10'>
+        <ReviewList hotelId={id} />
+      </div>
+
       {isConfirmOpen && (
         <ConfirmAlert
           isOpen={isConfirmOpen}

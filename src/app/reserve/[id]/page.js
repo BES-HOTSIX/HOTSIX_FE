@@ -1,6 +1,6 @@
 import React from 'react'
-import ReservationDetail from '@/components/reservation/ReservationDetail'
+import HotelReservation from '@/components/reservation/HotelReservation'
 
 export default function page({ params: { id } }) {
-  return <ReservationDetail id={id} />
+  return <HotelReservation id={id} />
 }
