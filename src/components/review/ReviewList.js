@@ -24,8 +24,13 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   const [averageCleanliness, setAverageCleanliness] = useState(0)
   const [averageStaffService, setAverageStaffService] = useState(0)
   const [totalRating, setTotalRating] = useState(0)
+  const [sortBy, setSortBy] = useState("recent")
 
   const { user } = useUser()
+
+  const handleSortChange = (event) => {
+    setSortBy(event.target.value)
+  }
 
   const fetchReviews = async () => {
     try {
@@ -33,15 +38,29 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/review/${hotelId}`
       )
       console.log("Server Response:", response.data)
-      setAllReviews(response.data)
 
       // 최근 4개 리뷰
       const recentReviewsData = response.data.slice(0, 4)
       setRecentReviews(recentReviewsData)
-      const amenitiesAvg = calculateAverage(response.data, "amenities")
-      const cleanlinessAvg = calculateAverage(response.data, "cleanliness")
-      const staffServiceAvg = calculateAverage(response.data, "staffService")
-      const ratingAvg = calculateAverage(response.data, "rating")
+
+      // 정렬 기준에 따라 전체 리뷰를 가져옴
+      const sortedReviews =
+        sortBy === "recent"
+          ? [...response.data].sort((a, b) =>
+              b.createdAt.localeCompare(a.createdAt)
+            )
+          : sortBy === "highRating"
+          ? [...response.data].sort((a, b) => b.rating - a.rating)
+          : sortBy === "lowRating"
+          ? [...response.data].sort((a, b) => a.rating - b.rating)
+          : response.data
+
+      setAllReviews(sortedReviews)
+
+      const amenitiesAvg = calculateAverage(sortedReviews, "amenities")
+      const cleanlinessAvg = calculateAverage(sortedReviews, "cleanliness")
+      const staffServiceAvg = calculateAverage(sortedReviews, "staffService")
+      const ratingAvg = calculateAverage(sortedReviews, "rating")
 
       const trimTrailingZeros = (num) => {
         const str = num.toString()
@@ -68,7 +87,18 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
 
   useEffect(() => {
     fetchReviews()
-  }, [hotelId])
+  }, [hotelId, sortBy])
+
+  const sortReviews = (reviews, sortBy) => {
+    if (sortBy === "recent") {
+      return reviews.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      )
+    } else if (sortBy === "rating") {
+      return reviews.sort((a, b) => b.rating - a.rating)
+    }
+    return reviews
+  }
 
   const handleShowModal = (size) => {
     setShowModal(true)
@@ -332,6 +362,23 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                     전체 리뷰
                   </h4>
                   <ModalBody>
+                    <div
+                      style={{
+                        margin: "10px",
+                        fontSize: "15px",
+                      }}
+                    >
+                      <label htmlFor='sortSelect'>정렬:</label>
+                      <select
+                        id='sortSelect'
+                        value={sortBy}
+                        onChange={handleSortChange}
+                      >
+                        <option value='recent'>최신순</option>
+                        <option value='highRating'>높은 평점순</option>
+                        <option value='lowRating'>낮은 평점순</option>
+                      </select>
+                    </div>
                     {Array.isArray(allReviews) && allReviews.length > 0 ? (
                       <ul
                         style={{
