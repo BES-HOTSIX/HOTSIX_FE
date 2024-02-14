@@ -68,7 +68,7 @@ const EditReviewForm = ({ hotelId, reviewId, onClose }) => {
 
       if (onClose) {
         onClose()
-        //router.reload()
+        location.reload(true)
       }
     } catch (error) {
       console.error("리뷰 수정 중 오류 발생:", error)
