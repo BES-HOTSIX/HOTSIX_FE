@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { DateRange } from 'react-date-range'
-import { addYears, addDays } from 'date-fns'
+import { addYears, addDays, isSameDay } from 'date-fns'
 import ko from 'date-fns/locale/ko'
 import { useReservedDatesOfHotel } from '@/hooks/useReservation'
 
@@ -29,14 +29,28 @@ export default function CalendarCustom({
     }
   }, [reservedDates, isLoading])
 
-  // 초기 상태를 설정할 때 부모 컴포넌트에서 받은 startDate와 endDate를 사용
-  // 체크아웃 날짜가 체크인 날짜와 같거나 이전 날짜인 경우, 체크아웃 날짜를 체크인 날짜의 다음 날로 설정
   useEffect(() => {
-    if (startDate >= endDate) {
-      const newEndDate = addDays(startDate, 1)
-      setEndDate(newEndDate)
+    if (!isLoading) {
+      // 현재 날짜로부터 2년 뒤까지의 모든 날짜를 생성
+      let allDates = [];
+      for (let d = new Date(); d <= twoYearsLater; d = addDays(d, 1)) {
+        allDates.push(d);
+      }
+  
+      // 사용할 수 없는 날짜를 필터링하여 제외
+      const availableDates = allDates.filter(d => 
+        !reservedDates.some(excludedDate => 
+          isSameDay(new Date(excludedDate), d)
+        )
+      );
+  
+      if (availableDates.length > 0) {
+        // 사용 가능한 첫 번째 날짜를 startDate로, 그 다음 날짜를 endDate로 설정
+        setStartDate(availableDates[0]);
+        setEndDate(addDays(availableDates[0], 1));
+      }
     }
-  }, [startDate, endDate, setEndDate])
+  }, [isLoading, reservedDates]);
 
   // 현재 날짜와 2년 뒤 날짜 계산
   const today = new Date()
@@ -44,6 +58,10 @@ export default function CalendarCustom({
 
   const onRangeChange = (ranges) => {
     const { selection } = ranges
+    // 체크인 날짜와 체크아웃 날짜가 동일한 경우, 체크아웃 날짜를 체크인 날짜의 다음 날로 설정
+    if (isSameDay(selection.startDate, selection.endDate)) {
+      selection.endDate = addDays(selection.startDate, 1);
+    }
     setStartDate(selection.startDate)
     setEndDate(selection.endDate)
   }

@@ -153,7 +153,11 @@ export default function Pay({ fail, reserveId }) {
         customerEmail: `${reservationData.buyerEmail}`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
         customerName: `${reservationData.buyerName}`,
         successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}`,
+<<<<<<< HEAD
         failUrl: `${window.location.origin}/cashLog/pay/${reserveId}`,
+=======
+        failUrl: `${window.location.origin}/cashLog/payByCash/${reserveId}`,
+>>>>>>> 3a4644751de0d3f520b077657f77e427b87afd48
       });
     } catch (error) {}
   };

@@ -30,7 +30,11 @@ import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
 import { useAsync } from "react-use";
 import { nanoid } from "nanoid";
 
+<<<<<<< HEAD
 export default function CashLogMe({ fail }) {
+=======
+export default function CashLogMe() {
+>>>>>>> 3a4644751de0d3f520b077657f77e427b87afd48
   // 토스페이먼츠 관련 훅
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const paymentWidgetRef = useRef(null);
@@ -142,7 +146,10 @@ export default function CashLogMe({ fail }) {
 
   const username = cashLogsData.username;
   const restCash = cashLogsData.restCash;
+<<<<<<< HEAD
   const email = cashLogsData.email;
+=======
+>>>>>>> 3a4644751de0d3f520b077657f77e427b87afd48
 
   const { content: cashLogPages, totalPages: cashLogTotalPages } =
     cashLogsData.cashLogConfirmPage;
@@ -199,9 +206,15 @@ export default function CashLogMe({ fail }) {
       orderId: nanoid(),
       orderName: "캐시 충전",
       customerName: username,
+<<<<<<< HEAD
       customerEmail: email,
       successUrl: `${window.location.origin}/cashLog/me/success`,
       failUrl: `${window.location.origin}/cashLog/me`,
+=======
+      customerEmail: "hagd0520@gmail.com",
+      successUrl: `${window.location.origin}/cashLog/me/success`,
+      failUrl: `${window.location.origin}/fail`,
+>>>>>>> 3a4644751de0d3f520b077657f77e427b87afd48
     });
   };
 
@@ -210,11 +223,14 @@ export default function CashLogMe({ fail }) {
 
     if (!isNaN(newCash) && newCash != "0") setPrice(newCash);
   };
+<<<<<<< HEAD
 
   if (!isToasted && fail.message) {
     toast.error(`토스페이먼츠 충전에 실패하였습니다. 사유 : ${fail.message}`);
     setIsToasted(true);
   }
+=======
+>>>>>>> 3a4644751de0d3f520b077657f77e427b87afd48
 
   return (
     <div>
