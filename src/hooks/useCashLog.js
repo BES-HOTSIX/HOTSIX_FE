@@ -314,10 +314,14 @@ export const useTossPaymentsForRecharge = () => {
 };
 
 const fetchReserveForCancel = async (reserveId) => {
-  return await axios.patch(`/api/v1/cashLog/${reserveId}/cancel`, _, {
-    ...axios.defaults,
-    useAuth: true,
-  });
+  return await axios.patch(
+    `/api/v1/cashLog/${reserveId}/cancel`,
+    {},
+    {
+      ...axios.defaults,
+      useAuth: true,
+    }
+  );
 };
 
 export const useReserveForCancel = () => {
