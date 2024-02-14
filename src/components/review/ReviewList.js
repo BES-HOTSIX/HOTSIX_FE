@@ -1,99 +1,99 @@
 // src/components/review/ReviewList.js
-import React, { useState, useEffect } from "react"
-import axios from "@/config/axios-config"
-import { useUser } from "@/hooks/useUser"
-import { toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+import React, { useState, useEffect } from "react";
+import axios from "@/config/axios-config";
+import { useUser } from "@/hooks/useUser";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Button,
   Modal,
   ModalContent,
   ModalBody,
   ModalFooter,
-} from "@nextui-org/react"
-import EditReviewForm from "./EditReviewForm"
+} from "@nextui-org/react";
+import EditReviewForm from "./EditReviewForm";
 
 const ReviewList = ({ hotelId, onReviewEdit }) => {
-  const [recentReviews, setRecentReviews] = useState([])
-  const [allReviews, setAllReviews] = useState([])
-  const [showModal, setShowModal] = useState(false)
-  const [modalSize, setModalSize] = useState()
-  const [editingReviewId, setEditingReviewId] = useState(null)
-  const [isEditing, setIsEditing] = useState(false)
-  const [averageAmenities, setAverageAmenities] = useState(0)
-  const [averageCleanliness, setAverageCleanliness] = useState(0)
-  const [averageStaffService, setAverageStaffService] = useState(0)
-  const [totalRating, setTotalRating] = useState(0)
+  const [recentReviews, setRecentReviews] = useState([]);
+  const [allReviews, setAllReviews] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalSize, setModalSize] = useState();
+  const [editingReviewId, setEditingReviewId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [averageAmenities, setAverageAmenities] = useState(0);
+  const [averageCleanliness, setAverageCleanliness] = useState(0);
+  const [averageStaffService, setAverageStaffService] = useState(0);
+  const [totalRating, setTotalRating] = useState(0);
 
-  const { user } = useUser()
+  const { user } = useUser();
 
   const fetchReviews = async () => {
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/review/${hotelId}`
-      )
-      console.log("Server Response:", response.data)
-      setAllReviews(response.data)
+      );
+      console.log("Server Response:", response.data);
+      setAllReviews(response.data);
 
       // 최근 4개 리뷰
-      const recentReviewsData = response.data.slice(0, 4)
-      setRecentReviews(recentReviewsData)
-      const amenitiesAvg = calculateAverage(response.data, "amenities")
-      const cleanlinessAvg = calculateAverage(response.data, "cleanliness")
-      const staffServiceAvg = calculateAverage(response.data, "staffService")
-      const ratingAvg = calculateAverage(response.data, "rating")
+      const recentReviewsData = response.data.slice(0, 4);
+      setRecentReviews(recentReviewsData);
+      const amenitiesAvg = calculateAverage(response.data, "amenities");
+      const cleanlinessAvg = calculateAverage(response.data, "cleanliness");
+      const staffServiceAvg = calculateAverage(response.data, "staffService");
+      const ratingAvg = calculateAverage(response.data, "rating");
 
       const trimTrailingZeros = (num) => {
-        const str = num.toString()
+        const str = num.toString();
         if (str.includes(".")) {
-          return str.replace(/(?:\.0+|(\.\d+?)0+)$/, "$1")
+          return str.replace(/(?:\.0+|(\.\d+?)0+)$/, "$1");
         }
-        return str
-      }
+        return str;
+      };
 
-      setAverageAmenities(trimTrailingZeros(amenitiesAvg.toFixed(2)))
-      setAverageCleanliness(trimTrailingZeros(cleanlinessAvg.toFixed(2)))
-      setAverageStaffService(trimTrailingZeros(staffServiceAvg.toFixed(2)))
-      setTotalRating(trimTrailingZeros(ratingAvg.toFixed(2)))
+      setAverageAmenities(trimTrailingZeros(amenitiesAvg.toFixed(2)));
+      setAverageCleanliness(trimTrailingZeros(cleanlinessAvg.toFixed(2)));
+      setAverageStaffService(trimTrailingZeros(staffServiceAvg.toFixed(2)));
+      setTotalRating(trimTrailingZeros(ratingAvg.toFixed(2)));
     } catch (error) {
-      console.error("리뷰를 불러오는 중 에러 발생:", error)
-      console.log("Recent Reviews:", recentReviews)
+      console.error("리뷰를 불러오는 중 에러 발생:", error);
+      console.log("Recent Reviews:", recentReviews);
     }
-  }
+  };
 
   const calculateAverage = (reviews, field) => {
-    const total = reviews.reduce((acc, review) => acc + review[field], 0)
-    return reviews.length > 0 ? total / reviews.length : 0
-  }
+    const total = reviews.reduce((acc, review) => acc + review[field], 0);
+    return reviews.length > 0 ? total / reviews.length : 0;
+  };
 
   useEffect(() => {
-    fetchReviews()
-  }, [hotelId])
+    fetchReviews();
+  }, [hotelId]);
 
   const handleShowModal = (size) => {
-    setShowModal(true)
-    setModalSize(size)
-  }
+    setShowModal(true);
+    setModalSize(size);
+  };
 
   const handleCloseModal = () => {
-    setShowModal(false)
-    setEditingReviewId(null)
-  }
+    setShowModal(false);
+    setEditingReviewId(null);
+  };
 
   const renderStarsWithScore = (rating) => {
-    const fullStars = Math.floor(rating)
-    const remainder = rating - fullStars
+    const fullStars = Math.floor(rating);
+    const remainder = rating - fullStars;
 
     const stars = Array.from({ length: 5 }, (_, index) => {
-      const starValue = index + 1
-      let starColor = "lightgray"
+      const starValue = index + 1;
+      let starColor = "lightgray";
 
       if (starValue <= fullStars) {
-        starColor = "gold"
+        starColor = "gold";
       } else if (starValue === fullStars + 1 && remainder > 0) {
         const gradientColor = `linear-gradient(to right, gold ${
           remainder * 100
-        }%, lightgray ${remainder * 100}%)`
+        }%, lightgray ${remainder * 100}%)`;
         return (
           <span
             key={starValue}
@@ -108,7 +108,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
           >
             ★
           </span>
-        )
+        );
       }
 
       return (
@@ -122,16 +122,16 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
         >
           ★
         </span>
-      )
-    })
+      );
+    });
 
     return (
       <>
         {stars}
         {` (${rating})`}
       </>
-    )
-  }
+    );
+  };
 
   const handleDeleteReview = async (id) => {
     try {
@@ -141,21 +141,21 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
           ...axios.defaults,
           useAuth: true,
         }
-      )
-      console.log("리뷰가 삭제되었습니다.")
-      fetchReviews()
-      toast.success("리뷰가 삭제되었습니다.")
+      );
+      console.log("리뷰가 삭제되었습니다.");
+      fetchReviews();
+      toast.success("리뷰가 삭제되었습니다.");
     } catch (error) {
-      console.error("리뷰 삭제 중 오류 발생:", error)
-      toast.error("리뷰 삭제에 실패했습니다. 다시 시도해주세요.")
+      console.error("리뷰 삭제 중 오류 발생:", error);
+      toast.error("리뷰 삭제에 실패했습니다. 다시 시도해주세요.");
     }
-  }
+  };
 
   const handleEditReview = (id) => {
     // 수정할 리뷰 ID를 상태에 저장하고 모달을 열기
-    setEditingReviewId(id)
-    setShowModal(true)
-  }
+    setEditingReviewId(id);
+    setShowModal(true);
+  };
 
   const renderTopBox = () => {
     return (
@@ -187,11 +187,11 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
           </p>
         </div>
       </div>
-    )
-  }
+    );
+  };
   const renderRecentReviewsGrid = () => {
     if (!Array.isArray(recentReviews) || recentReviews.length === 0) {
-      return <p>등록된 리뷰가 없습니다.</p>
+      return <p>등록된 리뷰가 없습니다.</p>;
     }
 
     return (
@@ -265,14 +265,14 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
           ))}
         </div>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <div style={{ textAlign: "left" }}>
-      <h2 className='text-xl font-semibold mb-4 mt-5'>이용 후기</h2>
-      <div className='w-[40vw]'>
-        <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
+      <h2 className="text-xl font-semibold mb-4 mt-5">이용 후기</h2>
+      <div className="w-[40vw]">
+        <div className="border-t-2 border-gray-200 mt-4 pt-4"></div>
       </div>
 
       {renderRecentReviewsGrid()}
@@ -295,7 +295,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
         isOpen={showModal}
         onOpenChange={handleCloseModal}
         size={modalSize}
-        placement='auto'
+        placement="auto"
       >
         <ModalContent
           style={{
@@ -314,10 +314,10 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                   reviewId={editingReviewId}
                   onClose={() => {
                     // 수정 폼에서 닫기 버튼을 눌렀을 때 호출되는 함수
-                    handleCloseModal()
+                    handleCloseModal();
                     // 추가적인 처리가 필요하다면 onReviewEdit를 호출하여 처리할 수 있음
                     if (onReviewEdit) {
-                      onReviewEdit()
+                      onReviewEdit();
                     }
                   }}
                 />
@@ -416,7 +416,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                     <Button
                       onPress={() => {
                         if (onReviewEdit) {
-                          onReviewEdit()
+                          onReviewEdit();
                         }
                       }}
                       style={{ paddingRight: "15px" }}
@@ -431,7 +431,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
         </ModalContent>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default ReviewList
+export default ReviewList;

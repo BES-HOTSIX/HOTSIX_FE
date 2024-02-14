@@ -18,21 +18,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-<<<<<<< HEAD
     <html lang="ko">
-      <body className="font-jalnan w-full h-screen overflow-auto flex flex-col justify-between">
-=======
-    <html lang='ko'>
       <head>
         <link
-          rel='icon'
-          type='image/png'
-          sizes='128x128'
-          href='/hotshare_icon.png'
+          rel="icon"
+          type="image/png"
+          sizes="128x128"
+          href="/hotshare_icon.png"
         />
       </head>
-      <body className='font-jalnan w-full h-screen overflow-auto flex flex-col justify-between'>
->>>>>>> 3a4644751de0d3f520b077657f77e427b87afd48
+      <body className="font-jalnan w-full h-screen overflow-auto flex flex-col justify-between">
         <Script
           strategy="beforeInteractive"
           src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID}&submodules=geocoder`}

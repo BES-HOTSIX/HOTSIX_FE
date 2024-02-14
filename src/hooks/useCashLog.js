@@ -143,11 +143,7 @@ export const useReservationForPay = (reserveId) => {
 
 // 포인트 결제를 위한 POST 요청
 const fetchReserveForCashPayment = async (reserveId) => {
-<<<<<<< HEAD
-  return await axios.post(`/api/v1/cashLog/pay/${reserveId}`);
-=======
   return await axios.post(`/api/v1/cashLog/payByCash/${reserveId}`);
->>>>>>> 3a4644751de0d3f520b077657f77e427b87afd48
 };
 
 export const useReserveForCashPayment = () => {
