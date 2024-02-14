@@ -20,9 +20,8 @@ export default function RechargeSuccess({ payment }) {
   if (!isSubmitted) {
     submitTossPaymentsForRecharge(payment);
     setIsSubmitted(true);
+    router.push(`/cashLog/me`);
   }
-
-  if (response) router.push(`/cashLog/me`);
 
   return;
 }
