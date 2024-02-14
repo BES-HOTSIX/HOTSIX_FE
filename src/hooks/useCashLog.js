@@ -291,7 +291,7 @@ export const useTossPaymentsForRecharge = () => {
 
       setRes(res);
 
-      queryClient.invalidateQueries({ queryKey: ["Rechrage"] });
+      queryClient.invalidateQueries({ queryKey: ["myRecharge"] });
     },
     onError: (err) => {
       console.log("충전 신청 실패");
