@@ -117,7 +117,7 @@ export default function HotelReservation({ id }) {
           throw new Error("Network response was not ok");
         }
 
-        router.push(`/cashLog/payByCash/${reserveId}`);
+        router.push(`/cashLog/pay/${reserveId}`);
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/reserve/${id}`,
@@ -136,7 +136,7 @@ export default function HotelReservation({ id }) {
         const newReserveId = response.data.objData.id;
         setReserveId(newReserveId);
 
-        router.push(`/cashLog/payByCash/${newReserveId}`);
+        router.push(`/cashLog/pay/${newReserveId}`);
       }
     } catch (error) {
       console.error("Error making reservation:", error);
