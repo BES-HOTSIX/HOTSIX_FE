@@ -461,11 +461,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                   </ModalBody>
                   <ModalFooter>
                     <Button
-                      onPress={() => {
-                        if (onReviewEdit) {
-                          onReviewEdit()
-                        }
-                      }}
+                      onPress={handleCloseModal}
                       style={{ paddingRight: "15px" }}
                     >
                       닫기
