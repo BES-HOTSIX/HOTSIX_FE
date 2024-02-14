@@ -3,9 +3,12 @@
 import { useTossPayments } from "@/hooks/useCashLog";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useSetRecoilState } from "recoil";
+import { reserveIdState } from "@/store/reservationState";
 
 export default function PaySuccess({ payment, reserveId }) {
   const router = useRouter();
+  const setReserveId = useSetRecoilState(reserveIdState);
 
   const { submitTossPayments, response, isPending, isError, error } =
     useTossPayments();
@@ -22,6 +25,7 @@ export default function PaySuccess({ payment, reserveId }) {
 
   if (response) {
     const cashLogId = response.data.objData.cashLogId;
+    setReserveId(null);
     router.push(`/cashLog/${cashLogId}/confirm`);
   }
 

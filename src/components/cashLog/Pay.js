@@ -150,10 +150,10 @@ export default function Pay({ fail, reserveId }) {
       await paymentWidget?.requestPayment({
         orderId: nanoid(),
         orderName: `${reservationData.hotelNickname}`,
-        customerEmail: `hagd0520@gmail.com`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
+        customerEmail: `${reservationData.buyerEmail}`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
         customerName: `${reservationData.buyerName}`,
         successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}`,
-        failUrl: `${window.location.origin}/cashLog/payByCash/${reserveId}`,
+        failUrl: `${window.location.origin}/cashLog/pay/${reserveId}`,
       });
     } catch (error) {}
   };
