@@ -1,11 +1,13 @@
 // src/components/review/ReviewForm.js
 
-import React, { useState } from 'react'
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import React, { useState } from "react"
+import axios from "@/config/axios-config"
+import { useRouter } from "next/navigation"
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
-  const [body, setBody] = useState('')
+  const [body, setBody] = useState("")
   const [ratings, setRatings] = useState({
     amenities: 0,
     staffService: 0,
@@ -32,23 +34,25 @@ const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
           amenities: ratings.amenities,
           staffService: ratings.staffService,
           cleanliness: ratings.cleanliness,
+        },
+        {
+          ...axios.defaults,
+          useAuth: true,
         }
       )
 
-      // 추가 필요: 등록 후 페이지 이동
-
       // 부모 컴포넌트에 등록 완료를 알리기 위해 콜백 호출
-      if (typeof onReviewSubmit === 'function') {
+      if (typeof onReviewSubmit === "function") {
         onReviewSubmit()
       }
 
-      alert('리뷰가 등록되었습니다.')
+      toast.success("리뷰가 등록되었습니다.")
       router.push(`/hotel/${hotelId}`)
     } catch (error) {
-      console.error('리뷰 등록 오류:', error)
-      console.error('서버 응답 데이터:', error.response?.data)
+      console.error("리뷰 등록 오류:", error)
+      console.error("서버 응답 데이터:", error.response?.data)
 
-      alert('리뷰 등록에 실패했습니다. 다시 시도해주세요.')
+      toast.error("리뷰 등록에 실패했습니다. 다시 시도해주세요.")
     }
   }
 
@@ -56,67 +60,70 @@ const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
     <div className='h-[50vh] mt-32'>
       <form onSubmit={handleSubmit}>
         <label>
-          리뷰를 작성해주세요:
+          <h4 style={{ fontSize: "25px" }}>리뷰를 작성해주세요</h4>
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
             style={{
-              width: '100%',
-              minHeight: '100px',
-              border: '1px solid lightgray',
-              borderRadius: '8px',
-              padding: '8px',
-              margin: '8px 0',
+              width: "60%",
+              minHeight: "100px",
+              border: "3px solid lightgray",
+              borderRadius: "10px",
+              padding: "10px",
+              margin: "30px 0",
             }}
           />
         </label>
         <br />
         <label>
-          편의시설 평가:
+          <p marginTop='10px'>편의시설 만족도</p>
           {[1, 2, 3, 4, 5].map((value) => (
             <span
               key={value}
               style={{
-                cursor: 'pointer',
-                fontSize: '24px',
-                marginRight: '8px',
-                color: value <= ratings.amenities ? 'gold' : 'lightgray',
+                cursor: "pointer",
+                fontSize: "26px",
+                marginRight: "18px",
+                color: value <= ratings.amenities ? "gold" : "lightgray",
               }}
-              onClick={() => handleStarClick('amenities', value)}>
+              onClick={() => handleStarClick("amenities", value)}
+            >
               ★
             </span>
           ))}
         </label>
         <br />
-        <label>
-          서비스 평가:
+        <label style={{ margin: "10px" }}>
+          <p marginTop='10px'>서비스 만족도</p>
           {[1, 2, 3, 4, 5].map((value) => (
             <span
               key={value}
               style={{
-                cursor: 'pointer',
-                fontSize: '24px',
-                marginRight: '8px',
-                color: value <= ratings.staffService ? 'gold' : 'lightgray',
+                cursor: "pointer",
+                fontSize: "26px",
+                marginRight: "18px",
+                color: value <= ratings.staffService ? "gold" : "lightgray",
               }}
-              onClick={() => handleStarClick('staffService', value)}>
+              onClick={() => handleStarClick("staffService", value)}
+            >
               ★
             </span>
           ))}
         </label>
         <br />
-        <label>
-          청결도 평가:
+        <label style={{ margin: "10px" }}>
+          <p marginTop='10px'>청결 만족도</p>
           {[1, 2, 3, 4, 5].map((value) => (
             <span
               key={value}
               style={{
-                cursor: 'pointer',
-                fontSize: '24px',
-                marginRight: '8px',
-                color: value <= ratings.cleanliness ? 'gold' : 'lightgray',
+                cursor: "pointer",
+                fontSize: "26px",
+                marginRight: "18px",
+                color: value <= ratings.cleanliness ? "gold" : "lightgray",
               }}
-              onClick={() => handleStarClick('cleanliness', value)}>
+              onClick={() => handleStarClick("cleanliness", value)}
+            >
               ★
             </span>
           ))}
@@ -125,12 +132,13 @@ const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
         <button
           type='submit'
           style={{
-            backgroundColor: '#007bff',
-            color: 'white',
-            padding: '10px',
-            borderRadius: '8px',
-            marginTop: '10px',
-          }}>
+            backgroundColor: "green",
+            color: "white",
+            padding: "10px",
+            borderRadius: "8px",
+            marginTop: "20px",
+          }}
+        >
           리뷰 등록
         </button>
       </form>
