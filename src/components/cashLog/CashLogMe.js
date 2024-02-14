@@ -30,7 +30,7 @@ import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
 import { useAsync } from "react-use";
 import { nanoid } from "nanoid";
 
-export default function CashLogMe() {
+export default function CashLogMe({ fail }) {
   // 토스페이먼츠 관련 훅
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const paymentWidgetRef = useRef(null);
@@ -198,9 +198,9 @@ export default function CashLogMe() {
       orderId: nanoid(),
       orderName: "캐시 충전",
       customerName: username,
-      customerEmail: "hagd0520@gmail.com",
+      customerEmail: `hagd0520@gmail.com`,
       successUrl: `${window.location.origin}/cashLog/me/success`,
-      failUrl: `${window.location.origin}/fail`,
+      failUrl: `${window.location.origin}/cashLog/me`,
     });
   };
 
