@@ -26,6 +26,22 @@ const ReviewForm = ({ reservationId, hotelId, onReviewSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    if (!body) {
+      toast.error("리뷰 내용을 작성해주세요.")
+      return
+    }
+
+    const isValidRating = (rating) => rating > 0 && rating <= 5
+
+    if (
+      !isValidRating(ratings.amenities) ||
+      !isValidRating(ratings.staffService) ||
+      !isValidRating(ratings.cleanliness)
+    ) {
+      toast.error("모든 항목의 별점을 입력해주세요.")
+      return
+    }
+
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/review/add/${hotelId}/${reservationId}`,
