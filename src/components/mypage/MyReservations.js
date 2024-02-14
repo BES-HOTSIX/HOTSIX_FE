@@ -62,12 +62,16 @@ export default function MyReservations() {
                                         </div>
                                         <div className={"flex flex-col justify-between"}>
                                             <div className={"text-2xl"}>{reservation.hotelNickname}</div>
-                                            {isTimeBeforeNow(reservation.checkOutDate) && !reservation.cancelDate &&
-                                                <Chip size={"sm"} color="danger" radius={"md"}>이용완료</Chip>}
-                                            {isThreeDaysBefore(reservation.checkInDate) &&
-                                                <Chip size={"sm"} color="success" radius={"md"}>이용예정</Chip>}
-                                            {reservation.cancelDate &&
-                                                <Chip size={"sm"} color="warning" radius={"md"}>예약취소</Chip>}
+                                            <div className={"flex gap-1"}>
+                                                {isTimeBeforeNow(reservation.checkOutDate) && !reservation.cancelDate &&
+                                                    <Chip size={"sm"} color="danger" radius={"md"}>이용완료</Chip>}
+                                                {isThreeDaysBefore(reservation.checkInDate) &&
+                                                    <Chip size={"sm"} color="success" radius={"md"}>이용예정</Chip>}
+                                                {reservation.cancelDate &&
+                                                    <Chip size={"sm"} color="warning" radius={"md"}>예약취소</Chip>}
+                                                {reservation.hasMemberReviewedHotel &&
+                                                    <Chip size={"sm"} color="primary" radius={"md"}>후기작성완료</Chip>}
+                                            </div>
                                             <div className={"flex"}>
                                                 <div>{convertToISO8601(reservation.checkInDate)} ~ {convertToISO8601(reservation.checkOutDate)}</div>
                                                 <div className={"mx-2"}>|</div>
@@ -89,7 +93,7 @@ export default function MyReservations() {
                                             <Button
                                                 as={Link}
                                                 href={`/review/${reservation.hotelId}/${reservation.id}`}
-                                                isDisabled={!(isTimeBeforeNow(reservation.checkOutDate) && !reservation.cancelDate)}
+                                                isDisabled={!(isTimeBeforeNow(reservation.checkOutDate) && !reservation.cancelDate) || reservation.hasMemberReviewedHotel}
                                             >
                                                 후기작성
                                             </Button>
