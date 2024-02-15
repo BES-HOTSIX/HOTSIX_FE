@@ -13,7 +13,7 @@ import {
 } from '@nextui-org/react'
 import EditReviewForm from './EditReviewForm'
 
-const ReviewList = ({ hotelId, onReviewEdit }) => {
+const ReviewList = ({ hotelId, onReviewEdit, user }) => {
   const [recentReviews, setRecentReviews] = useState([])
   const [allReviews, setAllReviews] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -25,8 +25,6 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   const [averageStaffService, setAverageStaffService] = useState(0)
   const [totalRating, setTotalRating] = useState(0)
   const [sortBy, setSortBy] = useState('recent')
-
-  const { user } = useUser()
 
   const handleSortChange = (event) => {
     setSortBy(event.target.value)
