@@ -202,7 +202,7 @@ export default function HotelDetail({ id }) {
       </div>
 
       <div className='mt-10'>
-        <ReviewList hotelId={id} />
+        <ReviewList hotelId={id} user={user} />
       </div>
 
       {isConfirmOpen && (
