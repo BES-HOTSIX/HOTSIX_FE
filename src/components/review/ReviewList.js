@@ -86,8 +86,10 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   }
 
   useEffect(() => {
-    fetchReviews()
-  }, [hotelId, sortBy])
+    if (allReviews.length != 0) {
+        fetchReviews()
+    }
+  }, [])
 
   const sortReviews = (reviews, sortBy) => {
     if (sortBy === "recent") {
