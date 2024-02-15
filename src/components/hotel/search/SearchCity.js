@@ -38,7 +38,7 @@ export default function SearchCity({ city, setCity }) {
           경기
         </AutocompleteItem>
         <AutocompleteItem
-          key=''
+          key='부산'
           startContent={
             <Avatar
               alt='부산'
