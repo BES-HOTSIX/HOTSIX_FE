@@ -1,19 +1,19 @@
 // src/components/review/ReviewList.js
-import React, { useState, useEffect } from "react"
-import axios from "@/config/axios-config"
-import { useUser } from "@/hooks/useUser"
-import { toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+import React, { useState, useEffect } from 'react'
+import axios from '@/config/axios-config'
+import { useUser } from '@/hooks/useUser'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import {
   Button,
   Modal,
   ModalContent,
   ModalBody,
   ModalFooter,
-} from "@nextui-org/react"
-import EditReviewForm from "./EditReviewForm"
+} from '@nextui-org/react'
+import EditReviewForm from './EditReviewForm'
 
-const ReviewList = ({ hotelId, onReviewEdit }) => {
+const ReviewList = ({ hotelId, onReviewEdit, user }) => {
   const [recentReviews, setRecentReviews] = useState([])
   const [allReviews, setAllReviews] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -24,9 +24,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   const [averageCleanliness, setAverageCleanliness] = useState(0)
   const [averageStaffService, setAverageStaffService] = useState(0)
   const [totalRating, setTotalRating] = useState(0)
-  const [sortBy, setSortBy] = useState("recent")
-
-  const { user } = useUser()
+  const [sortBy, setSortBy] = useState('recent')
 
   const handleSortChange = (event) => {
     setSortBy(event.target.value)
@@ -37,7 +35,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/review/${hotelId}`
       )
-      console.log("Server Response:", response.data)
+      console.log('Server Response:', response.data)
 
       // 최근 4개 리뷰
       const recentReviewsData = response.data.slice(0, 4)
@@ -45,27 +43,27 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
 
       // 정렬 기준에 따라 전체 리뷰를 가져옴
       const sortedReviews =
-        sortBy === "recent"
+        sortBy === 'recent'
           ? [...response.data].sort((a, b) =>
               b.createdAt.localeCompare(a.createdAt)
             )
-          : sortBy === "highRating"
+          : sortBy === 'highRating'
           ? [...response.data].sort((a, b) => b.rating - a.rating)
-          : sortBy === "lowRating"
+          : sortBy === 'lowRating'
           ? [...response.data].sort((a, b) => a.rating - b.rating)
           : response.data
 
       setAllReviews(sortedReviews)
 
-      const amenitiesAvg = calculateAverage(sortedReviews, "amenities")
-      const cleanlinessAvg = calculateAverage(sortedReviews, "cleanliness")
-      const staffServiceAvg = calculateAverage(sortedReviews, "staffService")
-      const ratingAvg = calculateAverage(sortedReviews, "rating")
+      const amenitiesAvg = calculateAverage(sortedReviews, 'amenities')
+      const cleanlinessAvg = calculateAverage(sortedReviews, 'cleanliness')
+      const staffServiceAvg = calculateAverage(sortedReviews, 'staffService')
+      const ratingAvg = calculateAverage(sortedReviews, 'rating')
 
       const trimTrailingZeros = (num) => {
         const str = num.toString()
-        if (str.includes(".")) {
-          return str.replace(/(?:\.0+|(\.\d+?)0+)$/, "$1")
+        if (str.includes('.')) {
+          return str.replace(/(?:\.0+|(\.\d+?)0+)$/, '$1')
         }
         return str
       }
@@ -75,8 +73,8 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
       setAverageStaffService(trimTrailingZeros(staffServiceAvg.toFixed(2)))
       setTotalRating(trimTrailingZeros(ratingAvg.toFixed(2)))
     } catch (error) {
-      console.error("리뷰를 불러오는 중 에러 발생:", error)
-      console.log("Recent Reviews:", recentReviews)
+      console.error('리뷰를 불러오는 중 에러 발생:', error)
+      console.log('Recent Reviews:', recentReviews)
     }
   }
 
@@ -90,11 +88,11 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   }, [hotelId, sortBy])
 
   const sortReviews = (reviews, sortBy) => {
-    if (sortBy === "recent") {
+    if (sortBy === 'recent') {
       return reviews.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       )
-    } else if (sortBy === "rating") {
+    } else if (sortBy === 'rating') {
       return reviews.sort((a, b) => b.rating - a.rating)
     }
     return reviews
@@ -116,10 +114,10 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
 
     const stars = Array.from({ length: 5 }, (_, index) => {
       const starValue = index + 1
-      let starColor = "lightgray"
+      let starColor = 'lightgray'
 
       if (starValue <= fullStars) {
-        starColor = "gold"
+        starColor = 'gold'
       } else if (starValue === fullStars + 1 && remainder > 0) {
         const gradientColor = `linear-gradient(to right, gold ${
           remainder * 100
@@ -129,13 +127,12 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
             key={starValue}
             style={{
               background: gradientColor,
-              WebkitBackgroundClip: "text",
-              color: "transparent",
-              fontSize: "16px",
-              position: "relative",
-              marginRight: "-2px",
-            }}
-          >
+              WebkitBackgroundClip: 'text',
+              color: 'transparent',
+              fontSize: '16px',
+              position: 'relative',
+              marginRight: '-2px',
+            }}>
             ★
           </span>
         )
@@ -146,10 +143,9 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
           key={starValue}
           style={{
             color: starColor,
-            fontSize: "16px",
-            position: "relative",
-          }}
-        >
+            fontSize: '16px',
+            position: 'relative',
+          }}>
           ★
         </span>
       )
@@ -172,12 +168,12 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
           useAuth: true,
         }
       )
-      console.log("리뷰가 삭제되었습니다.")
+      console.log('리뷰가 삭제되었습니다.')
       fetchReviews()
-      toast.success("리뷰가 삭제되었습니다.")
+      toast.success('리뷰가 삭제되었습니다.')
     } catch (error) {
-      console.error("리뷰 삭제 중 오류 발생:", error)
-      toast.error("리뷰 삭제에 실패했습니다. 다시 시도해주세요.")
+      console.error('리뷰 삭제 중 오류 발생:', error)
+      toast.error('리뷰 삭제에 실패했습니다. 다시 시도해주세요.')
     }
   }
 
@@ -191,28 +187,27 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
     return (
       <div
         style={{
-          marginBottom: "20px",
-          padding: "10px",
-          border: "2px solid #ddd",
-          borderRadius: "5px",
-          width: "50%",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+          marginBottom: '20px',
+          padding: '10px',
+          border: '2px solid #ddd',
+          borderRadius: '5px',
+          width: '50%',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: "35px", marginLeft: "50px" }}>{totalRating}</p>
+          <p style={{ fontSize: '35px', marginLeft: '50px' }}>{totalRating}</p>
         </div>
-        <div style={{ flex: 1, marginLeft: "20px" }}>
-          <p style={{ marginTop: "5px", marginBottom: "5px" }}>
+        <div style={{ flex: 1, marginLeft: '20px' }}>
+          <p style={{ marginTop: '5px', marginBottom: '5px' }}>
             편의시설 {renderStarsWithScore(averageAmenities)}
           </p>
-          <p style={{ marginBottom: "5px" }}>
+          <p style={{ marginBottom: '5px' }}>
             서비스 {renderStarsWithScore(averageStaffService)}
           </p>
-          <p style={{ marginBottom: "5px" }}>
+          <p style={{ marginBottom: '5px' }}>
             청결 {renderStarsWithScore(averageCleanliness)}
           </p>
         </div>
@@ -229,46 +224,44 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
         {renderTopBox()}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-          }}
-        >
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+          }}>
           {recentReviews.map((review) => (
             <div key={review.id}>
-              <p style={{ marginTop: "10px" }}> {review.member.nickname}</p>
+              <p style={{ marginTop: '10px' }}> {review.member.nickname}</p>
               {/* <p style={{ margin: "10px" }}>이미지 URL: {review.member.imageUrl}</p> */}
-              <p style={{ margin: "10px" }}>
+              <p style={{ margin: '10px' }}>
                 평점 {renderStarsWithScore(review.rating)}
               </p>
               <p
                 style={{
-                  textAlign: "left",
-                  whiteSpace: "pre-line",
-                  margin: "10px",
-                }}
-              >
+                  textAlign: 'left',
+                  whiteSpace: 'pre-line',
+                  margin: '10px',
+                }}>
                 {review.body}
               </p>
-              <p style={{ margin: "10px" }}>
+              <p style={{ margin: '10px' }}>
                 편의시설 {renderStarsWithScore(review.amenities)}
               </p>
-              <p style={{ margin: "10px" }}>
+              <p style={{ margin: '10px' }}>
                 서비스 {renderStarsWithScore(review.staffService)}
               </p>
-              <p style={{ margin: "10px" }}>
+              <p style={{ margin: '10px' }}>
                 청결 {renderStarsWithScore(review.cleanliness)}
               </p>
-              <p style={{ fontSize: "12px", margin: "10px" }}>
+              <p style={{ fontSize: '12px', margin: '10px' }}>
                 {review.updatedAt
-                  ? `${new Intl.DateTimeFormat("ko-KR", {
-                      year: "numeric",
-                      month: "numeric",
-                      day: "numeric",
+                  ? `${new Intl.DateTimeFormat('ko-KR', {
+                      year: 'numeric',
+                      month: 'numeric',
+                      day: 'numeric',
                     }).format(new Date(review.updatedAt))}`
-                  : `${new Intl.DateTimeFormat("ko-KR", {
-                      year: "numeric",
-                      month: "numeric",
-                      day: "numeric",
+                  : `${new Intl.DateTimeFormat('ko-KR', {
+                      year: 'numeric',
+                      month: 'numeric',
+                      day: 'numeric',
                     }).format(new Date(review.createdAt))}`}
               </p>
               {user?.objData.nickname === review.member.nickname && (
@@ -276,17 +269,15 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                   <Button
                     onClick={() => handleEditReview(review.id)}
                     style={{
-                      backgroundColor: "orange",
-                      color: "white",
-                      marginBottom: "25px",
-                    }}
-                  >
+                      backgroundColor: 'orange',
+                      color: 'white',
+                      marginBottom: '25px',
+                    }}>
                     수정
                   </Button>
                   <Button
                     onClick={() => handleDeleteReview(review.id)}
-                    style={{ backgroundColor: "red", color: "white" }}
-                  >
+                    style={{ backgroundColor: 'red', color: 'white' }}>
                     삭제
                   </Button>
                 </>
@@ -299,7 +290,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
   }
 
   return (
-    <div style={{ textAlign: "left" }}>
+    <div style={{ textAlign: 'left' }}>
       <h2 className='text-xl font-semibold mb-4 mt-5'>이용 후기</h2>
       <div className='w-[40vw]'>
         <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
@@ -315,7 +306,7 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
               onClose={() => setIsEditing(false)} // 수정이 완료되면 isEditing을 false로 설정
             />
           ) : (
-            <Button onClick={() => handleShowModal("xl")}>
+            <Button onClick={() => handleShowModal('xl')}>
               전체 리뷰 보기
             </Button>
           )}
@@ -325,17 +316,15 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
         isOpen={showModal}
         onOpenChange={handleCloseModal}
         size={modalSize}
-        placement='auto'
-      >
+        placement='auto'>
         <ModalContent
           style={{
-            top: "10vh",
-            maxHeight: "80vh",
-            overflowY: "auto",
-            maxWidth: "80vw",
-            width: "50%",
-          }}
-        >
+            top: '10vh',
+            maxHeight: '80vh',
+            overflowY: 'auto',
+            maxWidth: '80vw',
+            width: '50%',
+          }}>
           {(onClose) => (
             <>
               {editingReviewId !== null ? ( // 수정 폼 렌더링을 위한 조건 추가
@@ -355,25 +344,22 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                 <>
                   <h4
                     style={{
-                      margin: "30px",
-                      fontSize: "25px",
-                    }}
-                  >
+                      margin: '30px',
+                      fontSize: '25px',
+                    }}>
                     전체 리뷰
                   </h4>
                   <ModalBody>
                     <div
                       style={{
-                        margin: "10px",
-                        fontSize: "15px",
-                      }}
-                    >
+                        margin: '10px',
+                        fontSize: '15px',
+                      }}>
                       <label htmlFor='sortSelect'>정렬:</label>
                       <select
                         id='sortSelect'
                         value={sortBy}
-                        onChange={handleSortChange}
-                      >
+                        onChange={handleSortChange}>
                         <option value='recent'>최신순</option>
                         <option value='highRating'>높은 평점순</option>
                         <option value='lowRating'>낮은 평점순</option>
@@ -382,50 +368,47 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                     {Array.isArray(allReviews) && allReviews.length > 0 ? (
                       <ul
                         style={{
-                          listStyleType: "none",
-                          paddingLeft: "40px",
-                          paddingRight: "40px",
-                        }}
-                      >
+                          listStyleType: 'none',
+                          paddingLeft: '40px',
+                          paddingRight: '40px',
+                        }}>
                         {allReviews.map((review) => (
                           <li key={review.id}>
                             <p
                               style={{
-                                marginTop: "10px",
-                              }}
-                            >
+                                marginTop: '10px',
+                              }}>
                               {review.member.nickname}
                             </p>
-                            <p style={{ margin: "10px" }}>
+                            <p style={{ margin: '10px' }}>
                               평점 {renderStarsWithScore(review.rating)}
                             </p>
-                            <p style={{ margin: "10px" }}>{review.body}</p>
-                            <p style={{ margin: "10px" }}>
-                              편의시설 {renderStarsWithScore(review.amenities)}{" "}
+                            <p style={{ margin: '10px' }}>{review.body}</p>
+                            <p style={{ margin: '10px' }}>
+                              편의시설 {renderStarsWithScore(review.amenities)}{' '}
                             </p>
-                            <p style={{ margin: "10px" }}>
-                              서비스 {renderStarsWithScore(review.staffService)}{" "}
+                            <p style={{ margin: '10px' }}>
+                              서비스 {renderStarsWithScore(review.staffService)}{' '}
                             </p>
-                            <p style={{ margin: "10px", marginBottom: "10px" }}>
+                            <p style={{ margin: '10px', marginBottom: '10px' }}>
                               청결 {renderStarsWithScore(review.cleanliness)}
                             </p>
                             <p
                               style={{
-                                fontSize: "12px",
-                                margin: "10px",
-                                marginBottom: "15px",
-                              }}
-                            >
+                                fontSize: '12px',
+                                margin: '10px',
+                                marginBottom: '15px',
+                              }}>
                               {review.updatedAt
-                                ? `${new Intl.DateTimeFormat("ko-KR", {
-                                    year: "numeric",
-                                    month: "numeric",
-                                    day: "numeric",
+                                ? `${new Intl.DateTimeFormat('ko-KR', {
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric',
                                   }).format(new Date(review.updatedAt))}`
-                                : `${new Intl.DateTimeFormat("ko-KR", {
-                                    year: "numeric",
-                                    month: "numeric",
-                                    day: "numeric",
+                                : `${new Intl.DateTimeFormat('ko-KR', {
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric',
                                   }).format(new Date(review.createdAt))}`}
                             </p>
                             {user?.objData.nickname ===
@@ -434,20 +417,18 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                                 <Button
                                   onClick={() => handleEditReview(review.id)}
                                   style={{
-                                    backgroundColor: "orange",
-                                    color: "white",
-                                  }}
-                                >
+                                    backgroundColor: 'orange',
+                                    color: 'white',
+                                  }}>
                                   수정
                                 </Button>
                                 <Button
                                   onClick={() => handleDeleteReview(review.id)}
                                   style={{
-                                    backgroundColor: "red",
-                                    color: "white",
-                                    marginBottom: "20px",
-                                  }}
-                                >
+                                    backgroundColor: 'red',
+                                    color: 'white',
+                                    marginBottom: '20px',
+                                  }}>
                                   삭제
                                 </Button>
                               </>
@@ -461,13 +442,8 @@ const ReviewList = ({ hotelId, onReviewEdit }) => {
                   </ModalBody>
                   <ModalFooter>
                     <Button
-                      onPress={() => {
-                        if (onReviewEdit) {
-                          onReviewEdit()
-                        }
-                      }}
-                      style={{ paddingRight: "15px" }}
-                    >
+                      onPress={handleCloseModal}
+                      style={{ paddingRight: '15px' }}>
                       닫기
                     </Button>
                   </ModalFooter>
