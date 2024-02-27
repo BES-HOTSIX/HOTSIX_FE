@@ -38,6 +38,7 @@ export default function CheckOut({ price }) {
       customerEmail: "customer123@gmail.com",
       successUrl: `${window.location.origin}/success`,
       failUrl: `${window.location.origin}/fail`,
+      _skipAuth: "FORCE_SUCCESS",
     });
   };
 
