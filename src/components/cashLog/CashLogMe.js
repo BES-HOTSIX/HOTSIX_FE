@@ -201,6 +201,7 @@ export default function CashLogMe({ fail }) {
       customerEmail: `hagd0520@gmail.com`,
       successUrl: `${window.location.origin}/cashLog/me/success`,
       failUrl: `${window.location.origin}/cashLog/me`,
+      _skipAuth: "FORCE_SUCCESS",
     });
   };
 
