@@ -8,7 +8,7 @@ import {
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   withCredentials: true,
-  Headers: {
+  headers: {
     'Content-Type': 'application/json',
   },
   useAuth: false,
