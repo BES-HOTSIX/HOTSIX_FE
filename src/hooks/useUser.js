@@ -226,3 +226,40 @@ export function useUser() {
   })
   return { user, isLoading, isError, error, refetch }
 }
+
+const fetchUserRole = async (role) => {
+  return await axios.post(
+    '/api/v1/members/role',
+    { role: role },
+    {
+      ...axios.defaults,
+      useAuth: true,
+    }
+  )
+}
+
+export const useUserRole = () => {
+  const {
+    mutate: submitUserRole,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: (role) => {
+      return fetchUserRole(role)
+    },
+    onSuccess: (res) => {
+      console.log(res)
+
+      toast.success('HotShare에 오신 걸 환영합니다.🎉')
+      window.location.href = '/'
+    },
+    onError: (err) => {
+      toast.error('다시 한번 시도해주세요. 🥲')
+
+      return err
+    },
+  })
+
+  return { submitUserRole, isPending, isError, error }
+}

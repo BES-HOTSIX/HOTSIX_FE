@@ -39,6 +39,11 @@ export default function HotelDetail({ id }) {
   const { submitDelete, isPending } = useDeleteHotel(id)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
+  if (user && user.objData.role === null) {
+    toast.info('호스트 혹은 게스트 선택 후 이용해주세요🏡🧳')
+    router.push('/auth/signup/role')
+  } // 역할 설정 안했을 시, 역할 설정 페이지로 이동
+
   const mainImage = hotel?.imagesResponse.imageUrl[0]
   const otherImages = hotel?.imagesResponse.imageUrl.slice(1, 5)
 
