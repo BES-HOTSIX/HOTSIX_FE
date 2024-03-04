@@ -5,8 +5,19 @@ import { FaArrowRight, FaUserCircle } from "react-icons/fa";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function LeftBar(props) {
+  const { user } = useUser();
+  const router = useRouter();
+
+  if (user && user.objData.role === null) {
+    toast.info("호스트 혹은 게스트 선택 후 이용해주세요🏡🧳");
+    router.push("/auth/signup/role");
+  } // 역할 설정 안했을 시, 역할 설정 페이지로 이동
+
   const pathName = usePathname();
 
   const items = [
@@ -32,24 +43,29 @@ export default function LeftBar(props) {
       <div className={"text-2xl"}>{props.user?.objData.nickname}</div>
       <Spacer y={10} />
       <ul className={"flex flex-col w-full"}>
-        {items.map((item, index) => (
-          <Link href={item.link} key={`l-${index}`}>
-            <li
-              className={`w-full h-15 p-5 flex items-center  ${
-                pathName === item.link
-                  ? "bg-white"
-                  : "hover:cursor-pointer bg-[#898989]"
-              }`}
-            >
-              {item.text}
-              {item.text === "캐시 사용 내역" && (
-                <div className={"ml-auto"}>
-                  <FaArrowRight />
-                </div>
-              )}
-            </li>
-          </Link>
-        ))}
+        {items
+          .filter(
+            (item) =>
+              item.text !== "내가 등록한 숙소" || user?.objData.role === "HOST"
+          )
+          .map((item, index) => (
+            <Link href={item.link} key={`l-${index}`}>
+              <li
+                className={`w-full h-15 p-5 flex items-center  ${
+                  pathName === item.link
+                    ? "bg-white"
+                    : "hover:cursor-pointer bg-[#898989]"
+                }`}
+              >
+                {item.text}
+                {item.text === "캐시 사용 내역" && (
+                  <div className={"ml-auto"}>
+                    <FaArrowRight />
+                  </div>
+                )}
+              </li>
+            </Link>
+          ))}
       </ul>
     </div>
   );

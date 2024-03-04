@@ -9,12 +9,20 @@ import { hotelTypeState } from '@/store/hotelState'
 import { getIconForType } from '@/constants/hotel'
 import { hotelTypes } from '@/constants/constants'
 import { toast } from 'react-toastify'
+import { useUser } from '@/hooks/useUser'
 
 export default function HotelType() {
   const router = useRouter()
   const [selectedType, setSelectedType] = useState('')
   const [hotelType, setHotelType] = useRecoilState(hotelTypeState) // Recoil 상태 사용
   const [isVisible, setIsVisible] = useState(false)
+
+  const { user } = useUser()
+
+  if (user && user.objData.role === null) {
+    toast.info('호스트 혹은 게스트 선택 후 이용해주세요🏡🧳')
+    router.push('/auth/signup/role')
+  } // 역할 설정 안했을 시, 역할 설정 페이지로 이동
 
   useEffect(() => {
     setIsVisible(true)
