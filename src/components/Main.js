@@ -8,6 +8,7 @@ import HotelOrderByReservationCnt from './hotel/HotelOrderByReservationCnt'
 import { useUser } from '@/hooks/useUser'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import Coupons from './coupon/Coupons'
 
 export default function Main() {
   const { user, isLoading, isError, error, refetch } = useUser()
@@ -28,6 +29,7 @@ export default function Main() {
         <HomeBanner />
       </div>
       <div className='min-h-[30vh]'>
+        <Coupons />
         <RecentHotels />
         <HotelOrderByLikes />
         <HotelOrderByReservationCnt />

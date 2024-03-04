@@ -17,6 +17,7 @@ import {
 import { useState } from 'react'
 import axios from 'axios'
 import convertToISO8601 from '@/util/convertToISO8601'
+import { FiArrowRight } from 'react-icons/fi'
 
 export default function MyHotels() {
   const [page, setPage] = useState(1)
@@ -64,6 +65,7 @@ export default function MyHotels() {
           <TableColumn key='price'>가격</TableColumn>
           <TableColumn key='hotelType'>타입</TableColumn>
           <TableColumn key='createdAt'>등록일</TableColumn>
+          <TableColumn key='hotelSales'>매출 현황</TableColumn>
         </TableHeader>
         <TableBody
           items={hotelsQuery.data?.objData.content ?? []}
@@ -84,6 +86,14 @@ export default function MyHotels() {
                   return (
                     <TableCell>
                       {convertToISO8601(getKeyValue(item, columnKey))}
+                    </TableCell>
+                  )
+                } else if (columnKey === 'hotelSales') {
+                  return (
+                    <TableCell>
+                      <Link href={`/hotel/${item.id}/sales`}>
+                        <FiArrowRight className='w-full' size={30} />
+                      </Link>
                     </TableCell>
                   )
                 } else {
