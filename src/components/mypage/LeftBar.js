@@ -23,7 +23,7 @@ export default function LeftBar(props) {
   const items = [
     { text: '예약 내역', link: '/mypage/reservations' },
     { text: '내 정보', link: '/mypage/info' },
-    { text: '결제 내역', link: '/cashLog/me' },
+    { text: '결제 내역', link: '/mypage/cashLog' },
     { text: '내가 등록한 숙소', link: '/mypage/hotels' },
     { text: '내가 찜한 숙소', link: '/mypage/like' },
     { text: '나의 리뷰', link: '/mypage/reviews' },
