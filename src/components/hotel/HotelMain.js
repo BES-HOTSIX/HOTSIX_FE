@@ -5,8 +5,19 @@ import { useHotels } from '@/hooks/useHotel'
 import HotelListItem from './HotelListItem'
 import Link from 'next/link'
 import Pagination from '../Pagination'
+import { useUser } from '@/hooks/useUser'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 export default function HotelMain() {
+  const { user } = useUser()
+  const router = useRouter()
+
+  if (user && user.objData.role === null) {
+    toast.info('호스트 혹은 게스트 선택 후 이용해주세요🏡🧳')
+    router.push('/auth/signup/role')
+  } // 역할 설정 안했을 시, 역할 설정 페이지로 이동
+
   const [page, setPage] = useState(0)
   const { hotels, isLoading, isError, error } = useHotels(page)
 
