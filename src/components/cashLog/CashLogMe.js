@@ -194,13 +194,25 @@ export default function CashLogMe({ fail }) {
   const goTossPayments = async () => {
     const paymentWidget = paymentWidgetRef.current;
 
+    if (process.env.NEXT_PUBLIC_BASE_URL == "http://localhost:8080") {
+      await paymentWidget?.requestPayment({
+        orderId: nanoid(),
+        orderName: "캐시 충전",
+        customerName: username,
+        customerEmail: `hagd0520@gmail.com`,
+        successUrl: `${window.location.origin}/mypage/cashLog/success`,
+        failUrl: `${window.location.origin}/mypage/cashLog/me`,
+        _skipAuth: "FORCE_SUCCESS",
+      });
+    }
+
     await paymentWidget?.requestPayment({
       orderId: nanoid(),
       orderName: "캐시 충전",
       customerName: username,
       customerEmail: `hagd0520@gmail.com`,
-      successUrl: `${window.location.origin}/cashLog/me/success`,
-      failUrl: `${window.location.origin}/cashLog/me`,
+      successUrl: `${window.location.origin}/mypage/cashLog/success`,
+      failUrl: `${window.location.origin}/mypage/cashLog/me`,
     });
   };
 
@@ -225,7 +237,7 @@ export default function CashLogMe({ fail }) {
                 {(onClose) => (
                   <>
                     <ModalHeader className="flex flex-col gap-1">
-                      Modal Title
+                      충전하기
                     </ModalHeader>
                     <ModalBody>
                       <div id="payment-widget" />
