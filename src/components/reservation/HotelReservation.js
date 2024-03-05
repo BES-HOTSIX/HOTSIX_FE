@@ -143,24 +143,6 @@ export default function HotelReservation({ id }) {
     }
   };
 
-  const handleInquiry = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat/create`, 
-        { /* 채팅방 생성에 필요한 데이터 */ },
-        {
-          ...axios.defaults,
-          useAuth: true,
-        }
-      );
-
-      const chatRoomId = response.chatRoomId; // 응답에서 채팅방 ID 추출
-      router.push(`/chat/${chatRoomId}`); // 채팅방 페이지로 라우팅
-    } catch (error) {
-      console.error('채팅방 생성 실패', error);
-    }
-  };
-
   return (
     <div className="mt-32">
       <div style={styles.container}>
@@ -265,12 +247,6 @@ export default function HotelReservation({ id }) {
             >
               <FaCalendarCheck className="mr-2" />
               예약하기
-            </button>
-            <button
-              onClick={handleInquiry}
-              className="mt-4 w-full px-6 py-3 bg-blue-500 text-white text-xl font-semibold rounded-full shadow-lg hover:bg-blue-600 transition duration-200 ease-in-out flex items-center justify-center"
-            >
-              호스트에게 문의하기
             </button>
           </div>
         </div>
