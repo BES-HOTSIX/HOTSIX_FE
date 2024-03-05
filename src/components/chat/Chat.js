@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
-export default function Chat({ roomId }) {
+export default function Chat({ id }) {
 	const [stompClient, setStompClient] = useState(null);
 	const [message, setMessage] = useState('');
 	const [messages, setMessages] = useState([]);
@@ -13,16 +13,9 @@ export default function Chat({ roomId }) {
 	useEffect(() => {
 		const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`);
 		const client = Stomp.over(socket);
-
-		// 연결 헤더에 roomId와 인증 정보 추가
-		const connectHeaders = {
-			roomId: roomId,
-			useAuth: true
-		};
-
-		client.connect(connectHeaders, (frame) => {
+		client.connect({}, (frame) => {
 			console.log('Connected: ' + frame);
-			client.subscribe('/topic/messages', (message) => {
+			client.subscribe(`/topic/messages/${id}`, (message) => {
 				console.log('Received: ' + message.body);
 				setMessages((prevMessages) => [...prevMessages, JSON.parse(message.body)]);
 			});
@@ -36,7 +29,7 @@ export default function Chat({ roomId }) {
 				content: message,
 				type: 'CHAT',
 			};
-			stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(chatMessage));
+			stompClient.send(`/app/chat.sendMessage/${id}`, {}, JSON.stringify(chatMessage));
 			setMessages((prevMessages) => [...prevMessages, chatMessage]);
 			setMessage('');
 		}
