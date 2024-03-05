@@ -37,13 +37,10 @@ export const useMyCashLog = ({ page, size }) => {
 
 // 나의 충전 신청 내역
 const fetchMyRecharge = async ({ page, size }) => {
-  const res = await axios.get(
-    `api/v1/cashLog/me/recharge?page=${page}&size=${size}`,
-    {
-      ...axios.defaults,
-      useAuth: true,
-    }
-  );
+  const res = await axios.get(`api/v1/recharge/me?page=${page}&size=${size}`, {
+    ...axios.defaults,
+    useAuth: true,
+  });
 
   return res.data;
 };
@@ -67,9 +64,8 @@ export const useMyRecharge = ({ page, size }) => {
 
 // 충전 신청 취소
 const fetchCancelRecharge = async (orderId) => {
-  console.log(`/api/v1/cashLog/me/recharge/${orderId}/cancel`);
   return await axios.patch(
-    `/api/v1/cashLog/me/recharge/${orderId}/cancel`,
+    `/api/v1/recharge/${orderId}/cancel`,
     {},
     {
       ...axios.defaults,
@@ -118,7 +114,7 @@ export const useCancelRecharge = () => {
 
 /**  결제하기 창 */
 const fetchReservationForPay = async (reserveId) => {
-  const res = await axios.get(`api/v1/cashLog/pay/${reserveId}`, {
+  const res = await axios.get(`api/v1/pay/${reserveId}`, {
     ...axios.defaults,
     useAuth: true,
   });
@@ -143,7 +139,7 @@ export const useReservationForPay = (reserveId) => {
 
 // 포인트 결제를 위한 POST 요청
 const fetchReserveForCashPayment = async (reserveId) => {
-  return await axios.post(`/api/v1/cashLog/payByCash/${reserveId}`);
+  return await axios.post(`/api/v1/pay/${reserveId}/byCash`);
 };
 
 export const useReserveForCashPayment = () => {
@@ -216,7 +212,7 @@ export const useCashLogForConfirm = (cashLogId) => {
 // TossPayments post 요청
 const fetchTossPayments = async ({ payment, reserveId }) => {
   console.log(reserveId);
-  return await axios.post(`/api/v1/cashLog/payByToss/${reserveId}`, payment);
+  return await axios.post(`/api/v1/pay/${reserveId}/byToss`, payment);
 };
 
 export const useTossPayments = () => {
@@ -257,8 +253,9 @@ export const useTossPayments = () => {
   return { submitTossPayments, response, isPending, isError, error };
 };
 
+// 충전 신청
 const fetchTossPaymentsForRecharge = async (payment) => {
-  return await axios.post(`/api/v1/cashLog/me/recharge/request`, payment, {
+  return await axios.post(`/api/v1/recharge/request`, payment, {
     ...axios.defaults,
     useAuth: true,
   });
@@ -292,6 +289,7 @@ export const useTossPaymentsForRecharge = () => {
       setRes(res);
 
       queryClient.invalidateQueries({ queryKey: ["myRecharge"] });
+      queryClient.invalidateQueries({ queryKey: ["myCashLog"] });
     },
     onError: (err) => {
       console.log("충전 신청 실패");
@@ -315,7 +313,7 @@ export const useTossPaymentsForRecharge = () => {
 
 const fetchReserveForCancel = async (reserveId) => {
   return await axios.patch(
-    `/api/v1/cashLog/${reserveId}/cancel`,
+    `/api/v1/refund/reserve/${reserveId}`,
     {},
     {
       ...axios.defaults,
