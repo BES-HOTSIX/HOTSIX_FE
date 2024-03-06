@@ -5,6 +5,7 @@ import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useUser } from '@/hooks/useUser';
 import { useChatRoomInfo } from '@/hooks/useChat';
+import { format } from 'date-fns';
 
 export default function Chat({ id }) {
 	const [stompClient, setStompClient] = useState(null);
@@ -97,11 +98,13 @@ const ChatMessage = ({ msg, isCurrentUser }) => {
 	// timestamp를 Date 객체로 변환
 	const date = new Date(msg.timestamp);
 	// HH:mm 형식으로 시간 변환
-	const formattedTime = date.toLocaleTimeString('ko-KR', {
-		hour: '2-digit',
-		minute: '2-digit',
-		hour12: false // 24시간 형식
-	});
+	// const formattedTime = date.toLocaleTimeString('ko-KR', {
+	// 	hour: '2-digit',
+	// 	minute: '2-digit',
+	// 	hour12: false // 24시간 형식
+	// });
+	// 메시지 시간을 'MM.DD HH:mm' 형식으로 형식화
+	const formattedTime = format(date, 'MM/dd HH:mm');
 
 	return (
 		<div className={messageStyle}>
