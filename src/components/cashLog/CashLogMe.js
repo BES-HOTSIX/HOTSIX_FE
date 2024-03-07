@@ -194,10 +194,7 @@ export default function CashLogMe({ fail }) {
   const goTossPayments = async () => {
     const paymentWidget = paymentWidgetRef.current;
 
-<<<<<<< HEAD
     // 테스트 환경에선 결제 스킵
-=======
->>>>>>> f8bea27aa835406d0b63f0fdd9875fb5e95cff0f
     if (process.env.NEXT_PUBLIC_BASE_URL == "http://localhost:8080") {
       await paymentWidget?.requestPayment({
         orderId: nanoid(),
