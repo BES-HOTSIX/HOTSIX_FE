@@ -78,7 +78,7 @@ export default function HotelDetail({ id }) {
             className='rounded-md'
           />
           <div className='absolute top-2 left-2'>
-            {user && <LikeButton hotelId={id} />}
+            {user?.objData.role == 'GUEST' && <LikeButton hotelId={id} />}
           </div>
           <button
             onClick={handleAllPhotosButton}
@@ -176,34 +176,36 @@ export default function HotelDetail({ id }) {
             </div>
           </div>
         </div>
-        <div className='bg-gray-100 w-full rounded-lg shadow-md p-4 mt-4'>
-          <div>
+        {user?.objData.role === 'GUEST' && (
+          <div className='bg-gray-100 w-full rounded-lg shadow-md p-4 mt-4'>
             <div>
-              <h3 className='text-lg font-semibold mb-2'>
-                특별한 숙소 예약하기
-              </h3>
-              <p className='text-gray-600 mb-4'>
-                이 숙소는 독특한 경험을 제공합니다. 멋진 경치와 편안한 환경을
-                즐겨보세요.
-              </p>
-            </div>
-
-            <div className='space-y-52 text-lg mb-4'>
-              <div className='mt-32'>
-                <span className='font-semibold'>가격: </span>
-                <span className='text-gray-800'>
-                  {formatPrice(hotel.price)}원/박
-                </span>
+              <div>
+                <h3 className='text-lg font-semibold mb-2'>
+                  특별한 숙소 예약하기
+                </h3>
+                <p className='text-gray-600 mb-4'>
+                  이 숙소는 독특한 경험을 제공합니다. 멋진 경치와 편안한 환경을
+                  즐겨보세요.
+                </p>
               </div>
-              <button
-                onClick={handleReservationButton}
-                className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'>
-                <FaCalendarCheck className='mr-2' />
-                예약하기
-              </button>
+
+              <div className='space-y-52 text-lg mb-4'>
+                <div className='mt-32'>
+                  <span className='font-semibold'>가격: </span>
+                  <span className='text-gray-800'>
+                    {formatPrice(hotel.price)}원/박
+                  </span>
+                </div>
+                <button
+                  onClick={handleReservationButton}
+                  className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'>
+                  <FaCalendarCheck className='mr-2' />
+                  예약하기
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className='mt-10'>

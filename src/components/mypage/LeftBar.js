@@ -44,9 +44,10 @@ export default function LeftBar(props) {
       <Spacer y={10} />
       <ul className={'flex flex-col w-full'}>
         {items
-          .filter(
-            (item) =>
-              item.text !== '내가 등록한 숙소' || user?.objData.role === 'HOST'
+          .filter((item) =>
+            user?.objData.role === 'HOST'
+              ? item.text === '내 정보' || item.text === '내가 등록한 숙소'
+              : item.text !== '내가 등록한 숙소'
           )
           .map((item, index) => (
             <Link href={item.link} key={`l-${index}`}>
