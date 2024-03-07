@@ -27,3 +27,30 @@ export const useChatRoomInfo = (roomId) => {
 
 	return { chatRoom, isChatLoading, isChatFetching, isChatError, chatError };
 };
+
+/**  채팅 메세지 리스트 */
+const fetchChatMessageList = async (roomId) => {
+	const res = await axios.get(`api/v1/chat/messages/${roomId}`,
+		{
+			...axios.defaults,
+			useAuth: true
+		}
+	);
+
+	return res.data;
+};
+
+export const useChatMessageList = (roomId) => {
+	const {
+		data: chatMessages,
+		isMsgLoading,
+		isMsgFetching,
+		isMsgError,
+		msgError,
+	} = useQuery({
+		queryKey: ["chatMessageList", roomId],
+		queryFn: () => fetchChatMessageList(roomId),
+	});
+
+	return { chatMessages, isMsgLoading, isMsgFetching, isMsgError, msgError };
+};

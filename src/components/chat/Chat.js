@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useUser } from '@/hooks/useUser';
-import { useChatRoomInfo } from '@/hooks/useChat';
+import { useChatRoomInfo, useChatMessageList } from '@/hooks/useChat';
 import { format } from 'date-fns';
 
 export default function Chat({ id }) {
@@ -13,7 +13,15 @@ export default function Chat({ id }) {
 	const [messages, setMessages] = useState([]);
 	const messagesContainerRef = useRef(null);
 	const { user, isLoading, isError } = useUser();
-	const { chatRoom, isChatLoading, isChatError, chatError } = useChatRoomInfo(id);
+	const { chatRoom, isChatLoading, isChatError } = useChatRoomInfo(id);
+	const { chatMessages, isMsgLoading, isMsgError } = useChatMessageList(id);
+
+	useEffect(() => {
+		if (chatMessages && chatMessages.objData && chatMessages.objData.messageList) {
+			setMessages(chatMessages.objData.messageList);
+		}
+		console.log('chatMessages call...');
+	}, [chatMessages]);
 
 	useEffect(() => {
 		const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`);
@@ -26,22 +34,28 @@ export default function Chat({ id }) {
 			});
 		});
 		setStompClient(client);
+
+		return () => {
+			if (client && client.connected) {
+				client.disconnect();
+			}
+		};
 	}, []);
 
 	useEffect(() => {
-    // 채팅 메시지 컨테이너의 스크롤 높이를 최신 값으로 설정하여 스크롤을 아래로 이동
-    const messagesContainer = messagesContainerRef.current;
-    if (messagesContainer) {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-  }, [messages]);
+		// 채팅 메시지 컨테이너의 스크롤 높이를 최신 값으로 설정하여 스크롤을 아래로 이동
+		const messagesContainer = messagesContainerRef.current;
+		if (messagesContainer) {
+			messagesContainer.scrollTop = messagesContainer.scrollHeight;
+		}
+	}, [messages]);
 
-	if (isChatLoading || isLoading) {
+	if (isChatLoading || isLoading || isMsgLoading || !user?.objData || !chatRoom?.objData || !chatMessages?.objData) {
 		return <div className="h-[60vh] mt-32">loading</div>;
 	}
 
-	if (isChatError || isError) {
-		return <div className="h-[60vh] mt-32">Error: {chatError.message}</div>;
+	if (isChatError || isError || isMsgError) {
+		return <div className="h-[60vh] mt-32">Error</div>;
 	}
 
 	const sendMessage = () => {
