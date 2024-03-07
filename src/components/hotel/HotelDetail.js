@@ -20,6 +20,7 @@ import { useUser } from "@/hooks/useUser"
 import LikeButton from "@/app/hotel/like/LikeButton"
 import ReviewList from "@/components/review/ReviewList"
 import TouristSpotSearch from "@/components/touristSpot/TouristSpotSearch"
+import axios from "@/config/axios-config"
 
 export default function HotelDetail({ id }) {
   const router = useRouter()
@@ -52,9 +53,22 @@ export default function HotelDetail({ id }) {
   if (isLoading) return <div></div>
   if (isHotelLoading) return <div></div>
 
-  // TouristSpotSearch 컴포넌트에서 호출되는 콜백 함수
-  const handleTouristSpotResult = (result) => {
-    setTouristSpotResult(result)
+  const handleChattingButton = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat/create`,
+        { hotelId: id },
+        {
+          ...axios.defaults,
+          useAuth: true,
+        }
+      )
+
+      const chatRoomId = response.data.objData.chatRoomId // 응답에서 채팅방 ID 추출
+      router.push(`/chat/${chatRoomId}`) // 채팅방 페이지로 라우팅
+    } catch (error) {
+      console.error("채팅방 생성 실패", error)
+    }
   }
 
   return (
@@ -220,6 +234,12 @@ export default function HotelDetail({ id }) {
                 예약하기
               </button>
             </div>
+            <button
+              onClick={handleChattingButton}
+              className='justify-end underline'
+            >
+              호스트에게 문의하기
+            </button>
           </div>
         )}
       </div>
