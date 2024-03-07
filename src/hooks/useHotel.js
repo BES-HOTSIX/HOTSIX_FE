@@ -13,7 +13,6 @@ import { HTTP_STATUS_CODE, ERROR_CODE } from '@/constants/constants'
 /** 호텔 등록 */
 const fetchRegisterHotel = async (formData) => {
   return await fileApiAxios.post('/api/v1/hotels', formData, {
-    ...axios.defaults,
     useAuth: true,
   })
 }
@@ -110,7 +109,6 @@ export const useHotelDetail = (hotelId) => {
 /** 호텔 정보 수정 */
 const fetchHotelModify = async (hotelId, formData) => {
   const res = await fileApiAxios.put(`/api/v1/hotels/${hotelId}`, formData, {
-    ...axios.defaults,
     useAuth: true,
   })
 
