@@ -29,7 +29,7 @@ instance.interceptors.response.use(
 export const apiAxios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_CLIENT_URL,
   withCredentials: true,
-  Headers: {
+  headers: {
     'Content-Type': 'application/json',
   },
 })
@@ -37,7 +37,7 @@ export const apiAxios = axios.create({
 export const fileApiAxios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   withCredentials: true,
-  Headers: {
+  headers: {
     'Content-Type': 'multipart/form-data',
   },
   useAuth: false,
