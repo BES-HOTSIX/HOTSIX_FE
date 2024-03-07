@@ -1,24 +1,25 @@
-'use client'
+"use client"
 
-import React, { useState } from 'react'
-import { useHotelDetail } from '@/hooks/useHotel'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import Link from 'next/link'
-import { FaBed, FaHome, FaKey, FaCalendarCheck, FaImages } from 'react-icons/fa'
+import React, { useState } from "react"
+import { useHotelDetail } from "@/hooks/useHotel"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
+import Link from "next/link"
+import { FaBed, FaHome, FaKey, FaCalendarCheck, FaImages } from "react-icons/fa"
 import {
   MdBathroom,
   MdFamilyRestroom,
   MdLocationOn,
   MdPerson4,
-} from 'react-icons/md'
-import ConfirmAlert from '../ui/modal/ConfirmAlert'
-import { amenitiesOptions } from '@/constants/hotel'
-import { useDeleteHotel } from '@/hooks/useHotel'
-import { formatPrice } from '@/constants/hotel'
-import { useUser } from '@/hooks/useUser'
-import LikeButton from '@/app/hotel/like/LikeButton'
-import ReviewList from '@/components/review/ReviewList'
+} from "react-icons/md"
+import ConfirmAlert from "../ui/modal/ConfirmAlert"
+import { amenitiesOptions } from "@/constants/hotel"
+import { useDeleteHotel } from "@/hooks/useHotel"
+import { formatPrice } from "@/constants/hotel"
+import { useUser } from "@/hooks/useUser"
+import LikeButton from "@/app/hotel/like/LikeButton"
+import ReviewList from "@/components/review/ReviewList"
+import TouristSpotSearch from "@/components/touristSpot/TouristSpotSearch"
 
 export default function HotelDetail({ id }) {
   const router = useRouter()
@@ -38,10 +39,11 @@ export default function HotelDetail({ id }) {
   const { user, isLoading } = useUser()
   const { submitDelete, isPending } = useDeleteHotel(id)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const [touristSpotResult, setTouristSpotResult] = useState([])
 
   if (user && user.objData.role === null) {
-    toast.info('호스트 혹은 게스트 선택 후 이용해주세요🏡🧳')
-    router.push('/auth/signup/role')
+    toast.info("호스트 혹은 게스트 선택 후 이용해주세요🏡🧳")
+    router.push("/auth/signup/role")
   } // 역할 설정 안했을 시, 역할 설정 페이지로 이동
 
   const mainImage = hotel?.imagesResponse.imageUrl[0]
@@ -49,6 +51,11 @@ export default function HotelDetail({ id }) {
 
   if (isLoading) return <div></div>
   if (isHotelLoading) return <div></div>
+
+  // TouristSpotSearch 컴포넌트에서 호출되는 콜백 함수
+  const handleTouristSpotResult = (result) => {
+    setTouristSpotResult(result)
+  }
 
   return (
     <div className='w-full mx-auto p-10'>
@@ -82,7 +89,8 @@ export default function HotelDetail({ id }) {
           </div>
           <button
             onClick={handleAllPhotosButton}
-            className='absolute right-2 bottom-2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 hover:text-gray-200 transition duration-150 ease-in-out'>
+            className='absolute right-2 bottom-2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 hover:text-gray-200 transition duration-150 ease-in-out'
+          >
             <div className='flex space-x-2 items-center'>
               <FaImages className='text-lg' />
               <p>모든 사진 보기</p>
@@ -90,12 +98,12 @@ export default function HotelDetail({ id }) {
           </button>
         </div>
         <div className='grid grid-cols-2 gap-4 h-[600px]'>
-          {' '}
+          {" "}
           {/* Adjust height as needed */}
           {/* 작은 이미지들 */}
           {otherImages.map((image, index) => (
             <div key={index} className='relative w-full h-[295px]'>
-              {' '}
+              {" "}
               {/* Adjust height as needed */}
               <Image
                 src={image}
@@ -197,7 +205,8 @@ export default function HotelDetail({ id }) {
               </div>
               <button
                 onClick={handleReservationButton}
-                className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'>
+                className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'
+              >
                 <FaCalendarCheck className='mr-2' />
                 예약하기
               </button>
@@ -209,12 +218,19 @@ export default function HotelDetail({ id }) {
       <div className='mt-10'>
         <ReviewList hotelId={id} user={user} />
       </div>
+      <div>
+        <TouristSpotSearch
+          hotelAddress={hotel.address}
+          onSearchResult={handleTouristSpotResult}
+        />
+      </div>
 
       {isConfirmOpen && (
         <ConfirmAlert
           isOpen={isConfirmOpen}
           onClose={() => setIsConfirmOpen(false)}
-          onSubmit={submitDelete}>
+          onSubmit={submitDelete}
+        >
           삭제시 복구가 불가능합니다. <br /> 정말로 삭제하시겠어요?
         </ConfirmAlert>
       )}
