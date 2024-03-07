@@ -21,6 +21,7 @@ export default function LeftBar(props) {
   const pathName = usePathname();
 
   const items = [
+<<<<<<< HEAD
     { text: "예약 내역", link: "/mypage/reservations" },
     { text: "내 정보", link: "/mypage/info" },
     { text: "결제 내역", link: "/mypage/cashLog" },
@@ -28,6 +29,15 @@ export default function LeftBar(props) {
     { text: "내가 찜한 숙소", link: "/mypage/like" },
     { text: "나의 리뷰", link: "/mypage/reviews" },
   ];
+=======
+    { text: '예약 내역', link: '/mypage/reservations' },
+    { text: '내 정보', link: '/mypage/info' },
+    { text: '결제 내역', link: '/mypage/cashLog' },
+    { text: '내가 등록한 숙소', link: '/mypage/hotels' },
+    { text: '내가 찜한 숙소', link: '/mypage/like' },
+    { text: '나의 리뷰', link: '/mypage/reviews' },
+  ]
+>>>>>>> f8bea27aa835406d0b63f0fdd9875fb5e95cff0f
 
   return (
     <div className="flex flex-col items-center w-1/4 bg-[#CECECE]">
@@ -44,9 +54,16 @@ export default function LeftBar(props) {
       <Spacer y={10} />
       <ul className={"flex flex-col w-full"}>
         {items
+<<<<<<< HEAD
           .filter(
             (item) =>
               item.text !== "내가 등록한 숙소" || user?.objData.role === "HOST"
+=======
+          .filter((item) =>
+            user?.objData.role === 'HOST'
+              ? item.text === '내 정보' || item.text === '내가 등록한 숙소'
+              : item.text !== '내가 등록한 숙소'
+>>>>>>> f8bea27aa835406d0b63f0fdd9875fb5e95cff0f
           )
           .map((item, index) => (
             <Link href={item.link} key={`l-${index}`}>
