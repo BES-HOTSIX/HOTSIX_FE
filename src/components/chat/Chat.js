@@ -20,7 +20,6 @@ export default function Chat({ id }) {
 		if (chatMessages && chatMessages.objData && chatMessages.objData.messageList) {
 			setMessages(chatMessages.objData.messageList);
 		}
-		console.log('chatMessages call...');
 	}, [chatMessages]);
 
 	useEffect(() => {
