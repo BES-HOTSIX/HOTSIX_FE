@@ -17,13 +17,13 @@ export const useChatRoomInfo = (roomId) => {
 	const {
 		data: chatRoom,
 		isChatLoading,
-		isFetching,
+		isChatFetching,
 		isChatError,
-		error,
+		chatError,
 	} = useQuery({
 		queryKey: ["chatRoomInfo", roomId],
 		queryFn: () => fetchChatRoomInfo(roomId),
 	});
 
-	return { chatRoom, isChatLoading, isFetching, isChatError, error };
+	return { chatRoom, isChatLoading, isChatFetching, isChatError, chatError };
 };

@@ -13,7 +13,7 @@ export default function Chat({ id }) {
 	const [messages, setMessages] = useState([]);
 	const messagesContainerRef = useRef(null);
 	const { user, isLoading, isError } = useUser();
-	const { chatRoom, isChatLoading, isChatError } = useChatRoomInfo(id);
+	const { chatRoom, isChatLoading, isChatError, chatError } = useChatRoomInfo(id);
 
 	useEffect(() => {
 		const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`);
@@ -41,7 +41,7 @@ export default function Chat({ id }) {
 	}
 
 	if (isChatError || isError) {
-		return <div className="h-[60vh] mt-32">Error: {error.message}</div>;
+		return <div className="h-[60vh] mt-32">Error: {chatError.message}</div>;
 	}
 
 	const sendMessage = () => {
