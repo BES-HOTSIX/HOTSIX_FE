@@ -21,7 +21,7 @@ export default function HotelSales({ id }) {
 
   return (
     <div className='mt-32 min-h-[60vh] text-center'>
-      <div className='grid grid-cols-3'>
+      <div className='grid grid-cols-4'>
         <Card className='col-span-1 py-4'>
           <CardHeader className='pb-0 pt-2 px-4 flex-col items-start'>
             <p className='text-tiny uppercase font-bold'>{hotel?.address}</p>
