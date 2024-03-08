@@ -146,6 +146,19 @@ export default function Pay({ fail, reserveId }) {
   const goTossPayments = async () => {
     const paymentWidget = paymentWidgetRef.current;
 
+    // 테스트 환경에선 결제 스킵
+    if (process.env.NEXT_PUBLIC_BASE_URL == "http://localhost:8080") {
+      await paymentWidget?.requestPayment({
+        orderId: nanoid(),
+        orderName: `${reservationData.hotelNickname}`,
+        customerEmail: `${reservationData.buyerEmail}`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
+        customerName: `${reservationData.buyerName}`,
+        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}`,
+        failUrl: `${window.location.origin}/cashLog/pay/${reserveId}`,
+        _skipAuth: "FORCE_SUCCESS",
+      });
+    }
+
     try {
       await paymentWidget?.requestPayment({
         orderId: nanoid(),
