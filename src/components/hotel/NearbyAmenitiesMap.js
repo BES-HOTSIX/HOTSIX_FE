@@ -1,38 +1,4 @@
 import React, {useEffect, useRef, useState} from "react";
-import Image from "next/image";
-
-const CustomOverlay = ({map, position, imageUrl}) => {
-    const overlayRef = useRef(null);
-
-    useEffect(() => {
-        if (map && position && overlayRef.current) {
-            const projection = map.getProjection();
-            const pixelPosition = projection.fromCoordToOffset(position);
-
-            overlayRef.current.style.left = `${pixelPosition.x}px`;
-            overlayRef.current.style.top = `${pixelPosition.y}px`;
-        }
-    }, [map, position]);
-
-    return (
-        <div
-            ref={overlayRef}
-            style={{
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                width: '120px',
-                height: '30px',
-                lineHeight: '30px',
-                textAlign: 'center',
-                backgroundColor: '#fff',
-                border: '2px solid #f00',
-            }}
-        >
-            <Image src={imageUrl} alt={"markerImage"} width={30} height={30}/>
-        </div>
-    );
-};
 
 export default function NearbyAmenitiesMap({hotel}) {
     const mapRef = useRef(null) // 지도를 표시할 DOM 요소에 대한 참조
