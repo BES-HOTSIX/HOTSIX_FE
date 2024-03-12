@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import axios from "@/config/axios-config"
 
 function TouristSpotSearch({ hotelAddress, onSearchResult }) {
   const [touristSpot, setTouristSpot] = useState([])
@@ -6,36 +7,33 @@ function TouristSpotSearch({ hotelAddress, onSearchResult }) {
   useEffect(() => {
     const searchTouristSpot = async (address) => {
       try {
-        const apiUrl = `/v1/search/local.json?query=${address}`
-        const response = await fetch(apiUrl, {
-          headers: {
-            "X-Naver-Client-Id": process.env.NEXT_PUBLIC_NAVER_CLIENT_ID,
-            "X-Naver-Client-Secret":
-              process.env.NEXT_PUBLIC_NAVER_CLIENT_SECRET,
-          },
-        })
+        const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/v1/search/local.json?query=${address}`
+        const response = await axios.get(apiUrl)
 
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.statusText}`)
+        // 에러 확인
+        if (response.data.error) {
+          console.error("API Error:", response.data.error)
+          return
         }
 
-        const data = await response.json()
-
-        // 성공적으로 데이터를 받아온 경우의 로직
+        // 정상적인 응답 확인
+        const data = response.data
         console.log("API Response:", data)
 
-        setTouristSpot(data.items)
-        onSearchResult(data.items)
+        // data.items가 존재하고 배열인지 확인 후 사용
+        if (data.items && Array.isArray(data.items)) {
+          setTouristSpot(data.items)
+          onSearchResult(data.items)
+        } else {
+          console.error("Invalid response format")
+        }
       } catch (error) {
-        // 에러 처리
-        console.error("Error during fetch:", error)
+        console.error("API Request Error:", error)
       }
     }
 
     if (hotelAddress) {
-      // 콘솔에 검색어 확인
       console.log("Search Address:", hotelAddress)
-
       searchTouristSpot(hotelAddress)
     }
   }, [hotelAddress, onSearchResult, setTouristSpot])
@@ -44,9 +42,8 @@ function TouristSpotSearch({ hotelAddress, onSearchResult }) {
     <div>
       <h2>touristSpot</h2>
       <ul>
-        {touristSpot.map((spot, index) => (
-          <li key={index}>{spot.title}</li>
-        ))}
+        {Array.isArray(touristSpot) &&
+          touristSpot.map((spot, index) => <li key={index}>{spot.title}</li>)}
       </ul>
     </div>
   )

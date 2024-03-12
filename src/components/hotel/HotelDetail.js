@@ -53,6 +53,10 @@ export default function HotelDetail({ id }) {
   if (isLoading) return <div></div>
   if (isHotelLoading) return <div></div>
 
+  const handleTouristSpotResult = (result) => {
+    setTouristSpotResult(result)
+  }
+
   const handleChattingButton = async () => {
     try {
       const response = await axios.post(
