@@ -21,6 +21,7 @@ import LikeButton from "@/app/hotel/like/LikeButton"
 import ReviewList from "@/components/review/ReviewList"
 import TouristSpotSearch from "@/components/touristSpot/TouristSpotSearch"
 import axios from "@/config/axios-config"
+import NearbyAmenitiesMap from "./NearbyAmenitiesMap"
 
 export default function HotelDetail({ id }) {
   const router = useRouter()
@@ -198,6 +199,14 @@ export default function HotelDetail({ id }) {
                 <div className='flex items-center text-lg mb-2'>
                   <p>{hotel.description}</p>
                 </div>
+              </div>
+              <h2 className='text-xl font-semibold mb-4 mt-5'>주변 편의시설</h2>
+
+              <div className='w-[55vw]'>
+                <div className='w-[40vw]'>
+                  <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
+                </div>
+                <NearbyAmenitiesMap hotel={hotel} />
               </div>
             </div>
           </div>
