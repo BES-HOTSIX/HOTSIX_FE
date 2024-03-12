@@ -49,11 +49,11 @@ export default function Chat({ id }) {
 		}
 	}, [messages]);
 
-	if (isChatLoading || isLoading || isMsgLoading || !user?.objData || !chatRoom?.objData || !chatMessages?.objData) {
+	if (isChatLoading || isLoading || isMsgLoading) {
 		return <div className="h-[60vh] mt-32">loading</div>;
 	}
 
-	if (isChatError || isError || isMsgError) {
+	if (isChatError || isError || isMsgError || !user?.objData || !chatRoom?.objData || !chatMessages?.objData) {
 		return <div className="h-[60vh] mt-32">Error</div>;
 	}
 
