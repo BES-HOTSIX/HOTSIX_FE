@@ -6,6 +6,7 @@ import SockJS from 'sockjs-client';
 import { useUser } from '@/hooks/useUser';
 import { useChatRoomInfo, useChatMessageList } from '@/hooks/useChat';
 import { format } from 'date-fns';
+import { FiMoreVertical } from 'react-icons/fi';
 
 export default function Chat({ id }) {
 	const [stompClient, setStompClient] = useState(null);
@@ -58,7 +59,7 @@ export default function Chat({ id }) {
 	}
 
 	const sendMessage = () => {
-		if (stompClient && stompClient.connected) {
+		if (stompClient && stompClient.connected && message != '') {
 			const chatMessage = {
 				content: message,
 				sender: user.objData.nickname,
@@ -72,9 +73,14 @@ export default function Chat({ id }) {
 
 	return (
 		<div className="flex flex-col h-[80vh] max-w-2xl mx-auto border border-gray-200 bg-gray-100 mt-32">
-			<div className="p-4 text-lg font-semibold">
-				{/* 이전 페이지로 돌아가기 */}
-				{contactTo}
+			<div className="flex flex-row p-4 text-lg font-semibold justify-between">
+				<div>
+					{contactTo}
+				</div>
+				<div>
+					<FiMoreVertical />
+					{/* 이전 페이지로 돌아가기 */}
+				</div>
 			</div>
 			<hr className="border-gray-200" />
 			<div ref={messagesContainerRef} className="messages-container flex-1 overflow-y-auto p-4 space-y-4">
@@ -84,11 +90,18 @@ export default function Chat({ id }) {
 				))}
 			</div>
 			<div className="p-4 border-t border-gray-200 bg-white flex items-center">
-				<input
+				<textarea
 					type="text"
 					value={message}
 					onChange={(e) => setMessage(e.target.value)}
-					className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+					onKeyUp={(e) => {
+						if (e.key === 'Enter' && !e.shiftKey && message.trim() !== '') {
+							e.preventDefault();
+							sendMessage();
+							setTimeout(() => setMessage(''), 0);
+						}
+					}}
+					className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base resize-none"
 					placeholder="메세지를 입력하세요."
 				/>
 				<button
@@ -121,8 +134,10 @@ const ChatMessage = ({ msg, isCurrentUser }) => {
 
 	return (
 		<div className={messageStyle}>
-			<div className="text-xs text-gray-500">{formattedTime}</div>
-			{msg.content}
+			<div className="text-xs text-gray-500" style={{ whiteSpace: 'pre-wrap' }}>{formattedTime}</div>
+			<div style={{ whiteSpace: 'pre-wrap' }}>
+				{msg.content}
+			</div>
 		</div>
 	);
 };
