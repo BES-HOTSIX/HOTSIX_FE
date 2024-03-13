@@ -7,6 +7,7 @@ import { useUser } from '@/hooks/useUser';
 import { useChatRoomInfo, useChatMessageList } from '@/hooks/useChat';
 import { format } from 'date-fns';
 import { FiMoreVertical } from 'react-icons/fi';
+import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 
 export default function Chat({ id }) {
 	const [stompClient, setStompClient] = useState(null);
@@ -75,12 +76,28 @@ export default function Chat({ id }) {
 		<div className="flex flex-col h-[80vh] max-w-2xl mx-auto border border-gray-200 bg-gray-100 mt-32">
 			<div className="flex flex-row p-4 text-lg font-semibold justify-between">
 				<div>
-					{contactTo}
+					이전
 				</div>
 				<div>
-					<FiMoreVertical />
-					{/* 이전 페이지로 돌아가기 */}
+					{contactTo}
 				</div>
+				<Dropdown>
+					<DropdownTrigger>
+						<Button 
+							variant="light" 
+						>
+						<FiMoreVertical />
+						</Button>
+					</DropdownTrigger>
+					<DropdownMenu aria-label="Static Actions">
+						<DropdownItem key="new">New file</DropdownItem>
+						<DropdownItem key="copy">Copy link</DropdownItem>
+						<DropdownItem key="edit">Edit file</DropdownItem>
+						<DropdownItem key="delete" className="text-danger" color="danger">
+							Delete file
+						</DropdownItem>
+					</DropdownMenu>
+				</Dropdown>
 			</div>
 			<hr className="border-gray-200" />
 			<div ref={messagesContainerRef} className="messages-container flex-1 overflow-y-auto p-4 space-y-4">
