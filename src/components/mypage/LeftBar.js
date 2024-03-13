@@ -27,10 +27,7 @@ export default function LeftBar(props) {
     { text: "내가 등록한 숙소", link: "/mypage/hotels" },
     { text: "내가 찜한 숙소", link: "/mypage/like" },
     { text: "나의 리뷰", link: "/mypage/reviews" },
-<<<<<<< HEAD
-=======
     { text: "나의 문의내역", link: "/mypage/chats" },
->>>>>>> 5f87a83c00b0c0fa205b64694e24fb2727adf17f
   ];
 
   return (
