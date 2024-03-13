@@ -15,7 +15,6 @@ import { ko } from 'date-fns/locale'
 import { fetchHostsHotelReservationDetail } from '@/hooks/useReservation'
 import Pagination from '../Pagination'
 import { FaCheck } from 'react-icons/fa'
-import Link from 'next/link'
 
 export default function HotelSales({ id }) {
   const { hotel, isHotelLoading, isFetching, isError, error } =
