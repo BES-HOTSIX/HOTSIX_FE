@@ -23,6 +23,8 @@ export default function HotelSales({ id }) {
 
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
+  const [metaData, setMetaData] = useState(0)
+
   const [reservations, setReservations] = useState([])
   const [currentDate, setCurrentDate] = useState(new Date())
 
@@ -31,7 +33,11 @@ export default function HotelSales({ id }) {
 
   useEffect(() => {
     getReservationsByYearAndMonth(currentDate)
-  }, [currentDate, page]) // 페이지 또는 날짜가 변경될 때마다 실행됩니다.
+  }, [page]) // 페이지 또는 날짜가 변경될 때마다 실행됩니다.
+
+  useEffect(() => {
+    setPage(0)
+  }, [currentDate]) // 날짜가 변경될 때마다 페이지를 0으로 초기화합니다.
 
   const getReservationsByYearAndMonth = async (date) => {
     const year = format(date, 'yyyy', { locale: ko })
@@ -46,8 +52,11 @@ export default function HotelSales({ id }) {
       id
     )
       .then((res) => {
-        setReservations(res.objData.content)
-        setTotalPages(res.objData.totalPages)
+        const data = res.objData
+        console.log(res)
+        setReservations(data.reservations.content)
+        setTotalPages(data.reservations.totalPages)
+        setMetaData(data)
       })
       .catch((error) => {
         console.log(error)
@@ -59,7 +68,7 @@ export default function HotelSales({ id }) {
   return (
     <div className='mt-32 min-h-[60vh] text-center'>
       <div className='grid grid-cols-5'>
-        <Card className='col-span-1 py-4 bg-gray-100'>
+        <Card className='h-[40rem] col-span-1 py-4 bg-gray-100'>
           <CardHeader className='pb-0 pt-2 px-4 flex-col items-start'>
             <p className='text-tiny uppercase font-bold'>{hotel?.address}</p>
             <small className='text-default-500'>{hotel?.addressDetail}</small>
@@ -162,6 +171,31 @@ export default function HotelSales({ id }) {
               />
             </div>
           </div>
+        </div>
+        <div className='flex flex-col space-y-10 mt-16'>
+          <Card className='ml-3 col-span-1 h-40 bg-gray-100'>
+            <CardBody>
+              <p>
+                총 이용 완료 예약 건수 : {metaData.completedReservationCount} 건
+              </p>
+            </CardBody>
+          </Card>
+          <Card className='ml-3 col-span-1 h-40 bg-gray-100'>
+            <CardBody>
+              <p>총 매출 : {metaData.totalSales}원</p>
+            </CardBody>
+          </Card>
+          <Card className='ml-3 col-span-1 h-40 bg-gray-100'>
+            <CardBody>
+              <p>
+                순 이익 :{' '}
+                {metaData.totalSales
+                  ? Math.floor(metaData.totalSales * 0.9)
+                  : 0}
+                원
+              </p>
+            </CardBody>
+          </Card>
         </div>
       </div>
     </div>
