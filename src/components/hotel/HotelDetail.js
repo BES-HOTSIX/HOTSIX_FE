@@ -19,7 +19,6 @@ import { formatPrice } from "@/constants/hotel"
 import { useUser } from "@/hooks/useUser"
 import LikeButton from "@/app/hotel/like/LikeButton"
 import ReviewList from "@/components/review/ReviewList"
-import TouristSpotSearch from "@/components/touristSpot/TouristSpotSearch"
 import axios from "@/config/axios-config"
 import NearbyAmenitiesMap from "./NearbyAmenitiesMap"
 
@@ -41,7 +40,6 @@ export default function HotelDetail({ id }) {
   const { user, isLoading } = useUser()
   const { submitDelete, isPending } = useDeleteHotel(id)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-  const [touristSpotResult, setTouristSpotResult] = useState([])
 
   if (user && user.objData.role === null) {
     toast.info("호스트 혹은 게스트 선택 후 이용해주세요🏡🧳")
@@ -53,10 +51,6 @@ export default function HotelDetail({ id }) {
 
   if (isLoading) return <div></div>
   if (isHotelLoading) return <div></div>
-
-  const handleTouristSpotResult = (result) => {
-    setTouristSpotResult(result)
-  }
 
   const handleChattingButton = async () => {
     try {
@@ -259,12 +253,6 @@ export default function HotelDetail({ id }) {
 
       <div className='mt-10'>
         <ReviewList hotelId={id} user={user} />
-      </div>
-      <div>
-        <TouristSpotSearch
-          hotelAddress={hotel.address}
-          onSearchResult={handleTouristSpotResult}
-        />
       </div>
 
       {isConfirmOpen && (
