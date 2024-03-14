@@ -58,7 +58,12 @@ export default function MyChatRooms() {
 										<div className={"flex flex-col justify-between w-full"}>
 											<div className={"flex justiy-between items-center w-full"}>
 												<div className={"text-2xl"}>{chatRoom.contactNickname}</div>
-												<div className="text-base text-gray-500 ml-auto mr-3">{format(new Date(chatRoom.latestDate), 'MM/dd HH:mm')}</div>
+												{chatRoom.latestDate &&
+													<div className="text-base text-gray-500 ml-auto mr-3">{format(new Date(chatRoom.latestDate), 'MM/dd HH:mm')}</div>
+												}
+												{!chatRoom.latestDate &&
+													<div className="text-base text-gray-500 ml-auto mr-3">{format(new Date(chatRoom.createdAt), 'MM/dd HH:mm')}</div>
+												}
 											</div>
 											<div className={"flex justiy-end items-center w-full"}>
 												{chatRoom.left &&
