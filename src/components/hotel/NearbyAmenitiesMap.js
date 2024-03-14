@@ -60,7 +60,7 @@ export default function NearbyAmenitiesMap({ hotel }) {
 
   useEffect(() => {
     if (showTouristSpots && touristSpots.length > 0 && map) {
-      // 관광지 정보가 여러 개일 때 지도의 중심을 계산하기 위한 변수 선언
+      // 관광지 정보가 여러 개일 때 지도의 중심을 계산
       let bounds = new naver.maps.LatLngBounds()
 
       touristSpots.forEach((spot) => {
@@ -69,7 +69,7 @@ export default function NearbyAmenitiesMap({ hotel }) {
           spot.mapx / 10000000
         )
 
-        bounds.extend(spots) // 관광지 위치를 포함한 경계 확장
+        bounds.extend(spots) // 관광지 위치를 포함하도록 경계 확장
 
         const marker = new naver.maps.Marker({
           position: spots,
