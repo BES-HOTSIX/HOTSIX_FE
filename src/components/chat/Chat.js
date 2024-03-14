@@ -9,6 +9,7 @@ import { useChatRoomInfo, useChatMessageList } from '@/hooks/useChat';
 import { format } from 'date-fns';
 import { FiMoreVertical } from 'react-icons/fi';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import axios from "axios";
 
 export default function Chat({ id }) {
 	const [stompClient, setStompClient] = useState(null);
@@ -64,10 +65,7 @@ export default function Chat({ id }) {
 
 	const handleExitChatRoom = async () => {
 		try {
-			const response = await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat/${id}`, {
-				...axios.defaults,
-				useAuth: true,
-			});
+			const response = await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat/${id}`);
 
 			if (response.status >= 400) {
 				throw new Error('Network response was not ok')
