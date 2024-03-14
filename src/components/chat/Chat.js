@@ -7,7 +7,7 @@ import SockJS from 'sockjs-client';
 import { useUser } from '@/hooks/useUser';
 import { useChatRoomInfo, useChatMessageList } from '@/hooks/useChat';
 import { format } from 'date-fns';
-import { FiMoreVertical } from 'react-icons/fi';
+import { FiMoreVertical, FiChevronLeft } from 'react-icons/fi';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import axios from "axios";
 
@@ -93,29 +93,41 @@ export default function Chat({ id }) {
 	return (
 		<div className="flex flex-col h-[80vh] max-w-2xl mx-auto border border-gray-200 bg-gray-100 mt-32">
 			<div className="flex flex-row p-4 text-lg font-semibold justify-between items-center">
-				<div className="text-base">
-					이전
+				<div>
+					<Button
+						color=""
+						variant="light"
+						className="min-w-10"
+						disableAnimation
+						onClick={() => router.back()}
+					>
+						<FiChevronLeft />
+					</Button>
 				</div>
 				<div>
 					{contactTo}
 				</div>
-				{user.objData.role === 'GUEST' && (
-					<Dropdown>
-						<DropdownTrigger>
-							<Button 
-								variant="light"
-								className="min-w-10"
-							>
-							<FiMoreVertical />
-							</Button>
-						</DropdownTrigger>
-						<DropdownMenu aria-label="Static Actions">
-							<DropdownItem key="delete" className="text-danger" color="danger" onClick={handleExitChatRoom}>
-								퇴장하기
-							</DropdownItem>
-						</DropdownMenu>
-					</Dropdown>
-				)}
+				<div className="min-w-10">
+					{user.objData.role === 'GUEST' && (
+						<Dropdown>
+							<DropdownTrigger>
+								<Button 
+									color=""
+									variant="light"
+									className="min-w-10"
+									disableAnimation
+								>
+									<FiMoreVertical />
+								</Button>
+							</DropdownTrigger>
+							<DropdownMenu aria-label="Static Actions">
+								<DropdownItem key="delete" className="text-danger" color="danger" onClick={handleExitChatRoom}>
+									퇴장하기
+								</DropdownItem>
+							</DropdownMenu>
+						</Dropdown>
+					)}
+				</div>
 			</div>
 			<hr className="border-gray-200" />
 			<div ref={messagesContainerRef} className="messages-container flex-1 overflow-y-auto p-4 space-y-4">
@@ -136,12 +148,14 @@ export default function Chat({ id }) {
 							setTimeout(() => setMessage(''), 0);
 						}
 					}}
-					className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base resize-none"
-					placeholder="메세지를 입력하세요."
+					className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base resize-none ${chatRoom.objData.left ? 'bg-gray-200' : ''}`}
+					placeholder={`${chatRoom.objData.left ? "채팅이 종료되었습니다." : "메세지를 입력하세요."}`}
+					disabled={chatRoom.objData.left}
 				/>
 				<button
 					onClick={sendMessage}
-					className="ml-4 px-5 py-2 bg-blue-500 text-white rounded-lg float-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hover:bg-blue-600"
+					className={`ml-4 px-5 py-2 ${chatRoom.objData.left ? 'bg-gray-500' : 'bg-blue-500'} text-white rounded-lg float-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${chatRoom.objData.left ? '' : 'hover:bg-blue-600'}`}
+					disabled={chatRoom.objData.left}
 				>
 					Send
 				</button>
