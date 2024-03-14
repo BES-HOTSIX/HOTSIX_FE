@@ -27,7 +27,7 @@ export default function LeftBar(props) {
     { text: '내가 등록한 숙소', link: '/mypage/hotels' },
     { text: '내가 찜한 숙소', link: '/mypage/like' },
     { text: '나의 리뷰', link: '/mypage/reviews' },
-    { text: '나의 문의내역', link: '/mypage/chats' },
+    { text: '1:1 문의 내역', link: '/mypage/chats' },
   ]
 
   return (
@@ -47,7 +47,9 @@ export default function LeftBar(props) {
         {items
           .filter((item) =>
             user?.objData.role === 'HOST'
-              ? item.text === '내 정보' || item.text === '내가 등록한 숙소'
+              ? item.text === '내 정보' ||
+                item.text === '내가 등록한 숙소' ||
+                item.text === '1:1 문의 내역'
               : item.text !== '내가 등록한 숙소'
           )
           .map((item, index) => (

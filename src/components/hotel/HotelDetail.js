@@ -54,7 +54,7 @@ export default function HotelDetail({ id }) {
   const handleChattingButton = async () => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat/create`, 
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat`, 
         { hotelId: id },
         {
           ...axios.defaults,

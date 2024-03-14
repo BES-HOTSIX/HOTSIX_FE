@@ -28,6 +28,8 @@ import { useSetRecoilState } from 'recoil'
 import { reserveIdState } from '@/store/reservationState'
 import Image from 'next/image'
 import { useMyCoupons } from '@/hooks/useCoupon'
+import CouponButton from '../coupon/CouponButton'
+import CouponWidget from '../coupon/CouponWidget'
 
 export default function Pay({ fail, reserveId }) {
   const { myCoupons } = useMyCoupons()
@@ -41,8 +43,40 @@ export default function Pay({ fail, reserveId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   // 리렌더링되더라도 실패 사유는 한번만 뜨게 하기 위한 useState
   const [isToasted, setIsToasted] = useState(false)
+  const [isCouponWidgetOpen, setIsCouponWidgetOpen] = useState(false)
+  const [selectedCoupon, setSelectedCoupon] = useState(null)
+  const [discountAmount, setDiscountAmount] = useState(0)
+
   console.log(isToasted)
   console.log(myCoupons)
+
+  // 쿠폰 선택 핸들러
+  const handleSelectCoupon = (couponType) => {
+    const coupon = myCoupons.objData.find((c) => c.couponType === couponType)
+    setSelectedCoupon(coupon)
+
+    const calculatedDiscountAmount = coupon
+      ? reservationData.paidPrice * coupon.discountRate
+      : 0
+    setDiscountAmount(calculatedDiscountAmount)
+
+    // 최신 payWithCash 값을 반영하기 위해 setPrice 내에서 현재 price를 기반으로 계산
+    setPrice(
+      (prevPrice) =>
+        reservationData.paidPrice - calculatedDiscountAmount - payWithCash
+    )
+  }
+
+  useEffect(() => {
+    if (price < 0) {
+      setPrice(0)
+    }
+  }, [price])
+
+  // 쿠폰 버튼 클릭 핸들러
+  const handleCouponButtonClick = () => {
+    setIsCouponWidgetOpen(!isCouponWidgetOpen)
+  }
 
   const setReserveId = useSetRecoilState(reserveIdState)
 
@@ -90,7 +124,7 @@ export default function Pay({ fail, reserveId }) {
     useReservationForPay(reserveId)
 
   useEffect(() => {
-    if (reservation) setPrice(reservation.objData.paidPrice)
+    if (reservation) setPrice(reservation.objData.paidPrice - discountAmount)
   }, [reservation])
 
   if (isLoading) {
@@ -104,7 +138,10 @@ export default function Pay({ fail, reserveId }) {
   const reservationData = reservation.objData
   const paidPrice = reservationData.paidPrice
   const restCash = reservationData.buyerRestCash
-  const usableCash = paidPrice < restCash ? paidPrice : restCash
+  const usableCash =
+    paidPrice - discountAmount < restCash
+      ? paidPrice - discountAmount
+      : restCash
 
   // createdAt 날짜 형식을 'nnnn.nn.nn' 형태로 포맷
   const formattedCreatedAt = new Date(reservationData.createdAt)
@@ -156,7 +193,7 @@ export default function Pay({ fail, reserveId }) {
         orderName: `${reservationData.hotelNickname}`,
         customerEmail: `${reservationData.buyerEmail}`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
         customerName: `${reservationData.buyerName}`,
-        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}`,
+        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}`,
         failUrl: `${window.location.origin}/cashLog/pay/${reserveId}`,
         _skipAuth: 'FORCE_SUCCESS',
       })
@@ -168,8 +205,8 @@ export default function Pay({ fail, reserveId }) {
         orderName: `${reservationData.hotelNickname}`,
         customerEmail: `${reservationData.buyerEmail}`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
         customerName: `${reservationData.buyerName}`,
-        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}`,
-        failUrl: `${window.location.origin}/cashLog/pay/${reserveId}`,
+        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}`,
+        failUrl: `${window.location.origin}/cashLog/pay/${reserveId}?`,
       })
     } catch (error) {}
   }
@@ -189,15 +226,18 @@ export default function Pay({ fail, reserveId }) {
 
   const cashHandler = (e) => {
     const newCash = e.target.value
+    const finalCash = Math.min(
+      isNaN(newCash) || newCash === '' ? 0 : parseInt(newCash, 10),
+      usableCash
+    )
 
-    if (!isNaN(newCash) && newCash != '0') setPayWithCash(newCash)
-    if (newCash >= usableCash) {
-      setPayWithCash(usableCash)
-      setIsChecked(true)
-    }
-    if (newCash < usableCash) setIsChecked(false)
+    setPayWithCash(finalCash)
 
-    setPrice(paidPrice - newCash)
+    // discountAmount를 고려하여 새로운 price를 계산
+    setPrice(reservationData.paidPrice - discountAmount - finalCash)
+
+    // 사용자가 수동으로 금액을 입력할 경우, '포인트 전부 사용' 체크박스 상태 업데이트
+    setIsChecked(finalCash >= usableCash)
   }
   console.log(`--------------------${price}`)
 
@@ -293,9 +333,18 @@ export default function Pay({ fail, reserveId }) {
                       <p className='text-large mt-1'>
                         총 가격 : {reservationData.paidPrice}원
                       </p>
-                      <p className='text-large mt-1'>할인 금액 : 0원</p>
                       <p className='text-large mt-1'>
-                        결제 금액 : {reservationData.paidPrice}원
+                        할인 금액 : {discountAmount}원
+                      </p>
+                      <p className='text-large mt-1'>
+                        사용 포인트 : {payWithCash}원
+                      </p>
+                      <p className='text-large mt-1'>
+                        결제 금액 :{' '}
+                        {reservationData.paidPrice -
+                          discountAmount -
+                          payWithCash}
+                        원
                       </p>
                     </div>
                   </div>
@@ -307,6 +356,18 @@ export default function Pay({ fail, reserveId }) {
       </div>
       <main style={{ display: 'flex', flexDirection: 'column' }}>
         <div className='flex justify-around items-center mt-4'>
+          <div className='relative'>
+            <CouponButton onClick={handleCouponButtonClick} />
+            {isCouponWidgetOpen && (
+              <div className='absolute w-full left-0'>
+                <CouponWidget
+                  coupons={myCoupons}
+                  onSelectCoupon={handleSelectCoupon}
+                  selectedCouponType={selectedCoupon?.couponType}
+                />
+              </div>
+            )}
+          </div>
           <span className='w-1/4'>{`보유 포인트 : ${reservationData.buyerRestCash}원`}</span>
           <div className='w-96'>
             <div className='flex justify-between'>
@@ -314,18 +375,16 @@ export default function Pay({ fail, reserveId }) {
               <label htmlFor='coupon-box'>
                 <Checkbox
                   isSelected={isChecked}
-                  onChange={(event) => {
-                    if (event.target.checked) {
-                      setPreviousPayWithCash(payWithCash)
-                      setPayWithCash(usableCash)
-                      setPrice(paidPrice - usableCash)
-                      setIsChecked(true)
-                    }
-                    if (!event.target.checked) {
-                      setPayWithCash(previousPayWithCash)
-                      setPrice(paidPrice - previousPayWithCash)
-                      setIsChecked(false)
-                    }
+                  onChange={() => {
+                    const newIsChecked = !isChecked
+                    setIsChecked(newIsChecked)
+                    const newCashValue = newIsChecked ? usableCash : 0
+                    setPayWithCash(newCashValue)
+
+                    // discountAmount를 고려하여 새로운 price를 계산
+                    setPrice(
+                      reservationData.paidPrice - discountAmount - newCashValue
+                    )
                   }}
                 />
                 <span>포인트 전부 쓰기</span>
