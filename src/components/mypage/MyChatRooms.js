@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useState, useMemo } from "react"
 import { useRouter } from 'next/navigation'
 import axios from "axios"
-import { Avatar } from "@nextui-org/react";
+import { Avatar, Chip } from "@nextui-org/react";
 import { format } from 'date-fns';
 
 export default function MyChatRooms() {
@@ -60,8 +60,10 @@ export default function MyChatRooms() {
 												<div className={"text-2xl"}>{chatRoom.contactNickname}</div>
 												<div className="text-base text-gray-500 ml-auto mr-3">{format(new Date(chatRoom.latestDate), 'MM/dd HH:mm')}</div>
 											</div>
-											<div className={"flex"}>
-												...
+											<div className={"flex justiy-end items-center w-full"}>
+												{chatRoom.left &&
+													<Chip className="ml-auto mr-3" size="md" color="danger">채팅 종료</Chip>
+												}
 											</div>
 										</div>
 									</div>
