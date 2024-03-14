@@ -19,6 +19,7 @@ export default function Chat({ id }) {
 	const { user, isLoading, isError } = useUser();
 	const { chatRoom, isChatLoading, isChatError } = useChatRoomInfo(id);
 	const { chatMessages, isMsgLoading, isMsgError } = useChatMessageList(id);
+	const router = useRouter();
 
 	useEffect(() => {
 		if (chatMessages && chatMessages.objData && chatMessages.objData.messageList) {
@@ -60,8 +61,6 @@ export default function Chat({ id }) {
 	if (isChatError || isError || isMsgError || !user?.objData || !chatRoom?.objData || !chatMessages?.objData) {
 		return <div className="h-[60vh] mt-32">Error</div>;
 	}
-
-	const router = useRouter();
 
 	const handleExitChatRoom = async () => {
 		try {
