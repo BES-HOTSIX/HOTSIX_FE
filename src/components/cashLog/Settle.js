@@ -1,7 +1,8 @@
 "use client";
 
-import { useMySettle } from "@/hooks/CashLog/useSettle";
+import { useMySettle, useMySettleList } from "@/hooks/CashLog/useSettle";
 import {
+  Button,
   Card,
   CardBody,
   Pagination,
@@ -12,14 +13,70 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useState } from "react";
 
 export default function Settle() {
+  const [page, setPage] = useState(1);
+  const size = 10;
+
+  const router = useRouter();
   const { mySettle, isLoading, isFetching, isError, error } = useMySettle();
+  const {
+    mySettleList,
+    isLoading: ListIsLoading,
+    isFetching: ListIsFetching,
+    isError: ListIsError,
+    error: ListError,
+  } = useMySettleList({ page: page - 1, size });
+
+  const goReserveDetail = (e) => {
+    const orderId = e.target.value;
+
+    router.push(`${window.location.origin}/reserve/detail/${orderId}`);
+  };
+
+  const renderCell = useCallback((item, columnKey) => {
+    switch (columnKey) {
+      case "orderId":
+        return (
+          <Button onClick={goReserveDetail} value={item.orderId}>
+            {item.orderId}
+          </Button>
+        );
+      case "expectedAmount":
+        return <div>{item.expectedAmount}</div>;
+      case "price":
+        return <div>{item.price}</div>;
+      case "commission":
+        return <div>{item.commission}</div>;
+      case "settledAmount":
+        return <div>{item.settledAmount}</div>;
+      case "settleDue":
+        return <div>{item.settleDue}</div>;
+    }
+  }, []);
+
+  if (isLoading || ListIsLoading) {
+    return <div>loading</div>;
+  }
+
+  if (isError || ListIsError) {
+    return <div>잘못된 접근입니다.</div>;
+  }
 
   console.log(mySettle);
 
+  console.log(mySettleList);
+
   const mySettleData = mySettle.objData;
+  const mySettleListData = mySettleList.objData;
+
+  const { content, totalPages } = mySettleListData;
+
+  content.map((e) => {
+    e.orderId = e.orderId.substring(0, 4);
+  });
 
   return (
     <div>
@@ -54,7 +111,7 @@ export default function Settle() {
         </CardBody>
       </Card>
       <Table
-        aria-label="Example table with client side pagination"
+        className="mt-6"
         bottomContent={
           <div className="flex w-full justify-center">
             <Pagination
@@ -63,7 +120,7 @@ export default function Settle() {
               showShadow
               color="secondary"
               page={page}
-              total={pages}
+              total={totalPages}
               onChange={(page) => setPage(page)}
             />
           </div>
@@ -72,16 +129,33 @@ export default function Settle() {
           wrapper: "min-h-[222px]",
         }}
       >
-        <TableHeader>
-          <TableColumn key="name">NAME</TableColumn>
-          <TableColumn key="role">ROLE</TableColumn>
-          <TableColumn key="status">STATUS</TableColumn>
+        <TableHeader className="text-center">
+          <TableColumn className="text-center" key="orderId">
+            예약 ID
+          </TableColumn>
+          <TableColumn className="text-center" key="expectedAmount">
+            총 정산금액
+          </TableColumn>
+          <TableColumn className="text-center" key="price">
+            매출액
+          </TableColumn>
+          <TableColumn className="text-center" key="commission">
+            수수료
+          </TableColumn>
+          <TableColumn className="text-center" key="settledAmount">
+            실 지급액
+          </TableColumn>
+          <TableColumn className="text-center" key="settleDue">
+            정산일
+          </TableColumn>
         </TableHeader>
-        <TableBody items={items}>
+        <TableBody items={content}>
           {(item) => (
-            <TableRow key={item.name}>
+            <TableRow key={item}>
               {(columnKey) => (
-                <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                <TableCell className="text-center">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

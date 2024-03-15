@@ -31,10 +31,13 @@ export const useMySettle = () => {
 };
 
 const fetchMySettleList = async ({ page, size }) => {
-  const res = await axios.get(`api/v1/settle/me/list`, {
-    ...axios.defaults,
-    useAuth: true,
-  });
+  const res = await axios.get(
+    `api/v1/settle/me/list?page=${page}&size=${size}`,
+    {
+      ...axios.defaults,
+      useAuth: true,
+    }
+  );
 
   console.log(`fetchMySettleList`);
 
@@ -50,7 +53,7 @@ export const useMySettleList = ({ page, size }) => {
     error,
   } = useQuery({
     queryKey: ["mySettleList", page, size],
-    queryFn: () => fetchMySettleList(page, size),
+    queryFn: () => fetchMySettleList({ page, size }),
     retry: 0,
     placeholderData: keepPreviousData,
   });
