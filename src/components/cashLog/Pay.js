@@ -177,8 +177,10 @@ export default function Pay({ fail, reserveId }) {
   const goPay = async (e) => {
     e.preventDefault()
 
+    console.log(discountAmount)
+
     // 사용하는 캐시가 price와 같을 경우 포인트 결제
-    if (price == 0) submitReservation(reserveId)
+    if (price == 0) submitReservation({ reserveId, discountAmount })
 
     if (price != 0) onOpen()
   }

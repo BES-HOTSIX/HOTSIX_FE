@@ -138,8 +138,10 @@ export const useReservationForPay = (reserveId) => {
 }
 
 // 포인트 결제를 위한 POST 요청
-const fetchReserveForCashPayment = async (reserveId) => {
-  return await axios.post(`/api/v1/pay/${reserveId}/byCash`)
+const fetchReserveForCashPayment = async ({ reserveId, discountAmount }) => {
+  return await axios.post(`/api/v1/pay/${reserveId}/byCash`, {
+    discountAmount: discountAmount,
+  })
 }
 
 export const useReserveForCashPayment = () => {
@@ -151,8 +153,9 @@ export const useReserveForCashPayment = () => {
     isError,
     error,
   } = useMutation({
-    mutationFn: (reserveId) => {
-      return fetchReserveForCashPayment(reserveId)
+    mutationFn: ({ reserveId, discountAmount }) => {
+      console.log(discountAmount)
+      return fetchReserveForCashPayment({ reserveId, discountAmount })
     },
     onSuccess: (res) => {
       console.log('포인트 결제 성공')
