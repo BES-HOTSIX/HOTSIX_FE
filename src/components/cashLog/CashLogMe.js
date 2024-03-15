@@ -21,14 +21,11 @@ import {
   useDisclosure,
   Input,
 } from "@nextui-org/react";
-import {
-  useCancelRecharge,
-  useMyCashLog,
-  useMyRecharge,
-} from "@/hooks/useCashLog";
+import { useMyCashLog } from "@/hooks/CashLog/useCashLog";
 import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
 import { useAsync } from "react-use";
 import { nanoid } from "nanoid";
+import { useCancelRecharge, useMyRecharge } from "@/hooks/CashLog/useRecharge";
 
 export default function CashLogMe({ fail }) {
   // 토스페이먼츠 관련 훅
