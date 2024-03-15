@@ -87,7 +87,7 @@ export default function MyChatRooms() {
 												color='primary'
 												page={availablePage}
 												total={availablePages}
-												onChange={(availablePage) => setPage(availablePage)}
+												onChange={(availablePage) => setAvailablePage(availablePage)}
 										/>
 									</div>
 								) : null
@@ -118,7 +118,7 @@ export default function MyChatRooms() {
 												color='primary'
 												page={exitedPage}
 												total={exitedPages}
-												onChange={(exitedPage) => setPage(exitedPage)}
+												onChange={(exitedPage) => setExitedPage(exitedPage)}
 										/>
 									</div>
 								) : null
@@ -152,7 +152,7 @@ export default function MyChatRooms() {
 											color='primary'
 											page={availablePage}
 											total={availablePages}
-											onChange={(availablePage) => setPage(availablePage)}
+											onChange={(availablePage) => setAvailablePage(availablePage)}
 									/>
 								</div>
 							) : null
