@@ -1,6 +1,6 @@
 "use client";
 
-import { useTossPaymentsForRecharge } from "@/hooks/useCashLog";
+import { useTossPaymentsForRecharge } from "@/hooks/CashLog/useRecharge";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 

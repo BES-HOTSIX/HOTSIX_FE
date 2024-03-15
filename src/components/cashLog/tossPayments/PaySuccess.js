@@ -1,6 +1,6 @@
 "use client";
 
-import { useTossPayments } from "@/hooks/useCashLog";
+import { useTossPayments } from "@/hooks/CashLog/usePay";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
