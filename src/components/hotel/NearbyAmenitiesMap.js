@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
-import {RadioGroup} from "@nextui-org/react";
+import {Card, CardBody, RadioGroup, ScrollShadow} from "@nextui-org/react";
 import {CustomRadio} from "@/components/ui/CustomRadio";
 import axios from "axios";
+import calculateDistance from "@/util/calculateDistance";
 
 export default function NearbyAmenitiesMap({hotel}) {
     const mapRef = useRef(null) // 지도를 표시할 DOM 요소에 대한 참조
@@ -93,12 +94,12 @@ export default function NearbyAmenitiesMap({hotel}) {
     useEffect(() => {
         if (nearAmenities.length !== 0) {
             if (markers.length !== 0) {
-                markers.forEach((v) => {
+                markers.forEach((v, index) => {
                     v.setMap(null);
                 })
                 setMarkers([])
             }
-            nearAmenities.forEach((v) => {
+            nearAmenities.forEach((v, index) => {
                 let latLng = new naver.maps.LatLng(v.coord.y, v.coord.x);
 
                 markers.push(new naver.maps.Marker({
@@ -106,8 +107,8 @@ export default function NearbyAmenitiesMap({hotel}) {
                     title: v.name,
                     map: map,
                     icon: {
-                        content: `<div class="border-solid border-2 border-white rounded-md w-11 h-11 overflow-hidden -translate-x-1/2 -translate-y-[130%]">
-                                <img class="w-full h-full object-cover" src="${hotel?.imagesResponse.imageUrl[0]}" alt="marker"/>
+                        content: `<div id="m-${index}" class="border-solid bg-blue-100 border-2 border-white rounded-md w-11 h-11 overflow-hidden -translate-x-1/2 -translate-y-[130%]">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M8 21V3M15 21V3C17.2091 3 19 4.79086 19 7V9C19 11.2091 17.2091 13 15 13M11 3V8C11 9.65685 9.65685 11 8 11C6.34315 11 5 9.65685 5 8V3" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                             </div>`,
                     },
                     zIndex: 100
@@ -116,13 +117,50 @@ export default function NearbyAmenitiesMap({hotel}) {
         }
     }, [nearAmenities]);
 
+    const handleOverInfo = (id) => {
+        console.log(id);
+        const element = document.getElementById("m-" + id);
+
+        if (element) {
+            element.style.border = "2px solid #2563EB";
+        }
+    }
+
+    const handleOutInfo = (id) => {
+        const element = document.getElementById("m-" + id);
+
+        if (element) {
+            element.style.border = "2px solid #fff";
+        }
+    }
+
     return (
-        <div ref={mapRef} style={{width: '50%', height: '400px'}}>
-            <RadioGroup className={"z-10"} classNames={{wrapper: ["!flex-row"]}} onValueChange={setCategory}
-                        defaultValue={"food"}>
-                <CustomRadio value={"food"}>음식점</CustomRadio>
-                <CustomRadio value={"cafe"}>카페</CustomRadio>
-            </RadioGroup>
+        <div className={"flex gap-3"}>
+            <div ref={mapRef} style={{width: '50%', height: '400px'}}>
+                <RadioGroup className={"z-10"} classNames={{wrapper: ["!flex-row"]}} onValueChange={setCategory}
+                            defaultValue={"food"}>
+                    <CustomRadio value={"food"}>음식점</CustomRadio>
+                    <CustomRadio value={"cafe"}>카페</CustomRadio>
+                </RadioGroup>
+            </div>
+            <Card className={"w-1/5 h-[400px]"}>
+                <ScrollShadow hideScrollBar>
+                    <CardBody className={"gap-3"}>
+                        {nearAmenities?.map((v, index) => {
+                            return (
+                                <Card key={index} onMouseOver={() => handleOverInfo(index)}
+                                      onMouseOut={() => handleOutInfo(index)}
+                                >
+                                    <CardBody className={"flex-col"}>
+                                        <div>{v.name}</div>
+                                        <div>{calculateDistance(v.coord.y, v.coord.x, centerCoords.lat(), centerCoords.lng())}m</div>
+                                    </CardBody>
+                                </Card>
+                            )
+                        })}
+                    </CardBody>
+                </ScrollShadow>
+            </Card>
         </div>
     )
 }
