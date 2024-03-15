@@ -40,6 +40,7 @@
     "recoil": "^0.7.7",
     "recoil-persist": "^5.1.0",
     "sockjs-client": "^1.6.1",
+    "stomp": "^0.1.1",
     "swiper": "^11.0.6"
   },
   "devDependencies": {

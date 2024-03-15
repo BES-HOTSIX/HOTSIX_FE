@@ -1,10 +1,6 @@
 "use client";
 
 import {
-  useReservationForPay,
-  useReserveForCashPayment,
-} from "@/hooks/useCashLog";
-import {
   Button,
   Card,
   CardBody,
@@ -27,6 +23,10 @@ import { toast } from "react-toastify";
 import { useSetRecoilState } from "recoil";
 import { reserveIdState } from "@/store/reservationState";
 import Image from "next/image";
+import {
+  useReservationForPay,
+  useReserveForCashPayment,
+} from "@/hooks/CashLog/usePay";
 
 export default function Pay({ fail, reserveId }) {
   const paymentWidgetRef = useRef(null);
