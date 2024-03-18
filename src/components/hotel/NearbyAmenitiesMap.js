@@ -1,5 +1,14 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Card, CardBody, RadioGroup, ScrollShadow} from "@nextui-org/react";
+import {
+    Pagination,
+    RadioGroup,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow
+} from "@nextui-org/react";
 import {CustomRadio} from "@/components/ui/CustomRadio";
 import axios from "axios";
 import calculateDistance from "@/util/calculateDistance";
@@ -12,6 +21,17 @@ export default function NearbyAmenitiesMap({hotel}) {
     const [nearAmenities, setNearAmenities] = useState([]);
     const [markers, setMarkers] = useState([]);
     const [category, setCategory] = useState("food");
+
+    const [page, setPage] = React.useState(1);
+    const rowsPerPage = 9;
+    const pages = Math.ceil(nearAmenities?.length / rowsPerPage);
+
+    const items = React.useMemo(() => {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        return nearAmenities?.slice(start, end);
+    }, [page, nearAmenities]);
 
     useEffect(() => {
         // 네이버 지도 API 스크립트가 이미 로드되었는지 확인
@@ -80,6 +100,7 @@ export default function NearbyAmenitiesMap({hotel}) {
 
     useEffect(() => {
         if (category !== "food") {
+            setNearAmenities([])
             markers.forEach((v) => {
                 v.setMap(null);
             })
@@ -99,7 +120,7 @@ export default function NearbyAmenitiesMap({hotel}) {
                 })
                 setMarkers([])
             }
-            nearAmenities.forEach((v, index) => {
+            nearAmenities.forEach((v) => {
                 let latLng = new naver.maps.LatLng(v.coord.y, v.coord.x);
 
                 markers.push(new naver.maps.Marker({
@@ -107,7 +128,7 @@ export default function NearbyAmenitiesMap({hotel}) {
                     title: v.name,
                     map: map,
                     icon: {
-                        content: `<div id="m-${index}" class="border-solid bg-blue-100 border-2 border-white rounded-md w-11 h-11 overflow-hidden -translate-x-1/2 -translate-y-[130%]">
+                        content: `<div id="m-${v.id}" class="hidden border-solid bg-blue-100 border-2 border-white rounded-md w-11 h-11 overflow-hidden -translate-x-1/2 -translate-y-[130%]">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M8 21V3M15 21V3C17.2091 3 19 4.79086 19 7V9C19 11.2091 17.2091 13 15 13M11 3V8C11 9.65685 9.65685 11 8 11C6.34315 11 5 9.65685 5 8V3" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                             </div>`,
                     },
@@ -123,6 +144,7 @@ export default function NearbyAmenitiesMap({hotel}) {
 
         if (element) {
             element.style.border = "2px solid #2563EB";
+            element.style.display = "block";
         }
     }
 
@@ -131,36 +153,81 @@ export default function NearbyAmenitiesMap({hotel}) {
 
         if (element) {
             element.style.border = "2px solid #fff";
+            element.style.display = "none";
         }
     }
+
+    const renderCell = (item, columnKey) => {
+        if (centerCoords) {
+            switch (columnKey) {
+                case "dist":
+                    return (
+                        <div>{calculateDistance(item.coord.y, item.coord.x, centerCoords.lat(), centerCoords.lng())}m</div>)
+                default:
+                    return item[columnKey];
+            }
+        }
+    };
 
     return (
         <div className={"flex gap-3"}>
             <div ref={mapRef} style={{width: '50%', height: '400px'}}>
-                <RadioGroup className={"z-10"} classNames={{wrapper: ["!flex-row"]}} onValueChange={setCategory}
+                <RadioGroup className={"z-10"} classNames={{wrapper: ["!flex-row"]}} onValueChange={(v) => {
+                    setCategory(v)
+                }}
                             defaultValue={"food"}>
                     <CustomRadio value={"food"}>음식점</CustomRadio>
                     <CustomRadio value={"cafe"}>카페</CustomRadio>
                 </RadioGroup>
             </div>
-            <Card className={"w-1/5 h-[400px]"}>
-                <ScrollShadow hideScrollBar>
-                    <CardBody className={"gap-3"}>
-                        {nearAmenities?.map((v, index) => {
-                            return (
-                                <Card key={index} onMouseOver={() => handleOverInfo(index)}
-                                      onMouseOut={() => handleOutInfo(index)}
-                                >
-                                    <CardBody className={"flex-col"}>
-                                        <div>{v.name}</div>
-                                        <div>{calculateDistance(v.coord.y, v.coord.x, centerCoords.lat(), centerCoords.lng())}m</div>
-                                    </CardBody>
-                                </Card>
-                            )
-                        })}
-                    </CardBody>
-                </ScrollShadow>
-            </Card>
+            <div className={"flex flex-col w-1/5 items-center"}>
+                <div>근처 500M 결과 {nearAmenities.length}개</div>
+                <Table hideHeader classNames={{
+                    base: ["w-full h-[400px]"],
+                    wrapper: ["w-full h-[400px]"],
+                    table: ["w-full flex"],
+                    tbody: ["flex flex-col w-full h-[300px] overflow-y-auto"],
+                    tr: ["flex flex-row justify-between hover:border-blue-500 hover:border-2"],
+                    td: ["!text-xs flex items-center"]
+                }}
+                       bottomContent={
+                           <div className="flex w-full justify-center">
+                               <Pagination
+                                   size={"sm"}
+                                   isCompact
+                                   showControls
+                                   showShadow
+                                   color="secondary"
+                                   page={page}
+                                   total={pages}
+                                   onChange={(page) => setPage(page)}
+                                   classNames={{
+                                       wrapper: ["flex w-full"],
+                                       item: ["relative min-w-0"]
+                                   }}
+                               />
+                           </div>
+                       }
+                >
+                    <TableHeader>
+                        <TableColumn key={"name"}>NAME</TableColumn>
+                        <TableColumn key={"dist"}>DISTANCE</TableColumn>
+                    </TableHeader>
+                    <TableBody items={items}>
+                        {(item) => (
+                            <TableRow
+                                key={item.id}
+                                onMouseOver={() => handleOverInfo(item.id)}
+                                onMouseOut={() => handleOutInfo(item.id)
+                                }>
+                                {(columnKey) => <TableCell>
+                                    {renderCell(item, columnKey)}
+                                </TableCell>}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
         </div>
     )
 }

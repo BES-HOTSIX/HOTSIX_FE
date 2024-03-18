@@ -19,7 +19,6 @@ export default function HotelDetail({id}) {
     const router = useRouter()
     const handleReservationButton = (e) => {
         e.preventDefault()
-
         router.push(`/hotel/reserve/${id}`)
     }
 
@@ -48,7 +47,7 @@ export default function HotelDetail({id}) {
     const handleChattingButton = async () => {
         try {
             const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat/create`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat`,
                 {hotelId: id},
                 {
                     ...axios.defaults,
@@ -61,7 +60,8 @@ export default function HotelDetail({id}) {
         } catch (error) {
             console.error('채팅방 생성 실패', error);
         }
-    };
+        ;
+    }
 
     return (
         <div className='w-full mx-auto p-10'>
