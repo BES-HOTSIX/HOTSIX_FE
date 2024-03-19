@@ -2,14 +2,13 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation'
-import { Stomp } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { useUser } from '@/hooks/useUser';
-import { useChatRoomInfo, useChatMessageList } from '@/hooks/useChat';
 import { format } from 'date-fns';
 import { FiMoreVertical, FiChevronLeft } from 'react-icons/fi';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import axios from "axios";
+import { useUser } from '@/hooks/useUser';
+import { useChatRoomInfo, useChatMessageList } from '@/hooks/useChat';
+import { connectWebSocket, disconnectWebSocket } from '@/config/websocket-config';
 
 export default function Chat({ id }) {
 	const [stompClient, setStompClient] = useState(null);
@@ -28,21 +27,17 @@ export default function Chat({ id }) {
 	}, [chatMessages]);
 
 	useEffect(() => {
-		const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`);
-		const client = Stomp.over(socket);
-		client.connect({}, (frame) => {
-			console.log('Connected: ' + frame);
-			client.subscribe(`/topic/messages/${id}`, (message) => {
-				console.log('Received: ' + message.body);
-				setMessages((prevMessages) => [...prevMessages, JSON.parse(message.body)]);
-			});
-		});
-		setStompClient(client);
+		const onMessageReceived = (message) => {
+			setMessages((prevMessages) => [...prevMessages, message]);
+			return messages;
+		};
+
+		const { stompClient, messages } = connectWebSocket(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`, id, onMessageReceived);
+		setMessages(messages);
+		setStompClient(stompClient);
 
 		return () => {
-			if (client && client.connected) {
-				client.disconnect();
-			}
+			disconnectWebSocket();
 		};
 	}, []);
 

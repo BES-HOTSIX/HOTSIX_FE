@@ -1,0 +1,37 @@
+import { Stomp } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+
+let stompClient = null;
+let subscription = null;
+let messages = [];
+
+export const connectWebSocket = (url, id, onMessageReceived) => {
+	if (!stompClient || !stompClient.connected) {
+		const socket = new SockJS(url);
+		stompClient = Stomp.over(socket);
+
+		stompClient.connect({}, (frame) => {
+			console.log('Websocket Connected: ' + frame);
+			subscription = stompClient.subscribe(`/topic/messages/${id}`, (message) => {
+				console.log('Received: ' + message.body);
+				messages = onMessageReceived(JSON.parse(message.body));
+			});
+		});
+	}
+
+	return { stompClient, messages };
+};
+
+export const disconnectWebSocket = () => {
+	if (stompClient && stompClient.connected) {
+		stompClient.disconnect(() => {
+			console.log('Websocket disconnected');
+		});
+		stompClient = null;
+	}
+
+	if (subscription) {
+		subscription.unsubscribe();
+		subscription = null;
+	}
+};
