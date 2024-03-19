@@ -29,11 +29,9 @@ export default function Chat({ id }) {
 	useEffect(() => {
 		const onMessageReceived = (message) => {
 			setMessages((prevMessages) => [...prevMessages, message]);
-			return messages;
 		};
 
-		const { stompClient, messages } = connectWebSocket(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`, id, onMessageReceived);
-		setMessages(messages);
+		const { stompClient } = connectWebSocket(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`, id, onMessageReceived);
 		setStompClient(stompClient);
 
 		return () => {
