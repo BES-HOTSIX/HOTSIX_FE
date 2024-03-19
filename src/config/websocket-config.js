@@ -9,8 +9,8 @@ export const connectWebSocket = (url, id, onMessageReceived) => {
 		const socket = new SockJS(url);
 		stompClient = Stomp.over(socket);
 
-		stompClient.connect({}, (frame) => {
-			console.log('Websocket Connected: ' + frame);
+		stompClient.connect({}, () => {
+			console.log('Websocket Connected');
 			subscription = stompClient.subscribe(`/topic/messages/${id}`, (message) => {
 				console.log('Received: ' + message.body);
 				onMessageReceived(JSON.parse(message.body));
