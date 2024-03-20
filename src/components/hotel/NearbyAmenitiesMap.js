@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {
     Pagination,
+    Radio,
     RadioGroup,
     Table,
     TableBody,
@@ -21,6 +22,7 @@ export default function NearbyAmenitiesMap({hotel}) {
     const [nearAmenities, setNearAmenities] = useState([]);
     const [markers, setMarkers] = useState([]);
     const [category, setCategory] = useState("food");
+    const [distance, setDistance] = useState("100");
 
     const [page, setPage] = React.useState(1);
     const rowsPerPage = 9;
@@ -106,11 +108,12 @@ export default function NearbyAmenitiesMap({hotel}) {
             })
             setMarkers([])
         } else if (map && centerCoords) {
-            axios.get(`http://localhost:8080/api/v1/locations/${category}?latitude=${centerCoords.lat()}&longitude=${centerCoords.lng()}&distance=500`).then((r) => {
+            axios.get(`http://localhost:8080/api/v1/locations/${category}?latitude=${centerCoords.lat()}&longitude=${centerCoords.lng()}&distance=${distance}`).then((r) => {
                 setNearAmenities(r.data);
+                setPage(1);
             })
         }
-    }, [centerCoords, category])
+    }, [centerCoords, category, distance])
 
     useEffect(() => {
         if (nearAmenities.length !== 0) {
@@ -170,63 +173,69 @@ export default function NearbyAmenitiesMap({hotel}) {
     };
 
     return (
-        <div className={"flex gap-3"}>
-            <div ref={mapRef} style={{width: '50%', height: '400px'}}>
-                <RadioGroup className={"z-10"} classNames={{wrapper: ["!flex-row"]}} onValueChange={(v) => {
-                    setCategory(v)
-                }}
-                            defaultValue={"food"}>
-                    <CustomRadio value={"food"}>음식점</CustomRadio>
-                    <CustomRadio value={"cafe"}>카페</CustomRadio>
-                </RadioGroup>
-            </div>
-            <div className={"flex flex-col w-1/5 items-center"}>
-                <div>근처 500M 결과 {nearAmenities.length}개</div>
-                <Table hideHeader classNames={{
-                    base: ["w-full h-[400px]"],
-                    wrapper: ["w-full h-[400px]"],
-                    table: ["w-full flex"],
-                    tbody: ["flex flex-col w-full h-[300px] overflow-y-auto"],
-                    tr: ["flex flex-row justify-between hover:border-blue-500 hover:border-2"],
-                    td: ["!text-xs flex items-center"]
-                }}
-                       bottomContent={
-                           <div className="flex w-full justify-center">
-                               <Pagination
-                                   size={"sm"}
-                                   isCompact
-                                   showControls
-                                   showShadow
-                                   color="secondary"
-                                   page={page}
-                                   total={pages}
-                                   onChange={(page) => setPage(page)}
-                                   classNames={{
-                                       wrapper: ["flex w-full"],
-                                       item: ["relative min-w-0"]
-                                   }}
-                               />
-                           </div>
-                       }
-                >
-                    <TableHeader>
-                        <TableColumn key={"name"}>NAME</TableColumn>
-                        <TableColumn key={"dist"}>DISTANCE</TableColumn>
-                    </TableHeader>
-                    <TableBody items={items}>
-                        {(item) => (
-                            <TableRow
-                                key={item.id}
-                                onMouseOver={() => handleOverInfo(item.id)}
-                                onMouseOut={() => handleOutInfo(item.id)
-                                }>
-                                {(columnKey) => <TableCell>
-                                    {renderCell(item, columnKey)}
-                                </TableCell>}
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+        <div className={"flex flex-col"}>
+            <RadioGroup orientation={"horizontal"} onValueChange={setDistance} defaultValue={"100"}>
+                <Radio value={"100"}>100M</Radio>
+                <Radio value={"300"}>300M</Radio>
+                <Radio value={"500"}>500M</Radio>
+            </RadioGroup>
+            <div className={"flex gap-3"}>
+                <div ref={mapRef} style={{width: '50%', height: '400px'}}>
+                    <RadioGroup className={"z-10"} classNames={{wrapper: ["!flex-row"]}} onValueChange={(v) => {
+                        setCategory(v)
+                    }}
+                                defaultValue={"food"}>
+                        <CustomRadio value={"food"}>음식점</CustomRadio>
+                    </RadioGroup>
+                </div>
+                <div className={"flex flex-col w-1/5 items-center"}>
+                    <div>근처 {distance}M 결과 {nearAmenities.length}개</div>
+                    <Table hideHeader classNames={{
+                        base: ["w-full h-[400px]"],
+                        wrapper: ["w-full h-[400px]"],
+                        table: ["w-full flex"],
+                        tbody: ["flex flex-col w-full h-[300px] overflow-y-auto"],
+                        tr: ["flex flex-row justify-between hover:shadow-[0_0_0_2px_#006eff_inset] hover:cursor-pointer"],
+                        td: ["!text-xs flex items-center"]
+                    }}
+                           bottomContent={
+                               <div className="flex w-full justify-center">
+                                   <Pagination
+                                       size={"sm"}
+                                       isCompact
+                                       showControls
+                                       showShadow
+                                       color="secondary"
+                                       page={page}
+                                       total={pages}
+                                       onChange={(page) => setPage(page)}
+                                       classNames={{
+                                           wrapper: ["flex w-full"],
+                                           item: ["relative min-w-0"]
+                                       }}
+                                   />
+                               </div>
+                           }
+                    >
+                        <TableHeader>
+                            <TableColumn key={"name"}>NAME</TableColumn>
+                            <TableColumn key={"dist"}>DISTANCE</TableColumn>
+                        </TableHeader>
+                        <TableBody items={items}>
+                            {(item) => (
+                                <TableRow
+                                    key={item.id}
+                                    onMouseOver={() => handleOverInfo(item.id)}
+                                    onMouseOut={() => handleOutInfo(item.id)
+                                    }>
+                                    {(columnKey) => <TableCell>
+                                        {renderCell(item, columnKey)}
+                                    </TableCell>}
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
         </div>
     )
