@@ -200,9 +200,13 @@ export default function Pay({ fail, reserveId }) {
         orderName: `${reservationData.hotelNickname}`,
         customerEmail: `${reservationData.buyerEmail}`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
         customerName: `${reservationData.buyerName}`,
-        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}&couponType=${selectedCoupon?.couponType}`,
+        successUrl:
+          `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}` +
+          (selectedCoupon?.couponType
+            ? `&couponType=${selectedCoupon.couponType}`
+            : ''),
         failUrl: `${window.location.origin}/cashLog/pay/${reserveId}`,
-        _skipAuth: 'FORCE_SUCCESS',
+        // _skipAuth: 'FORCE_SUCCESS',
       })
     }
 
@@ -212,7 +216,11 @@ export default function Pay({ fail, reserveId }) {
         orderName: `${reservationData.hotelNickname}`,
         customerEmail: `${reservationData.buyerEmail}`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
         customerName: `${reservationData.buyerName}`,
-        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}&couponType=${selectedCoupon?.couponType}`,
+        successUrl:
+          `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}` +
+          (selectedCoupon?.couponType
+            ? `&couponType=${selectedCoupon.couponType}`
+            : ''),
         failUrl: `${window.location.origin}/cashLog/pay/${reserveId}?`,
       })
     } catch (error) {}
