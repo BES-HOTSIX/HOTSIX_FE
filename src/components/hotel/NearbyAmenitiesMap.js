@@ -95,9 +95,10 @@ export default function NearbyAmenitiesMap({ hotel }) {
           infoWindow.open(map, marker)
         })
 
-        // 마커를 클릭하는 이벤트 핸들러
+        // 마커를 클릭하는 이벤트 핸들러 추가
         naver.maps.Event.addListener(marker, "click", function () {
-          const query = encodeURIComponent(textTitle) // 마커의 타이틀을 인코딩
+          // 클릭된 마커의 정보를 기반으로 검색할 쿼리 생성
+          const query = encodeURIComponent(textTitle) // 마커의 타이틀을 인코딩하여 URL에 포함
           const searchUrl = `https://search.naver.com/search.naver?query=${query}`
 
           // 생성된 검색 URL로 리다이렉트
