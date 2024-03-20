@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 
 export default function MyChatRooms() {
 	const [page, setPage] = useState(1)
+	const router = useRouter();
 
 	const chatRoomsQuery = useQuery({
 		queryKey: ["chatRooms", page],
@@ -28,8 +29,6 @@ export default function MyChatRooms() {
 		() => chatRoomsQuery.data?.objData.totalPages ?? 0,
 		[chatRoomsQuery.data?.objData.totalPages]
 	)
-
-	const router = useRouter();
 
 	if (chatRoomsQuery.isLoading) {
 		return <div>loading</div>
@@ -58,16 +57,14 @@ export default function MyChatRooms() {
 										<div className={"flex flex-col justify-between w-full"}>
 											<div className={"flex justiy-between items-center w-full"}>
 												<div className={"text-2xl"}>{chatRoom.contactNickname}</div>
-												{chatRoom.latestDate &&
-													<div className="text-base text-gray-500 ml-auto mr-3">{format(new Date(chatRoom.latestDate), 'MM/dd HH:mm')}</div>
-												}
-												{!chatRoom.latestDate &&
-													<div className="text-base text-gray-500 ml-auto mr-3">{format(new Date(chatRoom.createdAt), 'MM/dd HH:mm')}</div>
-												}
+												<div className="text-base text-gray-500 ml-auto mr-3">{format(new Date(chatRoom.latestDate), 'MM/dd HH:mm')}</div>
 											</div>
-											<div className={"flex justiy-end items-center w-full"}>
+											<div className={"flex justiy-between items-center w-full mb-2"}>
 												{chatRoom.left &&
-													<Chip className="ml-auto mr-3" size="md" color="danger">채팅 종료</Chip>
+													<Chip size="md" color="danger" variant="flat">채팅 종료</Chip>
+												}
+												{chatRoom.unread > 0 &&
+													<Chip className="ml-auto mr-3 text-sm" size="md" color="primary">{chatRoom.unread}</Chip>
 												}
 											</div>
 										</div>
