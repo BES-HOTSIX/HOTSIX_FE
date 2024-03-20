@@ -16,6 +16,7 @@ export default function Chat({ id }) {
 	const [messages, setMessages] = useState([]);
 	const messagesContainerRef = useRef(null);
 	const { user, isLoading, isError } = useUser();
+	const [nickname, setNickname] = useState('');
 	const { chatRoom, isChatLoading, isChatError } = useChatRoomInfo(id);
 	const { chatMessages, isMsgLoading, isMsgError } = useChatMessageList(id);
 	const router = useRouter();
@@ -34,10 +35,26 @@ export default function Chat({ id }) {
 		const { stompClient } = connectWebSocket(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`, id, onMessageReceived);
 		setStompClient(stompClient);
 
+		const markMessageAsRead = () => {
+			try {
+				const response = axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat/read/${id}`,
+				{
+					nickname: user.objData.nickname
+				});
+	
+				if (response.status >= 400) {
+					throw new Error('Network response was not ok')
+				}
+			} catch (error) {
+				console.error('Error marking message as read:', error);
+			}
+		};
+
 		return () => {
+			markMessageAsRead();
 			disconnectWebSocket();
 		};
-	}, []);
+	}, [user, isLoading, isError]);
 
 	useEffect(() => {
 		// 채팅 메시지 컨테이너의 스크롤 높이를 최신 값으로 설정하여 스크롤을 아래로 이동
