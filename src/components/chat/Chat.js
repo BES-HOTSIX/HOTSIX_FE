@@ -2,14 +2,13 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation'
-import { Stomp } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { useUser } from '@/hooks/useUser';
-import { useChatRoomInfo, useChatMessageList } from '@/hooks/useChat';
 import { format } from 'date-fns';
 import { FiMoreVertical, FiChevronLeft } from 'react-icons/fi';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import axios from "axios";
+import { useUser } from '@/hooks/useUser';
+import { useChatRoomInfo, useChatMessageList } from '@/hooks/useChat';
+import { connectWebSocket, disconnectWebSocket } from '@/config/websocket-config';
 
 export default function Chat({ id }) {
 	const [stompClient, setStompClient] = useState(null);
@@ -28,23 +27,33 @@ export default function Chat({ id }) {
 	}, [chatMessages]);
 
 	useEffect(() => {
-		const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`);
-		const client = Stomp.over(socket);
-		client.connect({}, (frame) => {
-			console.log('Connected: ' + frame);
-			client.subscribe(`/topic/messages/${id}`, (message) => {
-				console.log('Received: ' + message.body);
-				setMessages((prevMessages) => [...prevMessages, JSON.parse(message.body)]);
-			});
-		});
-		setStompClient(client);
+		const onMessageReceived = (message) => {
+			setMessages((prevMessages) => [...prevMessages, message]);
+		};
 
-		return () => {
-			if (client && client.connected) {
-				client.disconnect();
+		const { stompClient } = connectWebSocket(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`, id, onMessageReceived);
+		setStompClient(stompClient);
+
+		const markMessageAsRead = () => {
+			try {
+				const response = axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat/read/${id}`,
+				{
+					nickname: user.objData.nickname
+				});
+	
+				if (response.status >= 400) {
+					throw new Error('Network response was not ok')
+				}
+			} catch (error) {
+				console.error('Error marking message as read:', error);
 			}
 		};
-	}, []);
+
+		return () => {
+			markMessageAsRead();
+			disconnectWebSocket();
+		};
+	}, [user, isLoading, isError]);
 
 	useEffect(() => {
 		// 채팅 메시지 컨테이너의 스크롤 높이를 최신 값으로 설정하여 스크롤을 아래로 이동
@@ -54,12 +63,12 @@ export default function Chat({ id }) {
 		}
 	}, [messages]);
 
-	if (isChatLoading || isLoading || isMsgLoading) {
-		return <div className="h-[60vh] mt-32">loading</div>;
+	if (isLoading || isChatLoading || isMsgLoading || !chatRoom?.objData || !chatMessages?.objData) {
+		return <div className="h-[60vh] mt-32 ml-16">loading</div>;
 	}
 
-	if (isChatError || isError || isMsgError || !user?.objData || !chatRoom?.objData || !chatMessages?.objData) {
-		return <div className="h-[60vh] mt-32">Error</div>;
+	if (isError || !user?.objData || isChatError || isMsgError) {
+		return <div className="h-[60vh] mt-32 ml-16">Error</div>;
 	}
 
 	const handleExitChatRoom = async () => {
