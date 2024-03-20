@@ -1,6 +1,6 @@
 "use client";
 
-import { useCashLogForConfirm } from "@/hooks/useCashLog";
+import { useCashLogForConfirm } from "@/hooks/CashLog/useCashLog";
 import { Button, Card, CardBody, Image } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import React from "react";

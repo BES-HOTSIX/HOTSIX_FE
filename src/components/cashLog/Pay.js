@@ -1,10 +1,6 @@
 'use client'
 
 import {
-  useReservationForPay,
-  useReserveForCashPayment,
-} from '@/hooks/useCashLog'
-import {
   Button,
   Card,
   CardBody,
@@ -27,9 +23,13 @@ import { toast } from 'react-toastify'
 import { useSetRecoilState } from 'recoil'
 import { reserveIdState } from '@/store/reservationState'
 import Image from 'next/image'
-import { useMyCoupons } from '@/hooks/useCoupon'
+import {
+  useReservationForPay,
+  useReserveForCashPayment,
+} from '@/hooks/useCashLog'
 import CouponButton from '../coupon/CouponButton'
 import CouponWidget from '../coupon/CouponWidget'
+import { useMyCoupons } from '@/hooks/useCoupon'
 
 export default function Pay({ fail, reserveId }) {
   const { myCoupons } = useMyCoupons()
@@ -180,7 +180,12 @@ export default function Pay({ fail, reserveId }) {
     console.log(discountAmount)
 
     // 사용하는 캐시가 price와 같을 경우 포인트 결제
-    if (price == 0) submitReservation({ reserveId, discountAmount })
+    if (price == 0)
+      submitReservation({
+        reserveId,
+        discountAmount,
+        couponType: selectedCoupon?.couponType,
+      })
 
     if (price != 0) onOpen()
   }
@@ -195,7 +200,7 @@ export default function Pay({ fail, reserveId }) {
         orderName: `${reservationData.hotelNickname}`,
         customerEmail: `${reservationData.buyerEmail}`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
         customerName: `${reservationData.buyerName}`,
-        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}`,
+        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}&couponType=${selectedCoupon?.couponType}`,
         failUrl: `${window.location.origin}/cashLog/pay/${reserveId}`,
         _skipAuth: 'FORCE_SUCCESS',
       })
@@ -207,7 +212,7 @@ export default function Pay({ fail, reserveId }) {
         orderName: `${reservationData.hotelNickname}`,
         customerEmail: `${reservationData.buyerEmail}`, // TODO Member 값에 이메일도 있다면 여기에 입력해주자
         customerName: `${reservationData.buyerName}`,
-        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}`,
+        successUrl: `${window.location.origin}/cashLog/payByToss/success/${reserveId}?discountAmount=${discountAmount}&couponType=${selectedCoupon?.couponType}`,
         failUrl: `${window.location.origin}/cashLog/pay/${reserveId}?`,
       })
     } catch (error) {}

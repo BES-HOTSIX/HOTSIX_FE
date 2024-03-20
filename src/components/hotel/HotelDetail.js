@@ -19,7 +19,8 @@ import { formatPrice } from '@/constants/hotel'
 import { useUser } from '@/hooks/useUser'
 import LikeButton from '@/app/hotel/like/LikeButton'
 import ReviewList from '@/components/review/ReviewList'
-import axios from "@/config/axios-config";
+import axios from '@/config/axios-config'
+import { toast } from 'react-toastify'
 
 export default function HotelDetail({ id }) {
   const router = useRouter()
@@ -54,20 +55,20 @@ export default function HotelDetail({ id }) {
   const handleChattingButton = async () => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat`, 
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/chat`,
         { hotelId: id },
         {
           ...axios.defaults,
           useAuth: true,
         }
-      );
+      )
 
-      const chatRoomId = response.data.objData.chatRoomId; // 응답에서 채팅방 ID 추출
-      router.push(`/chat/${chatRoomId}`); // 채팅방 페이지로 라우팅
+      const chatRoomId = response.data.objData.chatRoomId // 응답에서 채팅방 ID 추출
+      router.push(`/chat/${chatRoomId}`) // 채팅방 페이지로 라우팅
     } catch (error) {
-      console.error('채팅방 생성 실패', error);
+      console.error('채팅방 생성 실패', error)
     }
-  };
+  }
 
   return (
     <div className='w-full mx-auto p-10'>
@@ -223,12 +224,11 @@ export default function HotelDetail({ id }) {
                 </button>
               </div>
             </div>
-          <button
-            onClick={handleChattingButton}
-            className="justify-end underline"
-          >
-            호스트에게 문의하기
-          </button>
+            <button
+              onClick={handleChattingButton}
+              className='justify-end underline'>
+              호스트에게 문의하기
+            </button>
           </div>
         )}
       </div>

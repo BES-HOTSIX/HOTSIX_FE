@@ -138,10 +138,21 @@ export const useReservationForPay = (reserveId) => {
 }
 
 // 포인트 결제를 위한 POST 요청
-const fetchReserveForCashPayment = async ({ reserveId, discountAmount }) => {
-  return await axios.post(`/api/v1/pay/${reserveId}/byCash`, {
-    discountAmount: discountAmount,
-  })
+const fetchReserveForCashPayment = async ({
+  reserveId,
+  discountAmount,
+  couponType,
+}) => {
+  return await axios.post(
+    `/api/v1/pay/${reserveId}/byCash`,
+    {
+      discountAmount,
+      couponType,
+    },
+    {
+      useAuth: true,
+    }
+  )
 }
 
 export const useReserveForCashPayment = () => {
@@ -153,9 +164,13 @@ export const useReserveForCashPayment = () => {
     isError,
     error,
   } = useMutation({
-    mutationFn: ({ reserveId, discountAmount }) => {
+    mutationFn: ({ reserveId, discountAmount, couponType }) => {
       console.log(discountAmount)
-      return fetchReserveForCashPayment({ reserveId, discountAmount })
+      return fetchReserveForCashPayment({
+        reserveId,
+        discountAmount,
+        couponType,
+      })
     },
     onSuccess: (res) => {
       console.log('포인트 결제 성공')
@@ -215,7 +230,9 @@ export const useCashLogForConfirm = (cashLogId) => {
 // TossPayments post 요청
 const fetchTossPayments = async ({ payment, reserveId }) => {
   console.log(reserveId)
-  return await axios.post(`/api/v1/pay/${reserveId}/byToss`, payment)
+  return await axios.post(`/api/v1/pay/${reserveId}/byToss`, payment, {
+    useAuth : true
+  })
 }
 
 export const useTossPayments = () => {
