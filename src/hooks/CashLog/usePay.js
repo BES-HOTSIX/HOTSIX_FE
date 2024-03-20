@@ -3,64 +3,66 @@ import axios from '@/config/axios-config'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 
-// // 포인트 결제를 위한 POST 요청
-// const fetchReserveForCashPayment = async ({
-//   reserveId,
-//   discountAmount,
-//   couponType,
-// }) => {
-//   return await axios.post(`/api/v1/pay/${reserveId}/byCash`, {
-//     useCouponRequest: {
-//       discountAmount,
-//       couponType,
-//     },
-//   })
-// }
+// 포인트 결제를 위한 POST 요청
+const fetchReserveForCashPayment = async ({
+  reserveId,
+  discountAmount,
+  couponType,
+}) => {
+  return await axios.post(
+    `/api/v1/pay/${reserveId}/byCash`,
+    {
+      discountAmount,
+      couponType,
+    },
+    {
+      useAuth: true,
+    }
+  )
+}
 
-// export const useReserveForCashPayment = () => {
-//   const queryClient = useQueryClient()
-//   const [cashLogConfirm, setCashLogConfirm] = useState(null)
-//   const {
-//     mutate: submitReservation,
-//     isPending,
-//     isError,
-//     error,
-//   } = useMutation({
-//     mutationFn: ({ reserveId, discountAmount, couponType }) => {
-//       console.log(discountAmount)
-//       return fetchReserveForCashPayment({
-//         reserveId,
-//         useCouponRequest: {
-//           discountAmount,
-//           couponType,
-//         },
-//       })
-//     },
-//     onSuccess: (res) => {
-//       console.log('포인트 결제 성공')
+export const useReserveForCashPayment = () => {
+  const queryClient = useQueryClient()
+  const [cashLogConfirm, setCashLogConfirm] = useState(null)
+  const {
+    mutate: submitReservation,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: ({ reserveId, discountAmount, couponType }) => {
+      console.log(discountAmount)
+      return fetchReserveForCashPayment({
+        reserveId,
+        discountAmount,
+        couponType,
+      })
+    },
+    onSuccess: (res) => {
+      console.log('포인트 결제 성공')
 
-//       if (!res.data.result) {
-//         toast.error('포인트 결제에 실패했습니다 🥲')
-//         return
-//       }
+      if (!res.data.result) {
+        toast.error('포인트 결제에 실패했습니다 🥲')
+        return
+      }
 
-//       toast.success('포인트 결제가 완료되었습니다!')
+      toast.success('포인트 결제가 완료되었습니다!')
 
-//       setCashLogConfirm(res)
+      setCashLogConfirm(res)
 
-//       queryClient.invalidateQueries({ queryKey: ['reserve'] })
-//     },
-//     onError: (err) => {
-//       console.log('포인트 결제 실패')
+      queryClient.invalidateQueries({ queryKey: ['reserve'] })
+    },
+    onError: (err) => {
+      console.log('포인트 결제 실패')
 
-//       toast.error('포인트 결제에 실패했습니다 🥲')
+      toast.error('포인트 결제에 실패했습니다 🥲')
 
-//       return err
-//     },
-//   })
+      return err
+    },
+  })
 
-//   return { submitReservation, cashLogConfirm, isPending, isError, error }
-// }
+  return { submitReservation, cashLogConfirm, isPending, isError, error }
+}
 
 /**  결제하기 창 */
 const fetchReservationForPay = async (reserveId) => {
@@ -90,7 +92,9 @@ export const useReservationForPay = (reserveId) => {
 // TossPayments post 요청
 const fetchTossPayments = async ({ payment, reserveId }) => {
   console.log(reserveId)
-  return await axios.post(`/api/v1/pay/${reserveId}/byToss`, payment)
+  return await axios.post(`/api/v1/pay/${reserveId}/byToss`, payment, {
+    useAuth: true,
+  })
 }
 
 export const useTossPayments = () => {

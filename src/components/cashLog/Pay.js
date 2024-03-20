@@ -26,7 +26,7 @@ import Image from 'next/image'
 import {
   useReservationForPay,
   useReserveForCashPayment,
-} from '@/hooks/useCashLog'
+} from '@/hooks/CashLog/usePay'
 import CouponButton from '../coupon/CouponButton'
 import CouponWidget from '../coupon/CouponWidget'
 import { useMyCoupons } from '@/hooks/useCoupon'
