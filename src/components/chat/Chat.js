@@ -16,7 +16,6 @@ export default function Chat({ id }) {
 	const [messages, setMessages] = useState([]);
 	const messagesContainerRef = useRef(null);
 	const { user, isLoading, isError } = useUser();
-	const [nickname, setNickname] = useState('');
 	const { chatRoom, isChatLoading, isChatError } = useChatRoomInfo(id);
 	const { chatMessages, isMsgLoading, isMsgError } = useChatMessageList(id);
 	const router = useRouter();
