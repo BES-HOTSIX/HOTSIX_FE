@@ -63,12 +63,12 @@ export default function Chat({ id }) {
 		}
 	}, [messages]);
 
-	if (isChatLoading || isLoading || isMsgLoading) {
-		return <div className="h-[60vh] mt-32">loading</div>;
+	if (isLoading || isChatLoading || isMsgLoading || !chatRoom?.objData || !chatMessages?.objData) {
+		return <div className="h-[60vh] mt-32 ml-16">loading</div>;
 	}
 
-	if (isChatError || isError || isMsgError || !user?.objData || !chatRoom?.objData || !chatMessages?.objData) {
-		return <div className="h-[60vh] mt-32">Error</div>;
+	if (isError || !user?.objData || isChatError || isMsgError) {
+		return <div className="h-[60vh] mt-32 ml-16">Error</div>;
 	}
 
 	const handleExitChatRoom = async () => {
