@@ -13,6 +13,7 @@ import {
 import {CustomRadio} from "@/components/ui/CustomRadio";
 import axios from "axios";
 import calculateDistance from "@/util/calculateDistance";
+import TouristSpotSearch from "@/components/touristSpot/TouristSpotSearch";
 
 export default function NearbyAmenitiesMap({hotel}) {
     const mapRef = useRef(null) // 지도를 표시할 DOM 요소에 대한 참조
@@ -23,6 +24,8 @@ export default function NearbyAmenitiesMap({hotel}) {
     const [markers, setMarkers] = useState([]);
     const [category, setCategory] = useState("food");
     const [distance, setDistance] = useState("100");
+    const [showTouristSpots, setShowTouristSpots] = useState(false)
+    const [touristSpots, setTouristSpots] = useState([])
 
     const [page, setPage] = React.useState(1);
     const rowsPerPage = 9;
@@ -101,43 +104,51 @@ export default function NearbyAmenitiesMap({hotel}) {
     }
 
     useEffect(() => {
-        if (category !== "food") {
-            setNearAmenities([])
-            markers.forEach((v) => {
-                v.setMap(null);
-            })
-            setMarkers([])
-        } else if (map && centerCoords) {
+        if (category === "tourspot") {
+            clearMarkers();
+            setShowTouristSpots(true);
+        } else if (map && centerCoords && category === "food") {
+            setShowTouristSpots(false);
             axios.get(`http://localhost:8080/api/v1/locations/${category}?latitude=${centerCoords.lat()}&longitude=${centerCoords.lng()}&distance=${distance}`).then((r) => {
                 setNearAmenities(r.data);
                 setPage(1);
+                map.setCenter(centerCoords);
             })
         }
     }, [centerCoords, category, distance])
 
+    const clearMarkers = () => {
+        markers.forEach((v) => {
+            v.setMap(null);
+        })
+        setMarkers([])
+    }
+
     useEffect(() => {
         if (nearAmenities.length !== 0) {
-            if (markers.length !== 0) {
-                markers.forEach((v, index) => {
-                    v.setMap(null);
-                })
-                setMarkers([])
-            }
-            nearAmenities.forEach((v) => {
-                let latLng = new naver.maps.LatLng(v.coord.y, v.coord.x);
+            if (!showTouristSpots) {
+                if (markers.length !== 0) {
+                    markers.forEach((v, index) => {
+                        v.setMap(null);
+                    })
+                    setMarkers([])
+                }
+                nearAmenities.forEach((v) => {
+                    let latLng = new naver.maps.LatLng(v.coord.y, v.coord.x);
 
-                markers.push(new naver.maps.Marker({
-                    position: latLng,
-                    title: v.name,
-                    map: map,
-                    icon: {
-                        content: `<div id="m-${v.id}" class="hidden border-solid bg-blue-100 border-2 border-white rounded-md w-11 h-11 overflow-hidden -translate-x-1/2 -translate-y-[130%]">
+                    markers.push(new naver.maps.Marker({
+                        position: latLng,
+                        title: v.name,
+                        map: map,
+                        icon: {
+                            content: `<div id="m-${v.id}" class="hidden border-solid bg-blue-100 border-2 border-white rounded-md w-11 h-11 overflow-hidden -translate-x-1/2 -translate-y-[130%]">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M8 21V3M15 21V3C17.2091 3 19 4.79086 19 7V9C19 11.2091 17.2091 13 15 13M11 3V8C11 9.65685 9.65685 11 8 11C6.34315 11 5 9.65685 5 8V3" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                             </div>`,
-                    },
-                    zIndex: 100
-                }))
-            })
+                        },
+                        zIndex: 100
+                    }))
+                })
+            }
         }
     }, [nearAmenities]);
 
@@ -166,15 +177,89 @@ export default function NearbyAmenitiesMap({hotel}) {
                 case "dist":
                     return (
                         <div>{calculateDistance(item.coord.y, item.coord.x, centerCoords.lat(), centerCoords.lng())}m</div>)
-                default:
-                    return item[columnKey];
+                case "name":
+                    return item.name
             }
         }
     };
 
+    useEffect(() => {
+        if (showTouristSpots && touristSpots.length > 0 && map) {
+            let newTouristSpots = [];
+
+            touristSpots.forEach((v, index) => {
+                newTouristSpots.push({
+                    id: index,
+                    name: v.title,
+                    coord: {x: v.mapx / 10000000, y: v.mapy / 10000000}
+                })
+            });
+
+            setNearAmenities(newTouristSpots)
+            // 관광지 정보가 여러 개일 때 지도의 중심을 계산
+            let bounds = new naver.maps.LatLngBounds()
+
+            touristSpots.forEach((spot) => {
+                const spots = new naver.maps.LatLng(
+                    spot.mapy / 10000000,
+                    spot.mapx / 10000000
+                )
+
+                bounds.extend(spots) // 관광지 위치를 포함하도록 경계 확장
+
+                const marker = new naver.maps.Marker({
+                    position: spots,
+                    map: map,
+                })
+                // 마커의 아이콘 색상 변경
+                marker.getElement().style.backgroundColor = "yellow"
+
+                const cleanTitle = document.createElement("div")
+                cleanTitle.innerHTML = spot.title
+                const textTitle = cleanTitle.textContent || cleanTitle.innerText
+
+                // 마커에 정보 창 추가
+                const infoWindow = new naver.maps.InfoWindow({
+                    content: `<div style="font-weight: normal;">${textTitle}</div>`, // HTML 태그가 제거된 텍스트
+
+                    backgroundColor: "transparent", // 배경색을 투명하게 설정
+                    borderColor: "transparent", // 테두리색을 투명하게 설정
+                })
+
+                naver.maps.Event.addListener(marker, "mouseover", function () {
+                    infoWindow.open(map, marker)
+                })
+
+                // 마커를 클릭하는 이벤트 핸들러
+                naver.maps.Event.addListener(marker, "click", function () {
+                    const query = encodeURIComponent(textTitle) // 마커의 타이틀을 인코딩
+                    const searchUrl = `https://search.naver.com/search.naver?query=${query}`
+
+                    // 생성된 검색 URL로 리다이렉트
+                    window.location.href = searchUrl
+                })
+
+                naver.maps.Event.addListener(marker, "mouseout", function () {
+                    infoWindow.close()
+                })
+                console.log("Marker added:", marker)
+
+                markers.push(marker);
+            })
+            map.fitBounds(bounds)
+        }
+    }, [showTouristSpots, touristSpots, map])
+
     return (
         <div className={"flex flex-col"}>
-            <RadioGroup orientation={"horizontal"} onValueChange={setDistance} defaultValue={"100"}>
+            {showTouristSpots && (
+                <TouristSpotSearch
+                    hotelAddress={address}
+                    onSearchResult={setTouristSpots}
+                />
+            )}
+            <RadioGroup orientation={"horizontal"} isDisabled={showTouristSpots} onValueChange={setDistance}
+                        defaultValue={"100"}>
                 <Radio value={"100"}>100M</Radio>
                 <Radio value={"300"}>300M</Radio>
                 <Radio value={"500"}>500M</Radio>
@@ -183,13 +268,13 @@ export default function NearbyAmenitiesMap({hotel}) {
                 <div ref={mapRef} style={{width: '50%', height: '400px'}}>
                     <RadioGroup className={"z-10"} classNames={{wrapper: ["!flex-row"]}} onValueChange={(v) => {
                         setCategory(v)
-                    }}
-                                defaultValue={"food"}>
+                    }} defaultValue={"food"}>
                         <CustomRadio value={"food"}>음식점</CustomRadio>
+                        <CustomRadio value={"tourspot"}>여행지</CustomRadio>
                     </RadioGroup>
                 </div>
                 <div className={"flex flex-col w-1/5 items-center"}>
-                    <div>근처 {distance}M 결과 {nearAmenities.length}개</div>
+                    <div>근처 {showTouristSpots ? "여행지" : distance + "M"} 결과 {nearAmenities.length}개</div>
                     <Table hideHeader classNames={{
                         base: ["w-full h-[400px]"],
                         wrapper: ["w-full h-[400px]"],

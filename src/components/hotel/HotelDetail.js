@@ -1,24 +1,26 @@
-'use client'
+"use client"
 
-import React, {useState} from 'react'
-import {useDeleteHotel, useHotelDetail} from '@/hooks/useHotel'
-import {useRouter} from 'next/navigation'
-import Image from 'next/image'
-import Link from 'next/link'
-import {FaBed, FaCalendarCheck, FaHome, FaImages, FaKey} from 'react-icons/fa'
-import {MdBathroom, MdFamilyRestroom, MdLocationOn, MdPerson4,} from 'react-icons/md'
-import ConfirmAlert from '../ui/modal/ConfirmAlert'
-import {amenitiesOptions, formatPrice} from '@/constants/hotel'
-import {useUser} from '@/hooks/useUser'
-import LikeButton from '@/app/hotel/like/LikeButton'
-import ReviewList from '@/components/review/ReviewList'
-import axios from "@/config/axios-config";
-import NearbyAmenitiesMap from "@/components/hotel/NearbyAmenitiesMap";
+import React, {useState} from "react"
+import {useDeleteHotel, useHotelDetail} from "@/hooks/useHotel"
+import {useRouter} from "next/navigation"
+import Image from "next/image"
+import Link from "next/link"
+import {FaBed, FaCalendarCheck, FaHome, FaImages, FaKey} from "react-icons/fa"
+import {MdBathroom, MdFamilyRestroom, MdLocationOn, MdPerson4,} from "react-icons/md"
+import ConfirmAlert from "../ui/modal/ConfirmAlert"
+import {amenitiesOptions, formatPrice} from "@/constants/hotel"
+import {useUser} from "@/hooks/useUser"
+import LikeButton from "@/app/hotel/like/LikeButton"
+import ReviewList from "@/components/review/ReviewList"
+import axios from "@/config/axios-config"
+import NearbyAmenitiesMap from "./NearbyAmenitiesMap"
+
 
 export default function HotelDetail({id}) {
     const router = useRouter()
     const handleReservationButton = (e) => {
         e.preventDefault()
+
         router.push(`/hotel/reserve/${id}`)
     }
 
@@ -34,8 +36,8 @@ export default function HotelDetail({id}) {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
     if (user && user.objData.role === null) {
-        toast.info('호스트 혹은 게스트 선택 후 이용해주세요🏡🧳')
-        router.push('/auth/signup/role')
+        toast.info("호스트 혹은 게스트 선택 후 이용해주세요🏡🧳")
+        router.push("/auth/signup/role")
     } // 역할 설정 안했을 시, 역할 설정 페이지로 이동
 
     const mainImage = hotel?.imagesResponse.imageUrl[0]
@@ -53,14 +55,13 @@ export default function HotelDetail({id}) {
                     ...axios.defaults,
                     useAuth: true,
                 }
-            );
+            )
 
-            const chatRoomId = response.data.objData.chatRoomId; // 응답에서 채팅방 ID 추출
-            router.push(`/chat/${chatRoomId}`); // 채팅방 페이지로 라우팅
+            const chatRoomId = response.data.objData.chatRoomId // 응답에서 채팅방 ID 추출
+            router.push(`/chat/${chatRoomId}`) // 채팅방 페이지로 라우팅
         } catch (error) {
-            console.error('채팅방 생성 실패', error);
+            console.error("채팅방 생성 실패", error)
         }
-        ;
     }
 
     return (
@@ -80,7 +81,6 @@ export default function HotelDetail({id}) {
             </div>
 
             <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
-
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
                 <div className='md:col-span-2 mb-4 relative h-[600px]'>
                     <Image
@@ -91,11 +91,12 @@ export default function HotelDetail({id}) {
                         className='rounded-md'
                     />
                     <div className='absolute top-2 left-2'>
-                        {user?.objData.role == 'GUEST' && <LikeButton hotelId={id}/>}
+                        {user?.objData.role == "GUEST" && <LikeButton hotelId={id}/>}
                     </div>
                     <button
                         onClick={handleAllPhotosButton}
-                        className='absolute right-2 bottom-2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 hover:text-gray-200 transition duration-150 ease-in-out'>
+                        className='absolute right-2 bottom-2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 hover:text-gray-200 transition duration-150 ease-in-out'
+                    >
                         <div className='flex space-x-2 items-center'>
                             <FaImages className='text-lg'/>
                             <p>모든 사진 보기</p>
@@ -103,12 +104,12 @@ export default function HotelDetail({id}) {
                     </button>
                 </div>
                 <div className='grid grid-cols-2 gap-4 h-[600px]'>
-                    {' '}
+                    {" "}
                     {/* Adjust height as needed */}
                     {/* 작은 이미지들 */}
                     {otherImages.map((image, index) => (
                         <div key={index} className='relative w-full h-[295px]'>
-                            {' '}
+                            {" "}
                             {/* Adjust height as needed */}
                             <Image
                                 src={image}
@@ -186,7 +187,6 @@ export default function HotelDetail({id}) {
                                     <p>{hotel.description}</p>
                                 </div>
                             </div>
-
                             <h2 className='text-xl font-semibold mb-4 mt-5'>주변 편의시설</h2>
 
                             <div className='w-[55vw]'>
@@ -198,7 +198,7 @@ export default function HotelDetail({id}) {
                         </div>
                     </div>
                 </div>
-                {user?.objData.role === 'GUEST' && (
+                {user?.objData.role === "GUEST" && (
                     <div className='bg-gray-100 w-full rounded-lg shadow-md p-4 mt-4'>
                         <div>
                             <div>
@@ -220,15 +220,23 @@ export default function HotelDetail({id}) {
                                 </div>
                                 <button
                                     onClick={handleReservationButton}
-                                    className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'>
+                                    className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'
+                                >
                                     <FaCalendarCheck className='mr-2'/>
                                     예약하기
                                 </button>
                             </div>
+                            <button
+                                onClick={handleReservationButton}
+                                className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'
+                            >
+                                <FaCalendarCheck className='mr-2'/>
+                                예약하기
+                            </button>
                         </div>
                         <button
                             onClick={handleChattingButton}
-                            className="justify-end underline"
+                            className='justify-end underline'
                         >
                             호스트에게 문의하기
                         </button>
@@ -244,7 +252,8 @@ export default function HotelDetail({id}) {
                 <ConfirmAlert
                     isOpen={isConfirmOpen}
                     onClose={() => setIsConfirmOpen(false)}
-                    onSubmit={submitDelete}>
+                    onSubmit={submitDelete}
+                >
                     삭제시 복구가 불가능합니다. <br/> 정말로 삭제하시겠어요?
                 </ConfirmAlert>
             )}
