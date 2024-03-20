@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import axios from "@/config/axios-config"
 import TouristSpotSearch from "@/components/touristSpot/TouristSpotSearch"
+import { Button, ButtonGroup } from "@nextui-org/react"
 
 export default function NearbyAmenitiesMap({ hotel }) {
   const mapRef = useRef(null)
@@ -75,6 +76,37 @@ export default function NearbyAmenitiesMap({ hotel }) {
           position: spots,
           map: map,
         })
+        // 마커의 아이콘 색상 변경
+        marker.getElement().style.backgroundColor = "yellow"
+
+        const cleanTitle = document.createElement("div")
+        cleanTitle.innerHTML = spot.title
+        const textTitle = cleanTitle.textContent || cleanTitle.innerText
+
+        // 마커에 정보 창 추가
+        const infoWindow = new naver.maps.InfoWindow({
+          content: `<div style="font-weight: normal;">${textTitle}</div>`, // HTML 태그가 제거된 텍스트
+
+          backgroundColor: "transparent", // 배경색을 투명하게 설정
+          borderColor: "transparent", // 테두리색을 투명하게 설정
+        })
+
+        naver.maps.Event.addListener(marker, "mouseover", function () {
+          infoWindow.open(map, marker)
+        })
+
+        // 마커를 클릭하는 이벤트 핸들러
+        naver.maps.Event.addListener(marker, "click", function () {
+          const query = encodeURIComponent(textTitle) // 마커의 타이틀을 인코딩
+          const searchUrl = `https://search.naver.com/search.naver?query=${query}`
+
+          // 생성된 검색 URL로 리다이렉트
+          window.location.href = searchUrl
+        })
+
+        naver.maps.Event.addListener(marker, "mouseout", function () {
+          infoWindow.close()
+        })
         console.log("Marker added:", marker)
       })
       map.fitBounds(bounds)
@@ -88,12 +120,11 @@ export default function NearbyAmenitiesMap({ hotel }) {
   return (
     <div>
       <div className='flex justify-center mt-4'>
-        <button
-          className='bg-blue-500 text-white px-4 py-2 rounded'
-          onClick={handleShowTouristSpots}
-        >
-          근처 볼거리
-        </button>
+        <ButtonGroup>
+          <Button onClick={handleShowTouristSpots}>근처 볼거리</Button>
+          <Button>Two</Button>
+          <Button>Three</Button>
+        </ButtonGroup>
       </div>
       {showTouristSpots && (
         <TouristSpotSearch
