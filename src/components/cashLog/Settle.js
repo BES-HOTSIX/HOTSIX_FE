@@ -14,6 +14,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  select,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
@@ -41,6 +42,10 @@ export default function Settle() {
     router.push(`${window.location.origin}/reserve/detail/${orderId}`);
   };
 
+  const handleSelectionChange = (e) => {
+    setSelectVal(e.target.value);
+  };
+
   const renderCell = useCallback((item, columnKey) => {
     switch (columnKey) {
       case "orderId":
@@ -62,6 +67,16 @@ export default function Settle() {
     }
   }, []);
 
+  const defaultKw = "default";
+
+  const settleKws = [
+    { label: "기본", value: defaultKw },
+    { label: "정산", value: "settled" },
+    { label: "미정산", value: "unsettled" },
+  ];
+
+  const [selectVal, setSelectVal] = useState(defaultKw);
+
   const minDate = new Date(2024, 0, 1);
 
   const [date, setDate] = useState([minDate, getNextWednesday()]);
@@ -82,7 +97,7 @@ export default function Settle() {
     isFetching: ListIsFetching,
     isError: ListIsError,
     error: ListError,
-  } = useMySettleList(page - 1, size, formattedStart, formattedEnd);
+  } = useMySettleList(page - 1, size, formattedStart, formattedEnd, selectVal);
 
   const { mySettle, isLoading, isFetching, isError, error } = useMySettle();
 
@@ -106,12 +121,6 @@ export default function Settle() {
   content.map((e) => {
     e.orderId = e.orderId.substring(0, 4);
   });
-
-  const settleKws = [
-    { label: "기본", value: "default" },
-    { label: "정산", value: "settled" },
-    { label: "미정산", value: "unsettled" },
-  ];
 
   return (
     <div>
@@ -145,8 +154,8 @@ export default function Settle() {
           label="정산 여부"
           className="max-w-56"
           size="sm"
-          defaultSelectedKeys={["default"]}
-          // onChange={}
+          selectedKeys={[selectVal]}
+          onChange={handleSelectionChange}
         >
           {settleKws.map((settleKw) => (
             <SelectItem key={settleKw.value} value={settleKw.value}>
