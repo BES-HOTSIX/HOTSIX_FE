@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useHotelDetail } from '@/hooks/useHotel'
+import { useDeleteHotel, useHotelDetail } from '@/hooks/useHotel'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FaBed, FaHome, FaKey, FaCalendarCheck, FaImages } from 'react-icons/fa'
+import { FaBed, FaCalendarCheck, FaHome, FaImages, FaKey } from 'react-icons/fa'
 import {
   MdBathroom,
   MdFamilyRestroom,
@@ -13,14 +13,12 @@ import {
   MdPerson4,
 } from 'react-icons/md'
 import ConfirmAlert from '../ui/modal/ConfirmAlert'
-import { amenitiesOptions } from '@/constants/hotel'
-import { useDeleteHotel } from '@/hooks/useHotel'
-import { formatPrice } from '@/constants/hotel'
+import { amenitiesOptions, formatPrice } from '@/constants/hotel'
 import { useUser } from '@/hooks/useUser'
 import LikeButton from '@/app/hotel/like/LikeButton'
 import ReviewList from '@/components/review/ReviewList'
 import axios from '@/config/axios-config'
-import { toast } from 'react-toastify'
+import NearbyAmenitiesMap from './NearbyAmenitiesMap'
 
 export default function HotelDetail({ id }) {
   const router = useRouter()
@@ -87,7 +85,6 @@ export default function HotelDetail({ id }) {
       </div>
 
       <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
-
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
         <div className='md:col-span-2 mb-4 relative h-[600px]'>
           <Image
@@ -193,6 +190,14 @@ export default function HotelDetail({ id }) {
                   <p>{hotel.description}</p>
                 </div>
               </div>
+              <h2 className='text-xl font-semibold mb-4 mt-5'>주변 편의시설</h2>
+
+              <div className='w-[55vw]'>
+                <div className='w-[40vw]'>
+                  <div className='border-t-2 border-gray-200 mt-4 pt-4'></div>
+                </div>
+                <NearbyAmenitiesMap hotel={hotel} />
+              </div>
             </div>
           </div>
         </div>
@@ -223,6 +228,12 @@ export default function HotelDetail({ id }) {
                   예약하기
                 </button>
               </div>
+              <button
+                onClick={handleReservationButton}
+                className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'>
+                <FaCalendarCheck className='mr-2' />
+                예약하기
+              </button>
             </div>
             <button
               onClick={handleChattingButton}
