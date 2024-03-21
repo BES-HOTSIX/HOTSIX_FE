@@ -108,6 +108,7 @@ export default function NearbyAmenitiesMap({ hotel }) {
       setShowTouristSpots(true)
     } else if (map && centerCoords && category === "food") {
       setShowTouristSpots(false)
+      clearMarkers()
       axios
         .get(
           `http://localhost:8080/api/v1/locations/${category}?latitude=${centerCoords.lat()}&longitude=${centerCoords.lng()}&distance=${distance}`
@@ -176,6 +177,12 @@ export default function NearbyAmenitiesMap({ hotel }) {
     }
   }
 
+  const clearHtmlTags = (html) => {
+    const tempDiv = document.createElement("div")
+    tempDiv.innerHTML = html
+    return tempDiv.textContent || tempDiv.innerText || ""
+  }
+
   const renderCell = (item, columnKey) => {
     if (centerCoords) {
       switch (columnKey) {
@@ -192,7 +199,7 @@ export default function NearbyAmenitiesMap({ hotel }) {
             </div>
           )
         case "name":
-          return item.name
+          return clearHtmlTags(item.name)
       }
     }
   }
@@ -225,8 +232,6 @@ export default function NearbyAmenitiesMap({ hotel }) {
           position: spots,
           map: map,
         })
-        // 마커의 아이콘 색상 변경
-        marker.getElement().style.backgroundColor = "yellow"
 
         const cleanTitle = document.createElement("div")
         cleanTitle.innerHTML = spot.title
@@ -234,10 +239,9 @@ export default function NearbyAmenitiesMap({ hotel }) {
 
         // 마커에 정보 창 추가
         const infoWindow = new naver.maps.InfoWindow({
-          content: `<div style="font-weight: normal;">${textTitle}</div>`, // HTML 태그가 제거된 텍스트
-
-          backgroundColor: "transparent", // 배경색을 투명하게 설정
-          borderColor: "transparent", // 테두리색을 투명하게 설정
+          content: `<div style="background-color: #ffffff; padding: 5px; font-family: omyu_pretty, sans-serif; font-weight: bold">${textTitle}</div>`,
+          disableAnchor: true, // 화살표 비활성화
+          borderColor: "transparent",
         })
 
         naver.maps.Event.addListener(marker, "mouseover", function () {
@@ -250,7 +254,7 @@ export default function NearbyAmenitiesMap({ hotel }) {
           const searchUrl = `https://search.naver.com/search.naver?query=${query}`
 
           // 생성된 검색 URL로 리다이렉트
-          window.location.href = searchUrl
+          window.open(searchUrl, "_blank")
         })
 
         naver.maps.Event.addListener(marker, "mouseout", function () {

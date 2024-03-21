@@ -33,7 +33,7 @@ function TouristSpotSearch({ hotelAddress, onSearchResult }) {
     if (hotelAddress) {
       searchTouristSpot(hotelAddress)
     }
-  }, [hotelAddress, onSearchResult]) // hotelAddress와 onSearchResult를 의존성 배열에 추가
+  }, [hotelAddress, onSearchResult])
 
   return null // 렌더링하지 않음
 }
