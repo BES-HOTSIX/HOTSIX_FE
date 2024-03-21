@@ -30,21 +30,26 @@ export const useMySettle = () => {
   return { mySettle, isLoading, isFetching, isError, error };
 };
 
-const fetchMySettleList = async ({ page, size }) => {
-  const res = await axios.get(
-    `api/v1/settle/me/list?page=${page}&size=${size}`,
-    {
-      ...axios.defaults,
-      useAuth: true,
-    }
-  );
+const fetchMySettleList = async (page, size, startDate, endDate, settleKw) => {
+  const queryParams = new URLSearchParams({
+    page,
+    size,
+    startDate,
+    endDate,
+    settleKw,
+  }).toString();
+
+  const res = await axios.get(`api/v1/settle/me/list?${queryParams}`, {
+    ...axios.defaults,
+    useAuth: true,
+  });
 
   console.log(`fetchMySettleList`);
 
   return res.data;
 };
 
-export const useMySettleList = ({ page, size }) => {
+export const useMySettleList = (page, size, startDate, endDate, settleKw) => {
   const {
     data: mySettleList,
     isLoading,
@@ -52,8 +57,8 @@ export const useMySettleList = ({ page, size }) => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["mySettleList", page, size],
-    queryFn: () => fetchMySettleList({ page, size }),
+    queryKey: ["mySettleList", page, size, startDate, endDate, settleKw],
+    queryFn: () => fetchMySettleList(page, size, startDate, endDate, settleKw),
     retry: 0,
     placeholderData: keepPreviousData,
   });
