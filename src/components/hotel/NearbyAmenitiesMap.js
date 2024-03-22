@@ -14,6 +14,7 @@ import {CustomRadio} from "@/components/ui/CustomRadio"
 import axios from "axios"
 import calculateDistance from "@/util/calculateDistance"
 import TouristSpotSearch from "@/components/touristSpot/TouristSpotSearch"
+import {useAsyncList} from "@react-stately/data";
 
 export default function NearbyAmenitiesMap({hotel}) {
     const mapRef = useRef(null) // 지도를 표시할 DOM 요소에 대한 참조
@@ -30,13 +31,6 @@ export default function NearbyAmenitiesMap({hotel}) {
     const [page, setPage] = React.useState(1)
     const rowsPerPage = 9
     const pages = Math.ceil(nearAmenities?.length / rowsPerPage)
-
-    const items = React.useMemo(() => {
-        const start = (page - 1) * rowsPerPage
-        const end = start + rowsPerPage
-
-        return nearAmenities?.slice(start, end)
-    }, [page, nearAmenities])
 
     useEffect(() => {
         // 네이버 지도 API 스크립트가 이미 로드되었는지 확인
@@ -114,7 +108,15 @@ export default function NearbyAmenitiesMap({hotel}) {
                     `http://localhost:8080/api/v1/locations/${category}?latitude=${centerCoords.lat()}&longitude=${centerCoords.lng()}&distance=${distance}`
                 )
                 .then((r) => {
-                    setNearAmenities(r.data)
+                    let newData = r.data.map((v) => {
+                        return {
+                            id: v.id,
+                            name: v.name,
+                            coord: {...v.coord},
+                            dist: calculateDistance(v.coord.y, v.coord.x, centerCoords?.lat(), centerCoords?.lng()),
+                        }
+                    })
+                    setNearAmenities(newData)
                     setPage(1)
                     map.setCenter(centerCoords)
                 })
@@ -159,7 +161,6 @@ export default function NearbyAmenitiesMap({hotel}) {
     }, [nearAmenities])
 
     const handleOverInfo = (id) => {
-        console.log(id)
         const element = document.getElementById("m-" + id)
 
         if (element) {
@@ -189,12 +190,7 @@ export default function NearbyAmenitiesMap({hotel}) {
                 case "dist":
                     return (
                         <div>
-                            {calculateDistance(
-                                item.coord.y,
-                                item.coord.x,
-                                centerCoords.lat(),
-                                centerCoords.lng()
-                            )}
+                            {item?.dist}
                             m
                         </div>
                     )
@@ -268,6 +264,38 @@ export default function NearbyAmenitiesMap({hotel}) {
         }
     }, [showTouristSpots, touristSpots, map])
 
+    let list = useAsyncList({
+        async load({signal}) {
+            return {items: nearAmenities}
+        },
+        async sort({items, sortDescriptor}) {
+            return {
+                items: items.sort((a, b) => {
+                    let first = a[sortDescriptor.column];
+                    let second = b[sortDescriptor.column];
+                    let cmp = (parseInt(first) || first) < (parseInt(second) || second) ? -1 : 1;
+
+                    if (sortDescriptor.direction === "descending") {
+                        cmp *= -1;
+                    }
+
+                    return cmp;
+                })
+            }
+        },
+    })
+
+    useEffect(() => {
+        list.reload();
+    }, [nearAmenities])
+
+    const items = React.useMemo(() => {
+        const start = (page - 1) * rowsPerPage
+        const end = start + rowsPerPage
+
+        return list.items?.slice(start, end)
+    }, [page, list.items])
+
     return (
         <div className={"flex flex-col"}>
             {showTouristSpots && (
@@ -306,16 +334,17 @@ export default function NearbyAmenitiesMap({hotel}) {
                         {nearAmenities.length}개
                     </div>
                     <Table
-                        hideHeader
+                        aria-label={"Nearby Amenities"}
                         classNames={{
                             base: ["w-full h-[400px]"],
                             wrapper: ["w-full h-[400px]"],
-                            table: ["w-full flex"],
-                            tbody: ["flex flex-col w-full h-[300px] overflow-y-auto"],
+                            table: ["w-full flex flex-col"],
+                            tbody: ["flex flex-col w-full h-[250px] overflow-y-auto"],
                             tr: [
                                 "flex flex-row justify-between hover:shadow-[0_0_0_2px_#006eff_inset] hover:cursor-pointer",
                             ],
                             td: ["!text-xs flex items-center"],
+                            th: ["flex items-center text-xs w-full"],
                         }}
                         bottomContent={
                             <div className='flex w-full justify-center'>
@@ -335,10 +364,12 @@ export default function NearbyAmenitiesMap({hotel}) {
                                 />
                             </div>
                         }
+                        sortDescriptor={list.sortDescriptor}
+                        onSortChange={list.sort}
                     >
                         <TableHeader>
                             <TableColumn key={"name"}>NAME</TableColumn>
-                            <TableColumn key={"dist"}>DISTANCE</TableColumn>
+                            <TableColumn key={"dist"} allowsSorting>DISTANCE</TableColumn>
                         </TableHeader>
                         <TableBody items={items}>
                             {(item) => (
