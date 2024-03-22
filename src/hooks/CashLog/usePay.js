@@ -1,60 +1,78 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "@/config/axios-config";
-import { toast } from "react-toastify";
-import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import axios from '@/config/axios-config'
+import { toast } from 'react-toastify'
+import { useState } from 'react'
 
 // 포인트 결제를 위한 POST 요청
-const fetchReserveForCashPayment = async (reserveId) => {
-  return await axios.post(`/api/v1/pay/${reserveId}/byCash`);
-};
+const fetchReserveForCashPayment = async ({
+  reserveId,
+  discountAmount,
+  couponType,
+}) => {
+  return await axios.post(
+    `/api/v1/pay/${reserveId}/byCash`,
+    {
+      discountAmount,
+      couponType,
+    },
+    {
+      useAuth: true,
+    }
+  )
+}
 
 export const useReserveForCashPayment = () => {
-  const queryClient = useQueryClient();
-  const [cashLogConfirm, setCashLogConfirm] = useState(null);
+  const queryClient = useQueryClient()
+  const [cashLogConfirm, setCashLogConfirm] = useState(null)
   const {
     mutate: submitReservation,
     isPending,
     isError,
     error,
   } = useMutation({
-    mutationFn: (reserveId) => {
-      return fetchReserveForCashPayment(reserveId);
+    mutationFn: ({ reserveId, discountAmount, couponType }) => {
+      console.log(discountAmount)
+      return fetchReserveForCashPayment({
+        reserveId,
+        discountAmount,
+        couponType,
+      })
     },
     onSuccess: (res) => {
-      console.log("포인트 결제 성공");
+      console.log('포인트 결제 성공')
 
       if (!res.data.result) {
-        toast.error("포인트 결제에 실패했습니다 🥲");
-        return;
+        toast.error('포인트 결제에 실패했습니다 🥲')
+        return
       }
 
-      toast.success("포인트 결제가 완료되었습니다!");
+      toast.success('포인트 결제가 완료되었습니다!')
 
-      setCashLogConfirm(res);
+      setCashLogConfirm(res)
 
-      queryClient.invalidateQueries({ queryKey: ["reserve"] });
+      queryClient.invalidateQueries({ queryKey: ['reserve'] })
     },
     onError: (err) => {
-      console.log("포인트 결제 실패");
+      console.log('포인트 결제 실패')
 
-      toast.error("포인트 결제에 실패했습니다 🥲");
+      toast.error('포인트 결제에 실패했습니다 🥲')
 
-      return err;
+      return err
     },
-  });
+  })
 
-  return { submitReservation, cashLogConfirm, isPending, isError, error };
-};
+  return { submitReservation, cashLogConfirm, isPending, isError, error }
+}
 
 /**  결제하기 창 */
 const fetchReservationForPay = async (reserveId) => {
   const res = await axios.get(`api/v1/pay/${reserveId}`, {
     ...axios.defaults,
     useAuth: true,
-  });
+  })
 
-  return res.data;
-};
+  return res.data
+}
 
 export const useReservationForPay = (reserveId) => {
   const {
@@ -64,22 +82,24 @@ export const useReservationForPay = (reserveId) => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["reservationForPay", reserveId],
+    queryKey: ['reservationForPay', reserveId],
     queryFn: () => fetchReservationForPay(reserveId),
-  });
+  })
 
-  return { reservation, isLoading, isFetching, isError, error };
-};
+  return { reservation, isLoading, isFetching, isError, error }
+}
 
 // TossPayments post 요청
 const fetchTossPayments = async ({ payment, reserveId }) => {
-  console.log(reserveId);
-  return await axios.post(`/api/v1/pay/${reserveId}/byToss`, payment);
-};
+  console.log(reserveId)
+  return await axios.post(`/api/v1/pay/${reserveId}/byToss`, payment, {
+    useAuth: true,
+  })
+}
 
 export const useTossPayments = () => {
-  const queryClient = useQueryClient();
-  const [response, setResponse] = useState(null);
+  const queryClient = useQueryClient()
+  const [response, setResponse] = useState(null)
   const {
     mutate: submitTossPayments,
     isPending,
@@ -87,30 +107,30 @@ export const useTossPayments = () => {
     error,
   } = useMutation({
     mutationFn: ({ payment, reserveId }) => {
-      return fetchTossPayments({ payment, reserveId });
+      return fetchTossPayments({ payment, reserveId })
     },
     onSuccess: (res) => {
-      console.log("토스페이먼트 결제 성공");
+      console.log('토스페이먼트 결제 성공')
 
       if (!res.data.result) {
-        toast.error("토스페이먼트 결제에 실패했습니다 🥲");
-        return;
+        toast.error('토스페이먼트 결제에 실패했습니다 🥲')
+        return
       }
 
-      setResponse(res);
+      setResponse(res)
 
-      toast.success("토스페이먼트 결제가 완료되었습니다!");
+      toast.success('토스페이먼트 결제가 완료되었습니다!')
 
-      queryClient.invalidateQueries({ queryKey: ["tossPayments"] });
+      queryClient.invalidateQueries({ queryKey: ['tossPayments'] })
     },
     onError: (err) => {
-      console.log("토스페이먼트 결제 실패");
+      console.log('토스페이먼트 결제 실패')
 
-      toast.error("토스페이먼트 결제에 실패했습니다 🥲");
+      toast.error('토스페이먼트 결제에 실패했습니다 🥲')
 
-      return err;
+      return err
     },
-  });
+  })
 
-  return { submitTossPayments, response, isPending, isError, error };
-};
+  return { submitTossPayments, response, isPending, isError, error }
+}
