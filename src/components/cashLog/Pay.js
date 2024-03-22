@@ -55,12 +55,28 @@ export default function Pay({ fail, reserveId }) {
     const coupon = myCoupons.objData.find((c) => c.couponType === couponType)
     setSelectedCoupon(coupon)
 
-    const calculatedDiscountAmount = coupon
-      ? reservationData.paidPrice * coupon.discountRate
-      : 0
+    let calculatedDiscountAmount = 0
+
+    if (couponType === '신규회원') {
+      // '신규회원' 쿠폰 유형인 경우
+      const maxDiscount = 30000 // 최대 할인 금액 설정
+      calculatedDiscountAmount = Math.min(
+        reservationData.paidPrice * coupon.discountRate,
+        maxDiscount
+      )
+    } else {
+      // 다른 쿠폰 유형에 대한 처리
+    }
+
+    // 할인 금액이 총 가격을 초과하지 않도록 처리
+    calculatedDiscountAmount = Math.min(
+      calculatedDiscountAmount,
+      reservationData.paidPrice
+    )
+
     setDiscountAmount(calculatedDiscountAmount)
 
-    // 최신 payWithCash 값을 반영하기 위해 setPrice 내에서 현재 price를 기반으로 계산
+    // 최신 payWithCash 값을 반영하여 새로운 가격을 설정
     setPrice(
       (prevPrice) =>
         reservationData.paidPrice - calculatedDiscountAmount - payWithCash
