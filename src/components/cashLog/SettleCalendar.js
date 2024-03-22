@@ -1,22 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import "react-datepicker/dist/react-datepicker.css";
-import { FaCalendarAlt } from "react-icons/fa";
-import { DateRange } from "react-date-range";
-import { addYears, addDays } from "date-fns";
-import ko from "date-fns/locale/ko";
+import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import ko from "date-fns/locale/ko";
+import React, { useState } from "react";
+import { DateRange } from "react-date-range";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
 
-import "react-date-range/dist/styles.css"; // 메인 스타일 파일
-import "react-date-range/dist/theme/default.css"; // 테마 스타일 파일
-
-export default function SearchDate({ date, setDate }) {
-  // date 배열 구조 분해 할당을 통해 startDate와 endDate를 추출
+export default function SettleCalendar({ date, setDate, minDate, maxDate }) {
+  const queryClient = useQueryClient();
   const [startDate, endDate] = date;
-  const today = new Date();
-  const tomorrow = addDays(new Date(), 1);
-  const twoYearsLater = addYears(new Date(), 2);
   const [isPickerOpen, setIsPickerOpen] = useState(false); // 날짜 선택기 표시 상태
 
   const onRangeChange = (ranges) => {
@@ -31,12 +25,9 @@ export default function SearchDate({ date, setDate }) {
       <div
         className="flex items-center space-x-2 cursor-pointer"
         onClick={() => setIsPickerOpen(!isPickerOpen)}
-      >
-        <FaCalendarAlt className="text-black" /> {/* 달력 아이콘 */}
-        <span className="text-black">날짜 선택</span> {/* 문구 */}
-      </div>
+      ></div>
       <div
-        className="bg-gray-100 w-[365px] p-4 rounded-lg mt-2 cursor-pointer text-black"
+        className="bg-gray-100 w-[300px] p-2 rounded-lg cursor-pointer text-black text-lg flex justify-center"
         onClick={() => setIsPickerOpen(!isPickerOpen)}
       >
         {format(startDate, "yyyy-MM-dd", { locale: ko })} -{" "}
@@ -53,8 +44,8 @@ export default function SearchDate({ date, setDate }) {
               direction="horizontal"
               moveRangeOnFirstSelection={false}
               ranges={[{ startDate, endDate, key: "searchSelection" }]}
-              minDate={today}
-              maxDate={twoYearsLater}
+              minDate={minDate}
+              maxDate={maxDate}
             />
           </div>
         </div>
