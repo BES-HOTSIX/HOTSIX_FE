@@ -20,9 +20,13 @@ const CouponWidget = ({ coupons, onSelectCoupon, selectedCouponType }) => {
                 : coupon.couponType
             )
           }>
-          {`${coupon.couponType} - ${(coupon.discountRate * 100).toFixed(
-            0
-          )}% 할인`}
+          {coupon.couponType === '신규회원'
+            ? `${coupon.couponType} - ${(coupon.discountRate * 100).toFixed(
+                0
+              )}% 할인 (최대 3만원)`
+            : `${coupon.couponType} - ${(coupon.discountRate * 100).toFixed(
+                0
+              )}% 할인`}
         </div>
       ))}
     </div>
