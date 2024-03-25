@@ -41,3 +41,31 @@ export const useIssueFirstReservationCoupon = () => {
 
   return { issueCoupon, isPending, isError, error }
 }
+
+const fetchMyCoupons = async () => {
+  const { data } = await axios.get(`/api/v1/coupons/my`, {
+    useAuth: true,
+  })
+
+  console.log('fetchMyCoupons')
+
+  return data
+}
+
+export const useMyCoupons = () => {
+  const {
+    data: myCoupons,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    isPlaceholderData,
+  } = useQuery({
+    queryKey: ['myCoupons'],
+    queryFn: () => fetchMyCoupons(),
+    retry: 0,
+    placeholderData: keepPreviousData,
+  })
+
+  return { myCoupons, isLoading, isFetching, isError, error, isPlaceholderData }
+}

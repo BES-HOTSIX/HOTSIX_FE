@@ -52,7 +52,7 @@ export default function LeftBar(props) {
                 item.text === "내가 등록한 숙소" ||
                 item.text === "1:1 문의 내역" ||
                 item.text === "정산 내역"
-              : item.text !== "내가 등록한 숙소"
+              : item.text !== "내가 등록한 숙소" && item.text !== "정산 내역"
           )
           .map((item, index) => (
             <Link href={item.link} key={`l-${index}`}>

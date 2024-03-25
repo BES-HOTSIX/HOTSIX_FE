@@ -6,34 +6,44 @@ import {
   Card,
   CardBody,
   Pagination,
+  Select,
+  SelectItem,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  select,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
+import SettleCalendar from "./SettleCalendar";
+import { addMonths, format } from "date-fns";
 
 export default function Settle() {
-  const [page, setPage] = useState(1);
-  const size = 10;
+  function getNextWednesday() {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 (일요일)에서 6 (토요일) 사이의 값
+    const daysUntilNextWednesday = (3 - dayOfWeek + 7) % 7 || 7; // 오늘이 수요일인 경우 다음 주 수요일을 계산
+    const nextWednesday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + daysUntilNextWednesday
+    );
 
-  const router = useRouter();
-  const { mySettle, isLoading, isFetching, isError, error } = useMySettle();
-  const {
-    mySettleList,
-    isLoading: ListIsLoading,
-    isFetching: ListIsFetching,
-    isError: ListIsError,
-    error: ListError,
-  } = useMySettleList({ page: page - 1, size });
+    nextWednesday.setHours(0, 0, 0, 0);
+    return nextWednesday;
+  }
 
   const goReserveDetail = (e) => {
     const orderId = e.target.value;
 
     router.push(`${window.location.origin}/reserve/detail/${orderId}`);
+  };
+
+  const handleSelectionChange = (e) => {
+    setSelectVal(e.target.value);
   };
 
   const renderCell = useCallback((item, columnKey) => {
@@ -57,6 +67,40 @@ export default function Settle() {
     }
   }, []);
 
+  const defaultKw = "default";
+
+  const settleKws = [
+    { label: "기본", value: defaultKw },
+    { label: "정산", value: "settled" },
+    { label: "미정산", value: "unsettled" },
+  ];
+
+  const [selectVal, setSelectVal] = useState(defaultKw);
+
+  const minDate = new Date(2024, 0, 1);
+
+  const [date, setDate] = useState([minDate, getNextWednesday()]);
+
+  const [start, end] = date;
+
+  const formattedStart = format(start, "yyyy-MM-dd");
+  const formattedEnd = format(end, "yyyy-MM-dd");
+
+  const [page, setPage] = useState(1);
+  const size = 10;
+
+  const router = useRouter();
+
+  const {
+    mySettleList,
+    isLoading: ListIsLoading,
+    isFetching: ListIsFetching,
+    isError: ListIsError,
+    error: ListError,
+  } = useMySettleList(page - 1, size, formattedStart, formattedEnd, selectVal);
+
+  const { mySettle, isLoading, isFetching, isError, error } = useMySettle();
+
   if (isLoading || ListIsLoading) {
     return <div>loading</div>;
   }
@@ -65,12 +109,12 @@ export default function Settle() {
     return <div>잘못된 접근입니다.</div>;
   }
 
+  const mySettleData = mySettle.objData;
+  const mySettleListData = mySettleList.objData;
+
   console.log(mySettle);
 
   console.log(mySettleList);
-
-  const mySettleData = mySettle.objData;
-  const mySettleListData = mySettleList.objData;
 
   const { content, totalPages } = mySettleListData;
 
@@ -82,7 +126,7 @@ export default function Settle() {
     <div>
       <div className="flex justify-around items-center grid-cols-3">
         <div className="text-3xl">정산 내역</div>
-        <Card className="text-xl col-span-2 w-2/4 h-16">
+        <Card className="text-xl col-span-2 w-2/4 h-18">
           <CardBody className="flex flex-row items-center justify-around">
             <p>보유 캐시 :</p>
             <div>{mySettleData.restCash} 원</div>
@@ -95,23 +139,33 @@ export default function Settle() {
         <div className="text-lg"> 정산 예정 금액</div>
         <div>{mySettleData.expectedTotalSettleAmount} 원</div>
       </div>
-      <Card
-        fullWidth="true"
-        style={{ backgroundColor: "lightgray" }}
-        className="h-16 mt-5"
-      >
-        <CardBody className="flex flex-row items-center justify-around text-xl">
-          <div className="text-lg">조회 기간</div>
-          <div>2024-01-01</div>
-          <div> ~ </div>
-          <div>2024-02-01</div>
-          <div></div>
-          <div></div>
-          <div>조회</div>
-        </CardBody>
-      </Card>
+
+      <div className="flex flex-row items-center justify-around h-16 w-full bg-gray-300 rounded-lg mt-5">
+        <div className="text-lg">조회 기간</div>
+        <SettleCalendar
+          date={date}
+          setDate={setDate}
+          minDate={minDate}
+          maxDate={getNextWednesday()}
+        />
+        <div></div>
+        <div></div>
+        <Select
+          label="정산 여부"
+          className="max-w-56"
+          size="sm"
+          selectedKeys={[selectVal]}
+          onChange={handleSelectionChange}
+        >
+          {settleKws.map((settleKw) => (
+            <SelectItem key={settleKw.value} value={settleKw.value}>
+              {settleKw.label}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
       <Table
-        className="mt-6"
+        className="mt-4"
         bottomContent={
           <div className="flex w-full justify-center">
             <Pagination
