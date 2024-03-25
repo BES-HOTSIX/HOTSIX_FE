@@ -228,12 +228,6 @@ export default function HotelDetail({ id }) {
                   예약하기
                 </button>
               </div>
-              <button
-                onClick={handleReservationButton}
-                className=' w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-full shadow-lg hover:bg-red-600 transition duration-200 ease-in-out flex items-center justify-center'>
-                <FaCalendarCheck className='mr-2' />
-                예약하기
-              </button>
             </div>
             <button
               onClick={handleChattingButton}
