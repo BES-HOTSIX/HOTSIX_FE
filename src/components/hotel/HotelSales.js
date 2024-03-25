@@ -30,6 +30,8 @@ export default function HotelSales({ id }) {
   // 오늘 날짜를 'YYYY-MM-DD' 형식의 문자열로 구합니다.
   const todayStr = new Date().toISOString().split('T')[0]
 
+  console.log(reservations)
+
   useEffect(() => {
     getReservationsByYearAndMonth(currentDate)
   }, [page]) // 페이지 또는 날짜가 변경될 때마다 실행됩니다.
@@ -66,7 +68,7 @@ export default function HotelSales({ id }) {
 
   return (
     <div className='mt-32 min-h-[60vh] text-center'>
-      <div className='grid grid-cols-5'>
+      <div className='grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 space-y-8'>
         <Card className='h-[40rem] col-span-1 py-4 bg-gray-100'>
           <CardHeader className='pb-0 pt-2 px-4 flex-col items-start'>
             <p className='text-tiny uppercase font-bold'>{hotel?.address}</p>

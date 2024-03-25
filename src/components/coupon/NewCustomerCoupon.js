@@ -23,9 +23,15 @@ export default function NewCustomerCoupon() {
           height={500}
           alt='new-customer-coupon'
         />
+        <div className='absolute w-full px-4'>
+          <p className='bg-white/80 backdrop-blur-md rounded-lg shadow-md p-4 text-gray-700 font-semibold'>
+            최대 3만원까지 할인 가능하며, 발급받은 날로부터 30일 내 사용해야
+            합니다.
+          </p>
+        </div>
         <button
           onClick={handleIssueFirstReservationCoupon}
-          className='absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded'>
+          className='mt-32 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded'>
           발급받기
         </button>
       </div>
