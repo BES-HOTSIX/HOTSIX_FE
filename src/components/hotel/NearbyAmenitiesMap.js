@@ -105,7 +105,7 @@ export default function NearbyAmenitiesMap({hotel}) {
             clearMarkers()
             axios
                 .get(
-                    `http://localhost:8080/api/v1/locations/${category}?latitude=${centerCoords.lat()}&longitude=${centerCoords.lng()}&distance=${distance}`
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/locations/${category}?latitude=${centerCoords.lat()}&longitude=${centerCoords.lng()}&distance=${distance}`
                 )
                 .then((r) => {
                     let newData = r.data.map((v) => {
