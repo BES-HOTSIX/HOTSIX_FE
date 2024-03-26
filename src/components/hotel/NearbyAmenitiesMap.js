@@ -209,6 +209,7 @@ export default function NearbyAmenitiesMap({hotel}) {
                     id: index,
                     name: v.title,
                     coord: {x: v.mapx / 10000000, y: v.mapy / 10000000},
+                    dist: calculateDistance(v.mapy / 10000000, v.mapx / 10000000, centerCoords?.lat(), centerCoords?.lng())
                 })
             })
 
